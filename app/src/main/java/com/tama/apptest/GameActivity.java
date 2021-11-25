@@ -141,23 +141,6 @@ public class GameActivity extends Activity{
 
     public boolean onTouchEvent(MotionEvent e){
 
-//        switch(e.getAction()){
-//
-//            case MotionEvent.ACTION_DOWN:
-//                px = e.getX();
-//                py = e.getY();
-//                break;
-//            case MotionEvent.ACTION_MOVE:
-//                map.offsetMap((e.getX() - px)/scale, (e.getY() - py)/scale);
-//                px = e.getX();
-//                py = e.getY();
-//                break;
-//            case MotionEvent.ACTION_UP:
-//                px = -1;
-//                py = -1;
-//                break;
-//        }
-
         this.gdc.onTouchEvent(e);
         this.sgd.onTouchEvent(e);
         return super.onTouchEvent(e);

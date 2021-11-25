@@ -1,5 +1,5 @@
 package com.tama.apptest;
-
+import android.util.Log;
 import java.util.ArrayList;
 
 public class Map {
@@ -214,12 +214,15 @@ public class Map {
 
             switch (tile) {
                 case water:
+                    Log.d("map", "set water");
                     terrain[x][y] = new DynTile(this, x, y);
                     updateDyn(x, y);
                     break;
 
                 case ground:
+                    Log.d("map", "set ground");
                     terrain[x][y] = new Grass(x, y, true);
+                    updateDyn(x, y);
                     break;
             }
         }

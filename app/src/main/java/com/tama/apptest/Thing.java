@@ -1,5 +1,6 @@
 package com.tama.apptest;
 import android.graphics.Bitmap;
+import android.util.Log;
 
 abstract class Thing {
 
@@ -109,21 +110,21 @@ class Tree extends Thing {
     }
 
     void display(Map m) {
-        display(m, Assets.sprites.get(16 + growth));
+        display(m, Assets.sprites.get(16 + level));
     }
 
     Bitmap getImg(){
-        return Assets.sprites.get(16+growth);
+        return Assets.sprites.get(16+level);
     }
 
     void update(Map m){
-        if (growth < 10000) {
-            // growth += millis() - timer;
-        } else if (growth > 10000-1 && level < 2){
+        if (growth < 1000) {
+            growth ++;
+        } else if (growth > 1000-2 && level < 2){
             level++;
             growth = 0;
         }
-        // println(growth);
+        Log.d("Tree", "" + growth);
     }
 
     Type type() {

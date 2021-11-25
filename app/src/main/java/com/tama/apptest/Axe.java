@@ -1,6 +1,7 @@
 package com.tama.apptest;
 
 import android.graphics.Bitmap;
+import android.util.Log;
 
 public class Axe extends Thing {
 
@@ -58,10 +59,14 @@ class Shovel extends Thing {
     Thing apply(Map m, int ax, int ay) {
 
         Thing t = m.getThing(ax, ay);
+        TileType tt = m.getTile(ax, ay).type();
+        Log.d("shovel", "apply" + tt);
+        if (tt == TileType.water) {
+            Log.d("shovel", "apply ground");
+            m.setTile(ax, ay, TileType.grass);
 
-        if (m.getTile(ax, ay).type() == TileType.water) {
-            m.setTile(ax, ay, TileType.ground);
-        } else if (m.getTile(ax, ay).type() == TileType.ground) {
+        } else if (tt == TileType.grass) {
+            Log.d("shovel", "apply water");
             m.setTile(ax, ay, TileType.water);
         }
 
