@@ -5,15 +5,19 @@ import android.util.Log;
 import java.util.ArrayList;
 
 interface Act {
-    static byte START = 0, DOING = START+1, COMPLETE = DOING + 1, FAILED = COMPLETE + 1;
-    byte update(Map m, Pet p);
+
+    ActState update(World m, Pet p);
 
 }
 
-abstract class BSequence implements Act {
+enum ActState{
+    start, doing, complete, failed
+}
+
+abstract class ActSequence implements Act {
     ArrayList<Act> acts;
-    byte status = Act.START;
-    BSequence() {
+    ActState status = ActState.start;
+    ActSequence() {
         acts = new ArrayList<Act>();
     }
 
@@ -21,16 +25,16 @@ abstract class BSequence implements Act {
         acts.add(b);
     }
 
-    public byte update(Map m, Pet p) {
+    public ActState update(World m, Pet p) {
 
         if (acts.size() == 0)
-            return status = Act.COMPLETE;
+            return status = ActState.complete;
 
         status = acts.get(0).update(m, p);
 
-        if (status == Act.COMPLETE) {
+        if (status == ActState.complete) {
             acts.remove(0);
-            return status = Act.DOING;
+            return status = ActState.doing;
         }
         return status;
     }
@@ -38,27 +42,29 @@ abstract class BSequence implements Act {
 }
 
 class Consume implements Act {
-    public byte update(Map m, Pet p) {
-        return Act.FAILED;
+    public ActState update(World m, Pet p) {
+        return ActState.failed;
     }
 }
 
-class GoTo extends BSequence {
+class GoTo extends ActSequence {
     int x, y;
-    int nextTo;
+    int dist;
 
-    GoTo(int x, int y, int nextTo) {
+    GoTo(int x, int y, int dist) {
         super();
         this.x = x;
         this.y = y;
-        this.nextTo = nextTo;
+        this.dist = dist;
     }
 
-    public byte update(Map m, Pet p) {
-        if (status == Act.START){
-            Vec2[] path = new Path(nextTo).findPath(m, p.x, p.y, x, y);
-            if (path == null)
-                return Act.FAILED;
+    public ActState update(World m, Pet p) {
+        if (status == ActState.start){
+            Vec2[] path = new Path(dist).findPath(m, p.x, p.y, x, y);
+            if (path == null) {
+                Log.d("Act: ", "path was null");
+                return ActState.failed;
+            }
 
             int xi = p.x, yi = p.y;
             for (Vec2 s : path){
@@ -75,42 +81,42 @@ class GoTo extends BSequence {
 }
 
 class Pat implements Act {
-    public byte update(Map m, Pet p) {
-        return Act.FAILED;
+    public ActState update(World m, Pet p) {
+        return ActState.failed;
     }
 }
 
 class Poop implements Act {
-    public byte update(Map m, Pet p) {
-        return Act.FAILED;
+    public ActState update(World m, Pet p) {
+        return ActState.failed;
     }
 }
 
 class Step implements Act {
     int x, y;
-    byte status;
+    ActState status;
 
     Step(int x, int y) {
         this.x = x;
         this.y = y;
-        status = Act.START;
+        status = ActState.start;
     }
 
-    public byte update(Map m, Pet p) {
+    public ActState update(World m, Pet p) {
         // println("updating");
-        if (status == Act.START) {
+        if (status == ActState.start) {
             if (!step(m, p, x, y)) {
-                return (status = Act.FAILED);
+                return (status = ActState.failed);
             }
-            return (status = Act.DOING);
-        } else if (status == Act.DOING) {
+            return (status = ActState.doing);
+        } else if (status == ActState.doing) {
             if (updateOffsets(p))
-                return (status = Act.COMPLETE);
+                return (status = ActState.complete);
         }
         return status;
     }
 
-    boolean step(Map m, Pet p, int X, int Y) {
+    boolean step(World m, Pet p, int X, int Y) {
 
         if (m.canStepOnto(p.x, p.y, p.x + X, p.y + Y)) {
             p.setDir(X, Y);

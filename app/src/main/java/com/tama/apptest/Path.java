@@ -7,7 +7,7 @@ class Path {
     Vec2[] step;
     PriorityQueue<Node> que;
     Node[][] visited;
-    Map m;
+    World m;
     int dist = 0;
 
     Path(int nextTo){
@@ -20,7 +20,7 @@ class Path {
         step = steps;
     }
 
-    Vec2[] findPath(Map m, int ax, int ay, int bx, int by) {
+    Vec2[] findPath(World m, int ax, int ay, int bx, int by) {
 
         this.m = m;
         que = new PriorityQueue<Node>(20, new VComp());

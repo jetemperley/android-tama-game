@@ -5,9 +5,8 @@ public class GameLoop extends TimerTask {
 
     GameActivity g;
     static int timer, period;
-
-
     boolean running = true;
+
     GameLoop(GameActivity g){
         super();
         this.g = g;

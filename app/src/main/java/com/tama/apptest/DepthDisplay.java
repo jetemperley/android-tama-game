@@ -6,14 +6,27 @@ import android.graphics.Canvas;
 import java.util.Comparator;
 import java.util.PriorityQueue;
 
-public class DepthCanvas {
+public class DepthDisplay implements DisplayAdapter {
 
     Canvas canvas;
     PriorityQueue<DepthBitmap> draws;
     boolean check = true;
 
-    DepthCanvas() {
+    DepthDisplay() {
         draws = new PriorityQueue<DepthBitmap>(200, new DBComp());
+    }
+
+    public void displayWorld(WorldObject t){
+
+    }
+    public void displaySplit(WorldObject t){
+
+    }
+    public void displayUI(WorldObject t){
+
+    }
+    public void display(Displayable d, int x, int y, int xoff, int yoff){
+
     }
 
     void drawBitmap(Bitmap bm, float left, float top, float depth) {

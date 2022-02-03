@@ -4,9 +4,7 @@ import android.app.Activity;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
@@ -26,7 +24,6 @@ import android.view.ScaleGestureDetector;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
-import java.util.ArrayList;
 import java.util.Timer;
 
 public class GameActivity extends Activity{
@@ -46,8 +43,9 @@ public class GameActivity extends Activity{
     GestureDetectorCompat gdc;
     ScaleGestureDetector sgd;
     Display d;
+    AndroidDisplay displayAdapter;
     PetGame game;
-    DepthCanvas dc;
+    DepthDisplay dc;
 
 
     @Override
@@ -111,7 +109,8 @@ public class GameActivity extends Activity{
 
         game = new PetGame();
         Log.d("display height ", " " + d.getHeight() +" " + view.getHeight() + " " + view.getTop());
-        dc = new DepthCanvas();
+        dc = new DepthDisplay();
+        displayAdapter = new AndroidDisplay(16);
     }
 
     public void draw() {
@@ -121,19 +120,20 @@ public class GameActivity extends Activity{
             if (canvas != null) {
                 canvas.setMatrix(mat);
                 dc.canvas = canvas;
+                displayAdapter.canvas = canvas;
                 // size = canvas.getClipBounds();
                 // Log.d("canvas clip ", " "  +size.top + " " + size.bottom + " " + size.left + " " + size.right);
                 topOff = d.getHeight() - canvas.getHeight();
                 canvas.drawColor(Color.BLACK);
-                game.drawEnv(dc);
-                dc.drawQ();
-                dc.clearQ();
+                game.drawEnv(displayAdapter);
+                // dc.drawQ();
+                // dc.clearQ();
 
                 canvas.setMatrix(idmat);
-                game.drawUI(dc);
+                game.drawUI(displayAdapter);
                 // canvas.drawCircle(x , y - (d.getHeight() - canvas.getHeight()), 20, red);
-                dc.drawQ();
-                dc.clearQ();
+                // dc.drawQ();
+                // dc.clearQ();
                 view.surface.unlockCanvasAndPost(canvas);
             }
         }
@@ -182,7 +182,7 @@ public class GameActivity extends Activity{
         public boolean onSingleTapConfirmed(MotionEvent e){
             Log.d("Gesture", "tap confirmed");
             float[] f = convertScreenToGame(e.getX(), e.getY());
-            game.press(f[0], f[1]);
+            game.press((int)f[0], (int)f[1]);
             return true;
         }
 
@@ -202,7 +202,7 @@ public class GameActivity extends Activity{
         @Override
         public void onLongPress(MotionEvent e){
             float[] f = convertScreenToGame(e.getX(), e.getY());
-            game.longPress(f[0], f[1]);
+            game.longPress((int)f[0], (int)f[1]);
         }
 
     }
@@ -225,64 +225,7 @@ public class GameActivity extends Activity{
     }
 }
 
-class Assets{
 
-    static ArrayList<Bitmap> sprites;
-    static ArrayList<SpriteSheet> sheets;
-
-
-    static void init(Resources r){
-
-        BitmapFactory.Options opts = new BitmapFactory.Options();
-        opts.inScaled = false;
-
-        sprites = new ArrayList<Bitmap>();
-
-        sprites.add(BitmapFactory.decodeResource(r, R.drawable.tree));
-        Log.d("Assets", "added tree");
-        ProcessAndAddSprites(BitmapFactory.decodeResource(r, R.drawable.items, opts), 16);
-        Log.d("Assets", "added items");
-        ProcessAndAddSprites(BitmapFactory.decodeResource(r, R.drawable.tools, opts), 16);
-        Log.d("Assets", "added tools");
-        ProcessAndAddSprites(BitmapFactory.decodeResource(r, R.drawable.treegrowth, opts), 16);
-        //Log.d("Assets", "added tree growth");
-        sprites.add(BitmapFactory.decodeResource(r, R.drawable.seed, opts));
-        ProcessAndAddSprites(BitmapFactory.decodeResource(r, R.drawable.terrainsimp, opts), 16);
-        sprites.add(BitmapFactory.decodeResource(r, R.drawable.bush1, opts));
-        sprites.add(BitmapFactory.decodeResource(r, R.drawable.longgrass, opts));
-        Log.d("Assets init", sprites.size() + "");
-
-        // Log.d("Assets", "sprites = " + sprites.size());
-        // Log.d("Assets", "added seed");
-
-        sheets = new ArrayList<SpriteSheet>();
-        SpriteSheet ss = new SpriteSheet(BitmapFactory.decodeResource(r, R.drawable.watersimp, opts), 8);
-        sheets.add(ss);
-
-        ss = new SpriteSheet(BitmapFactory.decodeResource(r, R.drawable.blob, opts), 16);
-        ss.addRowsAsAnims();
-        sheets.add(ss);
-
-        ss = new SpriteSheet(BitmapFactory.decodeResource(r, R.drawable.egg, opts), 16);
-        ss.addRowsAsAnims();
-        sheets.add(ss);
-
-        ss = new SpriteSheet(BitmapFactory.decodeResource(r, R.drawable.walker, opts), 16);
-        ss.addRowsAsAnims();
-        sheets.add(ss);
-
-    }
-
-    static void ProcessAndAddSprites(Bitmap bm, int size){
-        Log.d("width", "" + bm.getWidth());
-        Log.d("height", "" + bm.getHeight());
-        for (int x = 0; x < bm.getWidth(); x+=size){
-            for (int y =0; y < bm.getHeight(); y+=size){
-                sprites.add(Bitmap.createBitmap(bm, x, y, size, size));
-            }
-        }
-    }
-}
 
 class Rand{
 

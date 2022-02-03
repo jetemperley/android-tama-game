@@ -10,52 +10,52 @@ class Food extends Thing{
 
 
     Food(int ID){
-        super();
-        id = ID + 1;
+        super(Assets.sprites.get(ID));
+        id = ID;
 
         switch (id){
-            case 0:
+            case R.drawable.static_meat:
                 name = "meat";
                 break;
 
-            case 1:
+            case R.drawable.static_leaf:
                 name = "leaf";
                 break;
 
-            case 3:
-                name = "drum stick";
+            case R.drawable.static_meatbone:
+                name = "drumstick";
                 break;
 
-            case 4:
+            case R.drawable.static_herb:
                 name = "herb";
                 break;
 
-            case 5:
+            case R.drawable.static_poop:
                 name = "poop";
                 break;
 
-            case 6:
+            case R.drawable.static_mushroom:
                 name = "mush";
                 break;
 
-            case 7:
-                name = "fruit";
+            case R.drawable.static_apple:
+                name = "apple";
                 break;
 
-            case 8:
+            case R.drawable.static_fish:
                 name = "fish";
                 break;
 
-            case 9:
-                name = "vegetable";
+            case R.drawable.static_carrot:
+                name = "carrot";
                 break;
 
-            case 10:
-                name = "nut";
+            case R.drawable.static_acorn:
+                name = "acorn";
                 break;
 
-            case 11:
-                name = "berry";
+            case R.drawable.static_cherries:
+                name = "cherries";
                 break;
 
             default:
@@ -69,23 +69,15 @@ class Food extends Thing{
         return Type.food;
     }
 
-    Bitmap getImg(){
-        return Assets.sprites.get(id);
-    }
-
     boolean isItem(){
         return true;
     }
 
-    void display(Map m){
-        super.display(m, Assets.sprites.get(id));
-    }
+    Thing apply(World m, int ax, int ay){
 
-    Thing apply(Map m, int mx, int my){
-
-        Thing t = m.getMouseThing(mx, my);
+        Thing t = m.getThing(ax, ay);
         if (t==null){
-            return m.swapMp(this, mx, my);
+            return m.swap(this, ax, ay);
         }
 
         switch (t.type()){

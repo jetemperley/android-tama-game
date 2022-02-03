@@ -1,45 +1,25 @@
 package com.tama.apptest;
-import android.graphics.Bitmap;
 import android.util.Log;
 
-abstract class Thing {
+enum Type {
+    food, pet, tree, undefined, junk
+}
+abstract class Thing extends WorldObject {
 
-    // offsets are a percentage of a tile
-    int x, y, xoff, yoff;
-
-    Thing() {
-        x = 0;
-        y = 0;
-        xoff = 0;
-        yoff = 0;
+    Thing(Displayable img) {
+        super(img);
     }
 
     boolean isItem(){
         return false;
     }
 
-    void update(Map map) {
+    void update(World map) {
+
     }
 
-    void display(Map map, Bitmap img) {
-        map.canvas.drawBitmap(img, map.cellsize*x + map.cellsize*xoff/100 + map.xoff, map.cellsize*y + map.cellsize*yoff/100 + map.yoff, map.cellsize*y + map.cellsize*yoff/100);
-    }
 
-    void display(Map map, Bitmap img, int X, int Y) {
-        map.canvas.drawBitmap(img, map.cellsize*X, map.cellsize*Y, map.cellsize*Y);
-    }
 
-    void display(Map m){
-        display(m, getImg());
-    }
-
-    void displayManual(Map m, float left, float top){
-        m.canvas.drawBitmap(getImg(), left, top, top);
-    }
-
-    Bitmap getImg(){
-        return null;
-    }
 
     void click() {
     }
@@ -58,10 +38,10 @@ abstract class Thing {
     }
 
     Type type() {
-        return Type.def;
+        return Type.undefined;
     }
 
-    Thing apply(Map m, int mx, int my){
+    Thing apply(World m, int x, int y){
         return this;
     }
 
@@ -71,34 +51,24 @@ abstract class Thing {
 class Rock extends Thing {
 
     Rock(){
-        super();
+
+        super(Assets.sprites.get(R.drawable.static_rock));
     }
 
-    void display(Map map) {
-        // finish rock
-    }
-    void update(Map map) {
-    }
 }
 
 class Poo extends Thing {
 
     Poo() {
-        super();
+        super(Assets.sprites.get(R.drawable.static_poop));
     }
 
-    void display(Map map) {
-        display(map, Assets.sprites.get(6));
-    }
-    void update(Map map) {
+    void update(World map) {
     }
     boolean isItem(){
         return true;
     }
 
-    Bitmap getImg(){
-        return Assets.sprites.get(6);
-    }
 }
 
 class Tree extends Thing {
@@ -106,22 +76,17 @@ class Tree extends Thing {
     int growth = 0;
 
     Tree() {
-        super();
+        super(Assets.sprites.get(R.drawable.static_tree));
     }
 
-    void display(Map m) {
-        display(m, Assets.sprites.get(16 + level));
-    }
 
-    Bitmap getImg(){
-        return Assets.sprites.get(16+level);
-    }
 
-    void update(Map m){
+    void update(World m){
         if (growth < 1000) {
             growth ++;
         } else if (growth > 1000-2 && level < 2){
             level++;
+            sprite = Assets.sprites.get(16+level);
             growth = 0;
         }
         Log.d("Tree", "" + growth);
@@ -137,25 +102,16 @@ class Tree extends Thing {
 class Seed extends Thing{
 
     Seed(){
-        super();
+        super(Assets.sprites.get(R.drawable.static_seed));
     }
 
     boolean isItem(){
         return true;
     }
 
-    void display(Map m) {
+    Thing apply(World m, int ax, int ay){
 
-        display(m, Assets.sprites.get(21));
-    }
-
-    Bitmap getImg(){
-        return Assets.sprites.get(21);
-    }
-
-    Thing apply(Map m, int ax, int ay){
-
-        Thing t = m.getThing(ax, ay);
+        Thing t = m.takeThing(ax, ay);
         if (t==null){
             m.add(new Tree(), ax, ay);
             return null;
@@ -181,23 +137,15 @@ class Seed extends Thing{
 }
 
 class Wood extends Thing{
+
     Wood(){
-        super();
+        super(Assets.sprites.get(R.drawable.static_log));
     }
 
-    void display(Map m){
-        display(m, Assets.sprites.get(3));
-    }
-
-    Bitmap getImg(){
-        return Assets.sprites.get(3);
-    }
 
     boolean isItem(){
         return true;
     }
 }
 
-enum Type {
-    food, pet, tree, def, junk
-}
+

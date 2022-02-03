@@ -1,18 +1,17 @@
 package com.tama.apptest;
-
-
 import java.util.ArrayList;
 
 abstract class Pet extends Thing {
 
-    // x, y, w and h are relative to cell height and cell width
-    // eg w = 1 == w = cellwidth
+    static final int down = 0, right = 1, up = 2, left = 3;
+
     State state;
     String name;
     int speed = 3;
     Movement moves;
     ArrayList<Act> acts;
-    PetAnimator anim;
+    // this pet animator is the same object as Displayable.sprite;
+    Animator anim;
 
     int poop = 0;
     int hunger = 0;
@@ -21,21 +20,17 @@ abstract class Pet extends Thing {
     int sleep = 0;
 
 
-    Pet(PetAnimator pa) {
-        super();
+    Pet(Animator pa) {
+        super(pa);
+        pa.play();
+        pa.repeat(true);
         state = new Wander();
         acts = new ArrayList<Act>();
         name = "";
         anim = pa;
     }
 
-
-    void display(Map map) {
-
-        display(map, anim.get());
-    }
-
-    void update(Map map) {
+    void update(World map) {
 
         updateStats();
         updateActions(map);
@@ -60,15 +55,13 @@ abstract class Pet extends Thing {
         }
     }
 
-    void updateActions(Map m) {
+    void updateActions(World m) {
 
         if (acts.size() > 0) {
-            byte stat = acts.get(0).update(m, this);
-            if (stat == Act.COMPLETE || stat == Act.FAILED) {
+            ActState stat = acts.get(0).update(m, this);
+            if (stat == ActState.complete || stat == ActState.failed) {
                 acts.remove(0);
-                // println("removed");
             }
-
         }
     }
 
@@ -89,20 +82,20 @@ abstract class Pet extends Thing {
 
     void setDir(int x, int y){
         if (x == 1)
-            anim.setDir(2);
+            anim.animID = right;
         else if (x == -1)
-            anim.setDir(3);
+            anim.animID = left;
         else if (y == -1)
-            anim.setDir(1);
+            anim.animID = up;
         else if (y == 1)
-            anim.setDir(0);
+            anim.animID = down;
     }
 }
 
 class Blob extends Pet {
 
     Blob() {
-        super(new PetAnimator(Assets.sheets.get(1)));
+        super(new Animator(Assets.sheets.get(R.drawable.sheet_16_blob)));
 
     }
 }
@@ -110,7 +103,7 @@ class Blob extends Pet {
 class Walker extends Pet {
 
     Walker() {
-        super(new PetAnimator(Assets.sheets.get(3)));
+        super(new Animator(Assets.sheets.get(R.drawable.sheet_16_walker)));
 
     }
 }
@@ -122,25 +115,21 @@ class Egg extends Thing {
     int hatchAge;
 
     Egg() {
-        super();
-        anim = new Animator(Assets.sheets.get(2));
+        super(new Animator(Assets.sheets.get(R.drawable.sheet_16_egg)));
+        anim = (Animator) sprite;
         age = 0;
         hatchAge = 20000;
 
     }
 
-    void display(Map map) {
-        display(map, anim.get());
-    }
-
-    void update(Map map) {
+    void update(World map) {
         if (!anim.play && Rand.RandInt(0, 100) < 20*(GameLoop.period/1000f)) {
             anim.play = true;
         }
         age += GameLoop.period;
         if (age > hatchAge) {
             // hatch
-            map.remove(this);
+            map.removeThing(this);
             map.add(new Blob(), x, y);
         }
     }

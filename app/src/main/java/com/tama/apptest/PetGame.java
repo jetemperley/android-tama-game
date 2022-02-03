@@ -4,41 +4,44 @@ import android.util.Log;
 
 public class PetGame {
 
-    Map map;
+    World map;
     Thing held;
+    Pet target;
 
     PetGame(){
 
-        map = new Map(10);
+        map = new World(10);
         held = null;
-
+        target = new Blob();
+        map.add(target, 1, 1);
+        map.setTile(2, 2, TileType.water);
+        map.setTile(2, 3, TileType.water);
+        map.setTile(3, 2, TileType.water);
     }
 
-    void drawEnv(DepthCanvas c) {
-
-        map.canvas = c;
+    void drawEnv(DisplayAdapter d) {
         map.update();
-        map.display();
+        map.display(d);
 
     }
 
-    void drawUI(DepthCanvas c){
+    void drawUI(DisplayAdapter d){
         if (held != null)
-            held.displayManual(map, 0, 0);
+            d.displayUI(held);
 
     }
 
-    void press(float x, float y){
+    void press(int x, int y){
         Log.d("game press ", " " +x+ " " + y);
-        held = map.swapAp(held, (int)x, (int)y);
-        map.target.acts.add(new GoTo((int)x, (int)y, 0));
-
+        // held = map.swap(held, x, y);
+        // map.target.acts.add(new GoTo(x, y, 0));
+        target.acts.add(new GoTo(x, y, 0));
     }
 
-    void longPress(float x, float y){
+    void longPress(int x, int y){
         Log.d("PetGame longpress", "coord " + x + " " + y);
         if (held != null)
-            held = held.apply(map, (int)x, (int)y);
+            held = held.apply(map, x, y);
     }
 
 }
