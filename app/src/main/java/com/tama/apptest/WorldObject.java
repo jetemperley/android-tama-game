@@ -3,12 +3,11 @@ package com.tama.apptest;
 public class WorldObject {
 
     Displayable sprite;
-    int x, y;
-    float xoff, yoff;
+    private int x, y;
+    int xoff, yoff;
+    // flat indicates if the sprite is displayed as a ground base layer
+    boolean flat = true;
 
-    WorldObject(){
-        this(null);
-    }
     WorldObject(Displayable img) {
 
         sprite = img;
@@ -21,4 +20,16 @@ public class WorldObject {
     void display(DisplayAdapter d){
         d.displayWorld(this);
     }
+
+    int x(){
+        return x;
+    }
+    int y(){
+        return y;
+    }
+    void setPos(int x, int y){
+        this.x = x;
+        this.y = y;
+    }
+
 }

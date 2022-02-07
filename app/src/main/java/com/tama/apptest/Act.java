@@ -60,14 +60,14 @@ class GoTo extends ActSequence {
 
     public ActState update(World m, Pet p) {
         if (status == ActState.start){
-            Vec2[] path = new Path(dist).findPath(m, p.x, p.y, x, y);
+            Vec2<Integer>[] path = new Path(dist).findPath(m, p.x(), p.y(), x, y);
             if (path == null) {
-                Log.d("Act: ", "path was null");
+                Log.d("Act", "path was null");
                 return ActState.failed;
             }
 
-            int xi = p.x, yi = p.y;
-            for (Vec2 s : path){
+            int xi = p.x(), yi = p.y();
+            for (Vec2<Integer> s : path){
                 Log.d("goto path: ", (s.x - xi) + " " + (s.y - yi));
                 acts.add(new Step(s.x - xi, s.y - yi));
                 xi = s.x;
@@ -75,7 +75,7 @@ class GoTo extends ActSequence {
             }
         }
         status = super.update(m, p);
-        Log.d("goto status: ", status + " ");
+        // Log.d("goto status: ", status + " ");
         return (status);
     }
 }
@@ -118,10 +118,10 @@ class Step implements Act {
 
     boolean step(World m, Pet p, int X, int Y) {
 
-        if (m.canStepOnto(p.x, p.y, p.x + X, p.y + Y)) {
+        if (m.canStepOnto(p.x(), p.y(), p.x() + X, p.y() + Y)) {
             p.setDir(X, Y);
-            m.removeThing(p.x, p.y);
-            m.add(p, p.x + X, p.y + Y);
+            m.removeThing(p.x(), p.y());
+            m.add(p, p.x() + X, p.y() + Y);
             p.anim.play();
             p.xoff = -X * 100;
             p.yoff = -Y * 100;
