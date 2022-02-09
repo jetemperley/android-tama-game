@@ -6,8 +6,6 @@ public class World {
     private Tile[][] tile;
     int celln, openSpace;
     float xoff, yoff;
-    DepthDisplay canvas;
-    Pet target;
 
     World(int size) {
         celln = size;
@@ -17,12 +15,10 @@ public class World {
         tile = new Tile[celln][celln];
         for (int x = 0; x < celln; x++) {
             for (int y = 0; y < celln; y++) {
-                tile[x][y] = new Grass(x, y, true);
+                setTile(x, y, new Grass(true));
+                // add(new Poo(), x, y);
             }
         }
-
-
-
 
 
     }
@@ -51,15 +47,14 @@ public class World {
             return;
 
         if (tile[x][y].isEmpty()) {
-            tile[x][y].set(t);
-            t.x = x;
-            t.y = y;
+            tile[x][y].setThing(t);
+            t.setPos(x, y);
         }
     }
 
     void removeThing(Thing t) {
-        if (tile[t.x][t.y].thing == t)
-            tile[t.x][t.y].takeThing();
+        if (tile[t.x()][t.y()].getThing() == t)
+            tile[t.x()][t.y()].takeThing();
     }
 
     void removeThing(int x, int y) {
@@ -75,7 +70,7 @@ public class World {
     // TODO refactor this
     boolean canStepOnto(int px, int py, int x, int y) {
         // Log.d("Map", "" + px + " " + py);
-        Thing t = tile[px][py].thing;
+        Thing t = tile[px][py].getThing();
         if (isEmpty(x, y) && ((tile[x][y].type() == TileType.ground == t.canWalk()) || (tile[x][y].type() == TileType.water == t.canSwim())))
             return true;
         return false;
@@ -122,14 +117,12 @@ public class World {
             switch (type) {
                 case water:
                     Log.d("map", "set water");
-                    tile[x][y] = new DynTile(this, x, y);
-                    updateDyn(x, y);
+                    setTile(x, y, new DynTile());
                     break;
 
                 case ground:
                     Log.d("map", "set ground");
-                    tile[x][y] = new Grass(x, y, true);
-                    updateDyn(x, y);
+                    setTile(x, y, new Grass(true));
                     break;
             }
         }
@@ -158,8 +151,38 @@ public class World {
 
     Thing getThing(int x, int y){
         if (A.inRange(tile, x, y))
-            return tile[x][y].thing;
+            return tile[x][y].getThing();
         return null;
+    }
+
+    void setTile(int x, int y, Tile t){
+        if (t == null)
+            return;
+        if (A.inRange(tile, x, y)) {
+            if (tile[x][y] != null) {
+                t.setThing(tile[x][y].takeThing());
+
+            }
+            tile[x][y] = t;
+            t.setPos(x, y);
+            updateDyn(x, y);
+        }
+    }
+
+    Thing checkCollision(float x, float y){
+
+        for (int xi = -1; xi < 2; xi++){
+            for (int yi = -1; yi < 2; yi++){
+                if (A.inRange(tile, (int)x+xi, (int)y+yi)) {
+                    Thing t = tile[(int) x + xi][(int) y + yi].getThing();
+                    if (t != null && t.contains(x, y)) {
+                        return t;
+                    }
+                }
+            }
+        }
+        return null;
+
     }
 }
 

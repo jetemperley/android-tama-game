@@ -8,6 +8,11 @@ abstract class Thing extends WorldObject {
 
     Thing(Displayable img) {
         super(img);
+        flat = false;
+    }
+
+    void pickedUp(){
+
     }
 
     boolean isItem(){
@@ -31,8 +36,8 @@ abstract class Thing extends WorldObject {
         return true;
     }
 
-    boolean isColliding(float X, float Y) {
-        if (X > x + (xoff/100f) && X < x + (xoff/100f) + 1 && Y > y + (yoff/100f) && Y < y + (yoff/100f) + 1)
+    boolean contains(float X, float Y) {
+        if (X > x() + (xoff/100f) && X < x() + (xoff/100f) + 1 && Y > y() + (yoff/100f) && Y < y() + (yoff/100f) + 1)
             return true;
         return false;
     }

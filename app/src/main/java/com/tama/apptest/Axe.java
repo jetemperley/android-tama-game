@@ -26,7 +26,7 @@ public class Axe extends Thing {
                 Tree tree = (Tree) t;
                 m.takeThing(ax, ay);
                 if (tree.level == 2) {
-                    m.add(new Wood(), tree.x, tree.y);
+                    m.add(new Wood(), tree.x(), tree.y());
                 }
                 break;
 

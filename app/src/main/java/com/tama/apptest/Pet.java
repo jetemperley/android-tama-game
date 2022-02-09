@@ -44,8 +44,8 @@ abstract class Pet extends Thing {
             happy--;
         } else if (hunger > 0) {
 
-            hunger -= GameLoop.period;
-            poop += GameLoop.period;
+            hunger -= GameActivity.period;
+            poop += GameActivity.period;
         }
         poop++;
         if (poop > 10000) {
@@ -123,14 +123,14 @@ class Egg extends Thing {
     }
 
     void update(World map) {
-        if (!anim.play && Rand.RandInt(0, 100) < 20*(GameLoop.period/1000f)) {
+        if (!anim.play && Rand.RandInt(0, 100) < 20*(GameActivity.period/1000f)) {
             anim.play = true;
         }
-        age += GameLoop.period;
+        age += GameActivity.period;
         if (age > hatchAge) {
             // hatch
             map.removeThing(this);
-            map.add(new Blob(), x, y);
+            map.add(new Blob(), x(), y());
         }
     }
 

@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
@@ -24,28 +23,29 @@ import android.view.ScaleGestureDetector;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Timer;
 
 public class GameActivity extends Activity{
 
     ConstraintLayout lay;
     static Paint red, black;
-    float x = -1, y = -1, px = -1, py = -1, scale = 1;
-    static float topOff = 0;
     CustomView view;
     Timer timer;
-    Rect size;
-    Bitmap bm;
+    Rect screenSize;
     final String CHANNEL_ID = "01", channel_name = "ch1", channel_desc = "test channel";
     Canvas canvas;
     Matrix mat, idmat;
-    Gestures g;
     GestureDetectorCompat gdc;
     ScaleGestureDetector sgd;
+    GameGesture controls;
     Display d;
     AndroidDisplay displayAdapter;
+    DepthDisplay depthDisplay;
     PetGame game;
-    DepthDisplay dc;
+    static int period = 25;
+
 
 
     @Override
@@ -56,10 +56,10 @@ public class GameActivity extends Activity{
         setContentView(view);
 
         d = getWindowManager().getDefaultDisplay();
-        size = new Rect();
-        d.getRectSize(size);
+        screenSize = new Rect();
+        d.getRectSize(screenSize);
 
-        Log.i("sizes: " ,size.top + " " + size.bottom + " " + size.left + " " + size.right);
+        Log.i("sizes: " , screenSize.top + " " + screenSize.bottom + " " + screenSize.left + " " + screenSize.right);
 
         red = new Paint();
         red.setARGB(255, 255, 0, 0);
@@ -70,9 +70,8 @@ public class GameActivity extends Activity{
         black.setFilterBitmap(false);
 
         // gesture setup
-        g = new Gestures();
-        gdc = new GestureDetectorCompat(this, g);
-        sgd = new ScaleGestureDetector(this, new ScaleGesture());
+        controls = new GameGesture();
+
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             CharSequence name = channel_name;
@@ -97,59 +96,73 @@ public class GameActivity extends Activity{
 
         Log.d("Setup", "staring setup");
         Assets.init(getResources());
-        Log.d("Setup", "loaded resources");
+        Log.d("Setup", "finished loading resources");
 
-        timer = new Timer();
-        timer.schedule(new GameLoop(this), 0, GameLoop.period);
+        game = new PetGame();
+        Log.d("display height ", " " + d.getHeight() +" " + view.getHeight() + " " + view.getTop());
+        depthDisplay = new DepthDisplay();
+        displayAdapter = new AndroidDisplay(16, d.getWidth(), d.getHeight(), 0);
+
         mat = new Matrix();
         mat.setScale(3, 3);
         idmat = new Matrix();
         idmat.setScale(5, 5);
-        idmat.preTranslate(0, topOff/5);
+        idmat.preTranslate(0, displayAdapter.topIn/5);
 
-        game = new PetGame();
-        Log.d("display height ", " " + d.getHeight() +" " + view.getHeight() + " " + view.getTop());
-        dc = new DepthDisplay();
-        displayAdapter = new AndroidDisplay(16);
+        new Thread(() -> {
+
+            LocalTime start;
+            LocalTime end = LocalTime.now();
+            long frameTime;
+
+            while(true) {
+                start = end;
+                this.draw();
+                end = LocalTime.now();
+                frameTime = ChronoUnit.MILLIS.between(start, end);
+                long ytime = period - frameTime;
+                // Log.d("Time", "" + ytime);
+                try {
+                    if (ytime > 0)
+                        Thread.currentThread().wait(ytime);
+                } catch (Exception e) {
+                }
+            }
+        }).start();
+
     }
 
     public void draw() {
+        controls.update();
         if (view.surface.getSurface().isValid()) {
             canvas = view.surface.lockCanvas();
 
             if (canvas != null) {
                 canvas.setMatrix(mat);
-                dc.canvas = canvas;
+                depthDisplay.display = displayAdapter;
                 displayAdapter.canvas = canvas;
                 // size = canvas.getClipBounds();
                 // Log.d("canvas clip ", " "  +size.top + " " + size.bottom + " " + size.left + " " + size.right);
-                topOff = d.getHeight() - canvas.getHeight();
+                displayAdapter.topIn = d.getHeight() - canvas.getHeight();
                 canvas.drawColor(Color.BLACK);
-                game.drawEnv(displayAdapter);
-                // dc.drawQ();
-                // dc.clearQ();
+                game.drawEnv(depthDisplay);
+                depthDisplay.drawQ();
+                depthDisplay.clearQ();
 
-                canvas.setMatrix(idmat);
+                // canvas.setMatrix(idmat);
                 game.drawUI(displayAdapter);
-                // canvas.drawCircle(x , y - (d.getHeight() - canvas.getHeight()), 20, red);
-                // dc.drawQ();
-                // dc.clearQ();
+
                 view.surface.unlockCanvasAndPost(canvas);
             }
         }
     }
 
-    public boolean onTouchEvent(MotionEvent e){
 
-        this.gdc.onTouchEvent(e);
-        this.sgd.onTouchEvent(e);
-        return super.onTouchEvent(e);
-    }
 
     float[] convertScreenToGame(float x, float y){
         float[] f2 = new float[9];
         mat.getValues(f2);
-        float[] f = {(x - f2[2])/16, (y - f2[5]- topOff)/16};
+        float[] f = {(x - f2[2])/16, (y - f2[5]- displayAdapter.topIn)/16};
 
         Matrix inv = new Matrix();
         mat.invert(inv);
@@ -157,6 +170,17 @@ public class GameActivity extends Activity{
         return f;
 
     }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent e){
+         // gdc.onTouchEvent(e);
+         // sgd.onTouchEvent(e);
+         controls.onTouchEvent(e);
+        return true;// super.onTouchEvent(e);
+
+    }
+
+
 
     public class CustomView extends SurfaceView {
 
@@ -169,60 +193,77 @@ public class GameActivity extends Activity{
 
     }
 
-    private  class Gestures extends GestureDetector.SimpleOnGestureListener{
+    class GameGesture extends Gesture {
 
-
-        @Override
-        public boolean onDown(MotionEvent e){
-
-            return true;
+        void singleTapConfirmed(float x, float y){
+            float[] f = convertScreenToGame(x, y);
+            game.select(f[0], f[1]);
         }
 
-        @Override
-        public boolean onSingleTapConfirmed(MotionEvent e){
-            Log.d("Gesture", "tap confirmed");
+        void longPressConfirmed(float x, float y){
+
+        }
+
+        void doubleTapConfirmed(MotionEvent e){
             float[] f = convertScreenToGame(e.getX(), e.getY());
-            game.press((int)f[0], (int)f[1]);
-            return true;
+            game.pickup(f[0], f[1]);
         }
 
-        @Override
-        public boolean onScroll(MotionEvent e1, MotionEvent e2, float d1, float d2){
-            mat.postTranslate(-d1, -d2);
-//            map.offsetMap(-d1/scale, -d2/scale);
-            return true;
+        void doubleTapRelease(float x, float y){
+            float[] f = convertScreenToGame(x, y);
+            game.drop(f[0], f[1]);
         }
 
-        @Override
-        public boolean onDoubleTap(MotionEvent e){
+        void dragStart(MotionEvent e){
 
-            return true;
         }
 
-        @Override
-        public void onLongPress(MotionEvent e){
-            float[] f = convertScreenToGame(e.getX(), e.getY());
-            game.longPress((int)f[0], (int)f[1]);
+        void drag(float x, float y){
+            float[] f = convertScreenToGame(x, y);
+            game.setHeldPosition(f[0], f[1]);
         }
 
+        void dragEnd(float x, float y){
+            float[] f = convertScreenToGame(x, y);
+            game.drop(f[0], f[1]);
+        }
+
+        void scale(Vec2<Float> p1, Vec2<Float> p2, Vec2<Float> n1, Vec2<Float> n2){
+            // find the centres of the touch pairs
+            Vec2<Float> pmid = new Vec2((p1.x + p2.x)/2, (p1.y + p2.y)/2);
+            Vec2<Float> nmid = new Vec2((n1.x + n2.x)/2, (n1.y + n2.y)/2);
+
+            // translations
+            float xmd = nmid.x - pmid.x;
+            float ymd = nmid.y - pmid.y;
+
+            // scales
+            float px = p2.x -p1.x;
+            float py = p2.y - p1.y;
+            float psize = (float)Math.sqrt((px*px) + (py*py));
+
+            float nx = n2.x -n1.x;
+            float ny = n2.y - n1.y;
+            float nsize = (float)Math.sqrt((nx*nx) + (ny*ny));
+
+            float scale = nsize/psize;
+
+            // apply changes
+            mat.postTranslate(-nmid.x, -nmid.y);
+            mat.postScale(scale, scale);
+            mat.postTranslate(nmid.x, nmid.y);
+            mat.postTranslate(nmid.x-pmid.x, nmid.y - pmid.y);
+
+        }
+
+        void scroll(Vec2<Float> prev, Vec2<Float> next){
+
+            mat.postTranslate(next.x - prev.x, next.y - prev.y);
+        }
     }
 
-    private class ScaleGesture extends ScaleGestureDetector.SimpleOnScaleGestureListener{
 
-        @Override
-        public boolean onScale(ScaleGestureDetector d){
-            Log.d("ScaleGesture", "onScale called");
-//            float xs = canvas.getWidth()/2*scale;
-//            float ys = canvas.getHeight()/2*scale;
-//            mat.postTranslate(-xs, -ys);
-//            scale *= d.getScaleFactor();
-            mat.preScale(d.getScaleFactor(), d.getScaleFactor());
-//            xs = canvas.getWidth()/2*scale;
-//            ys = canvas.getHeight()/2*scale;
-//            mat.postTranslate(xs, ys);
-            return true;
-        }
-    }
+
 }
 
 
@@ -235,22 +276,39 @@ class Rand{
 
 }
 
-class Vec2{
-    int x, y;
-    Vec2(int x, int y){
+class Vec2<T>{
+    T x, y;
+    Vec2(T x, T y){
         this.x = x;
         this.y = y;
     }
-    Vec2(){
-        this(0, 0);
+
+    void set(T x, T y){
+        this.x = x;
+        this.y = y;
+    }
+
+    void set(Vec2<T> a){
+        x = a.x;
+        y = a.y;
+
+    }
+
+    static float distSq(Vec2<Float> a, Vec2<Float> b){
+        float x = a.x - b.x;
+        float y = a.y - b.y;
+
+        return x*x + y*y;
     }
 }
 
 class A{
 
     static boolean inRange(Object[][] arr, int x, int y) {
-        if (x < 0 || y < 0 || x > arr.length -1 || y > arr[x].length -1)
-            return false;
-        return true;
+        return !(x < 0 || y < 0 || x > arr.length -1 || y > arr[x].length -1);
+    }
+
+    static boolean inRange(Object[] arr, int idx){
+        return !(idx < 0 || idx > arr.length-1);
     }
 }
