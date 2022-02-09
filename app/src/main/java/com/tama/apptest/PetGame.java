@@ -7,7 +7,6 @@ public class PetGame {
     World map;
     Thing held, selected;
     Pet target;
-    Inventory inv;
     Vec2<Float> heldPos;
 
     PetGame(){
@@ -27,7 +26,6 @@ public class PetGame {
 
             }
         }
-        inv = new Inventory();
         heldPos = new Vec2<>(0f, 0f);
     }
 
@@ -39,58 +37,17 @@ public class PetGame {
 
     void drawUI(DisplayAdapter d){
 
-        // inv.display(d);
         if (held != null)
             d.displayManual(held.sprite, heldPos.x, heldPos.y);
 
 
     }
 
-    // the tap location in game coords
-    void singlePress(float x, float y){
-        Thing t = map.checkCollision(x, y);
-        if (t == null){
-            singlePress((int)x, (int)y);
-        }
-    }
-
-    // the tap in array coords
-    void singlePress(int x, int y){
-        // Log.d("game press ", " " +x+ " " + y);
-        //  target.acts.add(new GoTo(x, y, 0));
-        setSelected(x, y);
-    }
-
-    void longPress(int x, int y){
-        // Log.d("PetGame", "longpress");
-        if (held != null)
-            held = held.apply(map, x, y);
-    }
-
-    void doublePress(int x, int y){
-
-    }
-
-    // x and y are distance dragged
-    void drag(float x, float y){
-        heldPos.x +=x;
-        heldPos.y +=y;
-    }
-
-    void releaseHeld(int x, int y){
-        if (held != null){
-            int ax = held.x(), ay = held.y();
-            held = map.swap(held, x, y);
-            map.add(held, ax, ay);
-            held = null;
-        }
-    }
-
     void setHeldPosition(float x, float y){
-        if (held != null){
-            heldPos.x = x;
-            heldPos.y = y;
-        }
+
+        heldPos.x = x*16;
+        heldPos.y = y*16;
+
     }
 
     void setHeld(int x, int y){
@@ -108,6 +65,31 @@ public class PetGame {
             setHeld(selected.x(), selected.y());
         else
             held = null;
+    }
+
+    void pickup(float x, float y){
+        if (held != null) {
+            heldPos.set(x, y);
+            return;
+        }
+        Thing t = map.checkCollision(x, y);
+        if (t != null){
+            held = map.takeThing(t.x(), t.y());
+            held.pickedUp();
+            setHeldPosition(x, y);
+        }
+    }
+
+    void drop(float x, float y){
+        if (map.getThing((int)x, (int)y) == null){
+            map.add(held, (int)x, (int)y);
+            held = null;
+        }
+    }
+
+    void select(float x, float y){
+        Thing t = map.checkCollision(x, y);
+        selected = t;
     }
 
 

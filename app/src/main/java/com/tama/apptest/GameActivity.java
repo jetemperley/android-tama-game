@@ -4,14 +4,12 @@ import android.app.Activity;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.Build;
-import android.support.annotation.RequiresApi;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
@@ -25,7 +23,6 @@ import android.view.ScaleGestureDetector;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
-import java.time.Instant;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Timer;
@@ -42,7 +39,7 @@ public class GameActivity extends Activity{
     Matrix mat, idmat;
     GestureDetectorCompat gdc;
     ScaleGestureDetector sgd;
-    GameControls controls;
+    GameGesture controls;
     Display d;
     AndroidDisplay displayAdapter;
     DepthDisplay depthDisplay;
@@ -73,9 +70,7 @@ public class GameActivity extends Activity{
         black.setFilterBitmap(false);
 
         // gesture setup
-        gdc = new GestureDetectorCompat(this, new Gestures());
-        sgd = new ScaleGestureDetector(this, new ScaleGesture());
-        controls = new GameControls();
+        controls = new GameGesture();
 
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -126,7 +121,7 @@ public class GameActivity extends Activity{
                 end = LocalTime.now();
                 frameTime = ChronoUnit.MILLIS.between(start, end);
                 long ytime = period - frameTime;
-                Log.d("Time", "" + ytime);
+                // Log.d("Time", "" + ytime);
                 try {
                     if (ytime > 0)
                         Thread.currentThread().wait(ytime);
@@ -138,6 +133,7 @@ public class GameActivity extends Activity{
     }
 
     public void draw() {
+        controls.update();
         if (view.surface.getSurface().isValid()) {
             canvas = view.surface.lockCanvas();
 
@@ -197,119 +193,77 @@ public class GameActivity extends Activity{
 
     }
 
-    class GameControls {
-        boolean down = false;
-        LocalTime downtime;
+    class GameGesture extends Gesture {
 
-        public boolean onTouchEvent(MotionEvent e){
+        void singleTapConfirmed(float x, float y){
+            float[] f = convertScreenToGame(x, y);
+            game.select(f[0], f[1]);
+        }
 
+        void longPressConfirmed(float x, float y){
+
+        }
+
+        void doubleTapConfirmed(MotionEvent e){
             float[] f = convertScreenToGame(e.getX(), e.getY());
+            game.pickup(f[0], f[1]);
+        }
 
-            if (e.getAction() == MotionEvent.ACTION_DOWN){
-                game.setSelected((int)f[0], (int)f[1]);
-                down = true;
-                downtime = LocalTime.now();
-                Log.d("Game Controld", "down");
+        void doubleTapRelease(float x, float y){
+            float[] f = convertScreenToGame(x, y);
+            game.drop(f[0], f[1]);
+        }
 
-            } else if (e.getAction() == MotionEvent.ACTION_MOVE){
-                if (down){
-                    // the press was dragged for the first time
-                    game.setSelectedAsHeld();
-                    game.setHeldPosition(f[0]*16, f[1]*16);
-
-                    if (false){
-                        // if the move is near the edge, move the world
-                    }
-                    down = false;
-                }
-                // Log.d("Game Controld", "move");
-                game.setHeldPosition(f[0]*16, f[1]*16);
-
-            } else if (e.getAction() == MotionEvent.ACTION_UP) {
-                if (down){
-                    // there was a regular press
-                    game.singlePress((int)f[0], (int)f[1]);
-                }
-                game.releaseHeld((int)f[0], (int)f[1]);
-                down = false;
-                Log.d("Game Controls", "up");
-            }
-            return true;
+        void dragStart(MotionEvent e){
 
         }
 
-        void singleTapConfirmed(){
+        void drag(float x, float y){
+            float[] f = convertScreenToGame(x, y);
+            game.setHeldPosition(f[0], f[1]);
+        }
+
+        void dragEnd(float x, float y){
+            float[] f = convertScreenToGame(x, y);
+            game.drop(f[0], f[1]);
+        }
+
+        void scale(Vec2<Float> p1, Vec2<Float> p2, Vec2<Float> n1, Vec2<Float> n2){
+            // find the centres of the touch pairs
+            Vec2<Float> pmid = new Vec2((p1.x + p2.x)/2, (p1.y + p2.y)/2);
+            Vec2<Float> nmid = new Vec2((n1.x + n2.x)/2, (n1.y + n2.y)/2);
+
+            // translations
+            float xmd = nmid.x - pmid.x;
+            float ymd = nmid.y - pmid.y;
+
+            // scales
+            float px = p2.x -p1.x;
+            float py = p2.y - p1.y;
+            float psize = (float)Math.sqrt((px*px) + (py*py));
+
+            float nx = n2.x -n1.x;
+            float ny = n2.y - n1.y;
+            float nsize = (float)Math.sqrt((nx*nx) + (ny*ny));
+
+            float scale = nsize/psize;
+
+            // apply changes
+            mat.postTranslate(-nmid.x, -nmid.y);
+            mat.postScale(scale, scale);
+            mat.postTranslate(nmid.x, nmid.y);
+            mat.postTranslate(nmid.x-pmid.x, nmid.y - pmid.y);
 
         }
 
-        void doubleTapConfirmed(){
+        void scroll(Vec2<Float> prev, Vec2<Float> next){
 
-        }
-
-        void drag(){
-
-        }
-
-        void scale(){
-
+            mat.postTranslate(next.x - prev.x, next.y - prev.y);
         }
     }
 
-    class Gestures extends GestureDetector.SimpleOnGestureListener{
-
-        boolean down = false;
-
-        @Override
-        public boolean onDown(MotionEvent e){
-            Log.d("Gesture", "down");
-            down = true;
-            return true;
-        }
 
 
-        @Override
-        public boolean onSingleTapConfirmed(MotionEvent e){
-            Log.d("Gesture", "single tap");
-            float[] f = convertScreenToGame(e.getX(), e.getY());
-            game.singlePress((int)f[0], (int)f[1]);
-            return true;
-        }
-
-        @Override
-        public boolean onScroll(MotionEvent e1, MotionEvent e2, float d1, float d2){
-            Log.d("Gesture", "scroll");
-            float[] f = convertScreenToGame(e2.getX(), e2.getY());
-            game.setHeldPosition(f[0]*16, f[1]*16);
-            return true;
-        }
-
-        @Override
-        public boolean onDoubleTap(MotionEvent e){
-            Log.d("Gesture", "double tap");
-            float[] f = convertScreenToGame(e.getX(), e.getY());
-            game.doublePress((int)f[0], (int)f[1]);
-            return true;
-        }
-
-        @Override
-        public void onLongPress(MotionEvent e){
-            Log.d("Gesture", "long press");
-            float[] f = convertScreenToGame(e.getX(), e.getY());
-            game.longPress((int)f[0], (int)f[1]);
-        }
-
-    }
-
-
-    private class ScaleGesture extends ScaleGestureDetector.SimpleOnScaleGestureListener{
-
-        @Override
-        public boolean onScale(ScaleGestureDetector d){
-            Log.d("ScaleGesture", "scale");
-            mat.preScale(d.getScaleFactor(), d.getScaleFactor());
-            return true;
-        }
-    }
 }
 
 
@@ -332,6 +286,19 @@ class Vec2<T>{
     void set(T x, T y){
         this.x = x;
         this.y = y;
+    }
+
+    void set(Vec2<T> a){
+        x = a.x;
+        y = a.y;
+
+    }
+
+    static float distSq(Vec2<Float> a, Vec2<Float> b){
+        float x = a.x - b.x;
+        float y = a.y - b.y;
+
+        return x*x + y*y;
     }
 }
 

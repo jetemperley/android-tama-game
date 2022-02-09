@@ -11,6 +11,10 @@ abstract class Thing extends WorldObject {
         flat = false;
     }
 
+    void pickedUp(){
+
+    }
+
     boolean isItem(){
         return false;
     }

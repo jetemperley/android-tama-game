@@ -16,7 +16,7 @@ public class World {
         for (int x = 0; x < celln; x++) {
             for (int y = 0; y < celln; y++) {
                 setTile(x, y, new Grass(true));
-                add(new Poo(), x, y);
+                // add(new Poo(), x, y);
             }
         }
 
@@ -173,9 +173,11 @@ public class World {
 
         for (int xi = -1; xi < 2; xi++){
             for (int yi = -1; yi < 2; yi++){
-                Thing t = tile[(int)x+xi][(int)y+yi].getThing();
-                if (t != null && t.contains(x, y)) {
-                    return t;
+                if (A.inRange(tile, (int)x+xi, (int)y+yi)) {
+                    Thing t = tile[(int) x + xi][(int) y + yi].getThing();
+                    if (t != null && t.contains(x, y)) {
+                        return t;
+                    }
                 }
             }
         }
