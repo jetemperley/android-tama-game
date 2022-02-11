@@ -1,6 +1,6 @@
 package com.tama.apptest;
 
-abstract class Tile  {
+abstract class Tile implements java.io.Serializable {
 
     WorldObject loc;
     boolean visible;
@@ -100,7 +100,7 @@ class LongGrass extends Tile{
 class DynTile extends Tile {
     // considers the surrounding tiles to create a dynamic tile graphic
     static SpriteSheet sheet;
-    Displayable[][] parts;
+    transient Displayable[][] parts;
 
     // img is 4 px sq 4*3 sprite sheet of possible configurations
     DynTile(World m) {
@@ -112,7 +112,9 @@ class DynTile extends Tile {
     }
 
     void loadAssets(){
-        sheet = Assets.sheets.get(R.drawable.sheet_8_watersimp);
+
+        if (sheet == null)
+            sheet = Assets.sheets.get(R.drawable.sheet_8_watersimp);
     }
 
     public TileType type(){

@@ -2,7 +2,7 @@ package com.tama.apptest;
 
 import android.util.Log;
 
-public class PetGame {
+public class PetGame implements java.io.Serializable {
 
     World map;
     Thing held;
@@ -27,7 +27,7 @@ public class PetGame {
 
     void drawUI(DisplayAdapter d){
         if (held != null)
-            d.displayUI(held);
+            d.displayUI(held.loc);
 
     }
 

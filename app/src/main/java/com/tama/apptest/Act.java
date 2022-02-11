@@ -60,13 +60,13 @@ class GoTo extends ActSequence {
 
     public ActState update(World m, Pet p) {
         if (status == ActState.start){
-            Vec2[] path = new Path(dist).findPath(m, p.x, p.y, x, y);
+            Vec2[] path = new Path(dist).findPath(m, p.loc.x, p.loc.y, x, y);
             if (path == null) {
                 Log.d("Act: ", "path was null");
                 return ActState.failed;
             }
 
-            int xi = p.x, yi = p.y;
+            int xi = p.loc.x, yi = p.loc.y;
             for (Vec2 s : path){
                 Log.d("goto path: ", (s.x - xi) + " " + (s.y - yi));
                 acts.add(new Step(s.x - xi, s.y - yi));
@@ -118,13 +118,13 @@ class Step implements Act {
 
     boolean step(World m, Pet p, int X, int Y) {
 
-        if (m.canStepOnto(p.x, p.y, p.x + X, p.y + Y)) {
+        if (m.canStepOnto(p.loc.x, p.loc.y, p.loc.x + X, p.loc.y + Y)) {
             p.setDir(X, Y);
-            m.removeThing(p.x, p.y);
-            m.add(p, p.x + X, p.y + Y);
+            m.removeThing(p.loc.x, p.loc.y);
+            m.add(p, p.loc.x + X, p.loc.y + Y);
             p.anim.play();
-            p.xoff = -X * 100;
-            p.yoff = -Y * 100;
+            p.loc.xoff = -X * 100;
+            p.loc.yoff = -Y * 100;
             return true;
         }
         return false;
@@ -132,29 +132,29 @@ class Step implements Act {
 
     boolean updateOffsets(Pet p) {
         // println("updating offsets");
-        if (p.xoff != 0) {
-            if (p.xoff < 0) {
-                p.xoff += p.speed;
-                if (p.xoff > 0)
-                    p.xoff = 0;
+        if (p.loc.xoff != 0) {
+            if (p.loc.xoff < 0) {
+                p.loc.xoff += p.speed;
+                if (p.loc.xoff > 0)
+                    p.loc.xoff = 0;
             } else {
-                p.xoff -= p.speed;
-                if (p.xoff < 0)
-                    p.xoff = 0;
+                p.loc.xoff -= p.speed;
+                if (p.loc.xoff < 0)
+                    p.loc.xoff = 0;
             }
-        } else if (p.yoff != 0) {
-            if (p.yoff < 0) {
-                p.yoff += p.speed;
-                if (p.yoff > 0)
-                    p.yoff = 0;
+        } else if (p.loc.yoff != 0) {
+            if (p.loc.yoff < 0) {
+                p.loc.yoff += p.speed;
+                if (p.loc.yoff > 0)
+                    p.loc.yoff = 0;
             } else {
-                p.yoff -= p.speed;
-                if (p.yoff < 0)
-                    p.yoff = 0;
+                p.loc.yoff -= p.speed;
+                if (p.loc.yoff < 0)
+                    p.loc.yoff = 0;
             }
         }
 
-        if (p.xoff == 0 && p.yoff == 0) {
+        if (p.loc.xoff == 0 && p.loc.yoff == 0) {
             return true;
             // println("step complete");
         }

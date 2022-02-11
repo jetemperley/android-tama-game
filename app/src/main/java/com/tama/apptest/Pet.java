@@ -8,7 +8,7 @@ abstract class Pet extends Thing{
     State state;
     String name;
     int speed = 3;
-    Movement moves;
+    // Movement moves;
     ArrayList<Act> acts;
     // this pet animator is the same object as Displayable.sprite;
     Animator anim;
@@ -21,17 +21,21 @@ abstract class Pet extends Thing{
 
 
     Pet() {
-        anim = new Animator(null);
-        loadAssets();
-        anim.play();
-        anim.repeat(true);
+        super();
         state = new Wander();
         acts = new ArrayList<Act>();
         name = "";
     }
 
-    void loadAssets(){
-        anim.sheet = Assets.sheets.get(R.drawable.sheet_16_blob);
+    Displayable getAsset(){
+        if (anim == null) {
+            anim = new Animator(Assets.sheets.get(R.drawable.sheet_16_blob));
+            anim.play();
+            anim.repeat(true);
+        } else {
+            anim.sheet = Assets.sheets.get(R.drawable.sheet_16_blob);
+        }
+        return anim;
     }
 
     void update(World map) {
@@ -98,15 +102,19 @@ abstract class Pet extends Thing{
 
 class Blob extends Pet {
 
-    void loadAssets(){
+    Displayable getAsset(){
+        super.getAsset();
         anim.sheet = Assets.sheets.get(R.drawable.sheet_16_blob);
+        return anim;
     }
 }
 
 class Walker extends Pet {
 
-    void loadAssets(){
+    Displayable getAsset(){
+        super.getAsset();
         anim.sheet = Assets.sheets.get(R.drawable.sheet_16_walker);
+        return anim;
     }
 }
 
@@ -124,8 +132,16 @@ class Egg extends Thing {
 
     }
 
-    void loadAssets(){
-        anim.sheet = Assets.sheets.get(R.drawable.sheet_16_egg);
+    Displayable getAsset(){
+
+        if (anim == null) {
+            anim = new Animator(Assets.sheets.get(R.drawable.sheet_16_egg));
+            anim.play();
+            anim.repeat(true);
+        } else {
+            anim.sheet = Assets.sheets.get(R.drawable.sheet_16_blob);
+        }
+        return anim;
     }
 
     void update(World map) {
@@ -136,7 +152,7 @@ class Egg extends Thing {
         if (age > hatchAge) {
             // hatch
             map.removeThing(this);
-            map.add(new Blob(), x, y);
+            map.add(new Blob(), loc.x, loc.y);
         }
     }
 

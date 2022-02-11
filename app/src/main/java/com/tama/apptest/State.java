@@ -5,7 +5,6 @@ interface State{
 
     void update(Pet p);
 
-
 }
 
 class Wander implements State{

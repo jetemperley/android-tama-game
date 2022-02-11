@@ -1,20 +1,25 @@
 package com.tama.apptest;
+import android.graphics.drawable.Drawable;
 import android.util.Log;
 
 enum Type {
     food, pet, tree, undefined, junk
 }
-abstract class Thing extends WorldObject{
+abstract class Thing implements java.io.Serializable{
 
     WorldObject loc;
 
     Thing() {
         loc = new WorldObject();
-        loadAssets();
+        loc.sprite = getAsset();
+    }
+    void display(DisplayAdapter d){
+        d.displayWorld(loc);
     }
 
-    void loadAssets(){
-        loc.sprite = Assets.sprites.get(R.drawable.static_poop);
+    Displayable getAsset(){
+
+        return Assets.sprites.get(R.drawable.static_poop);
     }
 
     boolean isItem(){
@@ -35,8 +40,11 @@ abstract class Thing extends WorldObject{
         return true;
     }
 
-    boolean isColliding(float X, float Y) {
-        if (X > x + (xoff/100f) && X < x + (xoff/100f) + 1 && Y > y + (yoff/100f) && Y < y + (yoff/100f) + 1)
+    boolean isColliding(float x, float y) {
+        if (x > loc.x + (loc.xoff/100f)
+                && x < loc.x + (loc.xoff/100f) + 1
+                && y > loc.y + (loc.yoff/100f)
+                && y < loc.y + (loc.yoff/100f) + 1)
             return true;
         return false;
     }
@@ -54,16 +62,16 @@ abstract class Thing extends WorldObject{
 
 class Rock extends Thing {
 
-    void loadAssets(){
-        loc.sprite = Assets.sprites.get(R.drawable.static_rock);
+    Displayable getAsset(){
+        return Assets.sprites.get(R.drawable.static_rock);
     }
 
 }
 
 class Poo extends Thing {
 
-    void loadAssets(){
-        loc.sprite = Assets.sprites.get(R.drawable.static_poop);
+    Displayable getAsset(){
+        return Assets.sprites.get(R.drawable.static_poop);
     }
     boolean isItem(){
         return true;
@@ -71,12 +79,12 @@ class Poo extends Thing {
 
 }
 
-class Tree extends Thing {
+class Tree extends Thing implements java.io.Serializable{
     int level = 0;
     int growth = 0;
 
-    void loadAssets(){
-        loc.sprite = Assets.sprites.get(R.drawable.static_tree);
+    Displayable getAsset(){
+        return Assets.sprites.get(R.drawable.static_tree);
     }
 
 
@@ -85,7 +93,7 @@ class Tree extends Thing {
             growth ++;
         } else if (growth > 1000-2 && level < 2){
             level++;
-            sprite = Assets.sprites.get(16+level);
+            loc.sprite = Assets.sprites.get(16+level);
             growth = 0;
         }
         Log.d("Tree", "" + growth);
@@ -100,8 +108,8 @@ class Tree extends Thing {
 
 class Seed extends Thing{
 
-    void loadAssets(){
-        loc.sprite = Assets.sprites.get(R.drawable.static_seed);
+    Displayable getAsset(){
+        return Assets.sprites.get(R.drawable.static_seed);
     }
 
     boolean isItem(){
@@ -137,8 +145,8 @@ class Seed extends Thing{
 
 class Wood extends Thing{
 
-    void loadAssets(){
-        loc.sprite = Assets.sprites.get(R.drawable.static_log);
+    Displayable getAsset(){
+        return Assets.sprites.get(R.drawable.static_log);
     }
 
     boolean isItem(){

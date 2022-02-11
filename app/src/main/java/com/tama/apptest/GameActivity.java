@@ -24,6 +24,9 @@ import android.view.ScaleGestureDetector;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.ObjectOutputStream;
 import java.util.Timer;
 
 public class GameActivity extends Activity{
@@ -112,6 +115,8 @@ public class GameActivity extends Activity{
         displayAdapter = new AndroidDisplay(16);
     }
 
+
+
     public void draw() {
         if (view.surface.getSurface().isValid()) {
             canvas = view.surface.lockCanvas();
@@ -135,6 +140,22 @@ public class GameActivity extends Activity{
                 // dc.clearQ();
                 view.surface.unlockCanvasAndPost(canvas);
             }
+        }
+    }
+
+    @Override
+    public void onStop(){
+        super.onStop();
+        Context context = getApplicationContext();
+        File dir = context.getFilesDir();
+
+        try {
+            FileOutputStream fos = context.openFileOutput("data.ser", Context.MODE_PRIVATE);
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
+            oos.writeObject(game);
+            Log.d("GameActivity", "serialization complete");
+        } catch (Exception e){
+            Log.d("GameActivity", "serialisation problem");
         }
     }
 

@@ -1,12 +1,11 @@
 package com.tama.apptest;
 import android.util.Log;
 
-public class World {
+public class World implements java.io.Serializable{
 
     private Tile[][] tile;
     int celln, openSpace;
     float xoff, yoff;
-    DepthDisplay canvas;
     Pet target;
 
     World(int size) {
@@ -53,14 +52,14 @@ public class World {
 
         if (tile[x][y].isEmpty()) {
             tile[x][y].set(t);
-            t.x = x;
-            t.y = y;
+            t.loc.x = x;
+            t.loc.y = y;
         }
     }
 
     void removeThing(Thing t) {
-        if (tile[t.x][t.y].thing == t)
-            tile[t.x][t.y].takeThing();
+        if (tile[t.loc.x][t.loc.y].thing == t)
+            tile[t.loc.x][t.loc.y].takeThing();
     }
 
     void removeThing(int x, int y) {
