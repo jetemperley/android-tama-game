@@ -43,7 +43,7 @@ class Path {
             if (curr.dest == dist)
                 break;
 
-            for (Vec2 v : step) {
+            for (Vec2<Integer> v : step) {
                 if (m.canStepOnto(ax, ay, tx + v.x, ty+v.y) && visited[tx+v.x][ty+v.y] == null) {
                     n = new Node(tx+v.x, ty+v.y, curr.dist + 1, Math.abs(bx-tx-v.x) + Math.abs(by-ty-v.y));
                     que.add(n);
@@ -55,17 +55,17 @@ class Path {
         if (curr == null || curr.dest != dist)
             return null;
 
-        Vec2[] path = new Vec2[visited[curr.x][curr.y].dist];
+        Vec2<Integer>[] path = new Vec2[visited[curr.x][curr.y].dist];
         n = visited[curr.x][curr.y];
 
         for (int i = path.length-1; i > -1; i--) {
 
-            path[i] = new Vec2(n.x, n.y);
+            path[i] = new Vec2<Integer>(n.x, n.y);
             // println(n.x, n.y);
             tx = n.x;
             ty = n.y;
 
-            for (Vec2 v : step) {
+            for (Vec2<Integer> v : step) {
                 if (A.inRange(visited, tx + v.x, ty+v.y) &&  visited[tx + v.x][ty+v.y] != null && visited[tx + v.x][ty+v.y].dist < n.dist) {
                     n = visited[tx + v.x][ty+v.y];
                     break;

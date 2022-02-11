@@ -22,13 +22,13 @@ class Wander implements State{
                 waitTime = getRandWaitTime();
                 wait =false;
             } else {
-                Vec2 v = getRandDir();
+                Vec2<Integer> v = getRandDir();
                 p.acts.add(new Step(v.x, v.y));
                 wait = true;
             }
         } else {
 
-            waitTime -= GameLoop.period;
+            waitTime -= GameActivity.period;
         }
     }
 
@@ -36,9 +36,9 @@ class Wander implements State{
         return Rand.RandInt(0, 5000);
     }
 
-    Vec2 getRandDir(){
+    Vec2<Integer> getRandDir(){
         int i = Rand.RandInt(0, 4);
-        Vec2 out = new Vec2();
+        Vec2<Integer> out = new Vec2<>(0, 0);
 
         if (i == 0){
             out.x = -1;

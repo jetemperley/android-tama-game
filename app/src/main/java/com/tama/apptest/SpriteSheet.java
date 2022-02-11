@@ -51,7 +51,7 @@ class Animator implements Displayable, java.io.Serializable{
 
     public Bitmap getSprite() {
         if (play) {
-            animTime += GameLoop.period;
+            animTime += 25;
             if (isDone() && !repeat) {
                 cancelAnim();
             } else {

@@ -4,20 +4,26 @@ import java.util.TimerTask;
 public class GameLoop extends TimerTask {
 
     GameActivity g;
-    static int timer, period;
+    long timer;
+    int period;
     boolean running = true;
 
-    GameLoop(GameActivity g){
+    GameLoop(GameActivity g, int period){
         super();
         this.g = g;
         timer = 0;
-        period = 25;
+        this.period = period;
     }
 
     public void run(){
         while (running){
+            timer += period;
             g.draw();
-            timer+= period;
+
         }
+    }
+
+    public long runtime(){
+        return timer;
     }
 }

@@ -8,38 +8,30 @@ import java.util.PriorityQueue;
 
 public class DepthDisplay implements DisplayAdapter {
 
-    Canvas canvas;
-    PriorityQueue<DepthBitmap> draws;
+    DisplayAdapter display;
+    PriorityQueue<WorldObject> draws;
     boolean check = true;
 
     DepthDisplay() {
-        draws = new PriorityQueue<DepthBitmap>(200, new DBComp());
+        draws = new PriorityQueue<>(200, new DepthComp());
     }
 
     public void displayWorld(WorldObject t){
+        draws.add(t);
+    }
+    public void displayUI(Inventory t){
 
     }
-    public void displaySplit(WorldObject t){
-
-    }
-    public void displayUI(WorldObject t){
-
-    }
-    public void display(Displayable d, int x, int y, int xoff, int yoff){
-
-    }
-
-    void drawBitmap(Bitmap bm, float left, float top, float depth) {
-        draws.add(new DepthBitmap(bm, left, top, depth));
+    public void displayManual(Displayable d, float x, float y) {
 
     }
 
     void drawQ() {
-        if (canvas != null) {
-            DepthBitmap b;
+        if (display != null) {
+            WorldObject b;
             while (!draws.isEmpty()) {
                 b = draws.poll();
-                canvas.drawBitmap(b.bm, b.left, b.top, GameActivity.black);
+                display.displayWorld(b);
             }
         }
         check = false;
@@ -49,29 +41,16 @@ public class DepthDisplay implements DisplayAdapter {
         draws.clear();
     }
 
-    class DepthBitmap {
-
-        Bitmap bm;
-        float left;
-        float top;
-        float depth;
-
-        DepthBitmap(Bitmap bm, float left, float top, float depth) {
-            this.bm = bm;
-            this.left = left;
-            this.top = top;
-            this.depth = depth;
-        }
-
-    }
-
-    class DBComp implements Comparator<DepthBitmap> {
-        public int compare(DepthBitmap a, DepthBitmap b) {
-            if (a.depth > b.depth)
-                return 1;
-            if (a.depth < b.depth)
+    class DepthComp implements Comparator<WorldObject> {
+        public int compare(WorldObject a, WorldObject b) {
+            if (b.flat && a.flat)
+                return 0;
+            if (a.flat)
                 return -1;
-            return 0;
+            if (b.flat)
+                return 1;
+            return (a.y() + a.yoff/100f) > (b.y() + b.yoff/100f) ? 1 : -1;
         }
     }
+
 }

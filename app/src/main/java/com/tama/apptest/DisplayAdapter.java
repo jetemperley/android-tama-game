@@ -1,12 +1,12 @@
 package com.tama.apptest;
 import android.graphics.Canvas;
+import android.graphics.Matrix;
 import android.util.Log;
 
 public interface DisplayAdapter {
     void displayWorld(WorldObject t);
-    void displaySplit(WorldObject t);
-    void displayUI(WorldObject t);
-    void display(Displayable d, int x, int y, int xoff, int yoff);
+    void displayUI(Inventory t);
+    void displayManual(Displayable d, float x, float y);
 
 }
 
@@ -14,10 +14,17 @@ class AndroidDisplay implements DisplayAdapter {
 
     Canvas canvas;
     int cellSize;
-    int disXoff, disYoff;
+    int screenWidth, screenHeight;
+    int topIn;
+    private int xoff, yoff;
 
-    AndroidDisplay(int cellSize){
+    AndroidDisplay(int cellSize, int screenWidth, int screenHeight, int topIn){
+
         this.cellSize = cellSize;
+        this.screenHeight = screenHeight;
+        this.screenWidth = screenWidth;
+        this.topIn = topIn;
+
     }
 
     public void displayWorld(WorldObject t){
@@ -26,37 +33,38 @@ class AndroidDisplay implements DisplayAdapter {
             return;
         }
         canvas.drawBitmap( t.sprite.getSprite(),
-                t.x*cellSize + t.xoff*cellSize/100f,
-                t.y*cellSize + t.yoff*cellSize/100f,
-                GameActivity.black);
-    }
-
-    public void displaySplit(WorldObject t){
-        canvas.drawBitmap( t.sprite.getSprite(),
-                t.x*cellSize + t.xoff*cellSize/100f,
-                t.y*cellSize + t.yoff*cellSize/100f,
-                GameActivity.black);
-        canvas.drawBitmap( t.sprite.getSprite(),
-                t.x*cellSize + t.xoff*cellSize/100f,
-                t.y*cellSize + t.yoff*cellSize/(100f-50),
+                t.x()*cellSize + t.xoff*cellSize/100f,
+                t.y()*cellSize + t.yoff*cellSize/100f,
                 GameActivity.black);
     }
 
     // this needs to be completed
-    public void displayUI(WorldObject t){
-        // canvas.drawBitmap(t.sprite.getUISprite());
+    public void displayUI(Inventory inv){
+        Matrix mat = new Matrix();
+        // find the width of 1 inv space
+        float cell = screenWidth/inv.len();
+        mat.setScale(cell/cellSize, cell/cellSize);
+        canvas.setMatrix(mat);
+        for (int i = 0; i < inv.len(); i++){
+            Thing t = inv.get(i);
+            canvas.drawBitmap(Assets.sprites.get(R.drawable.static_inv).getSprite(), 0, 0, GameActivity.black);
+            if (t != null)
+                canvas.drawBitmap(t.sprite.getUISprite(), 0, 0, GameActivity.black);
+            mat.preTranslate(cellSize, 0);
+            canvas.setMatrix(mat);
+        }
     }
 
-    public void display(Displayable d, int x, int y, int xoff, int yoff){
-        canvas.drawBitmap(d.getSprite(),
-                x*cellSize + xoff*cellSize/100f,
-                y*cellSize + yoff*cellSize/100f,
-                GameActivity.black);
+    public void displayManual(Displayable d, float x, float y){
+        Matrix mat = canvas.getMatrix();
+        canvas.drawBitmap(d.getSprite(), x, y, GameActivity.black);
+
     }
 
     void offset(int x, int y){
-        disXoff += x;
-        disYoff += y;
+        xoff += x;
+        yoff += y;
     }
+
 
 }

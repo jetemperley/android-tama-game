@@ -22,9 +22,6 @@ public class World implements java.io.Serializable{
         }
 
 
-
-
-
     }
 
     void update() {
@@ -75,7 +72,7 @@ public class World implements java.io.Serializable{
     // TODO refactor this
     boolean canStepOnto(int px, int py, int x, int y) {
         // Log.d("Map", "" + px + " " + py);
-        Thing t = tile[px][py].thing;
+        Thing t = tile[px][py].getThing();
         if (isEmpty(x, y) && ((tile[x][y].type() == TileType.ground == t.canWalk()) || (tile[x][y].type() == TileType.water == t.canSwim())))
             return true;
         return false;
@@ -122,12 +119,12 @@ public class World implements java.io.Serializable{
             switch (type) {
                 case water:
                     Log.d("map", "set water");
-                    tile[x][y] = new DynTile(this);
+                    setTile(x, y, new DynTile());
                     break;
 
                 case ground:
                     Log.d("map", "set ground");
-                    tile[x][y] = new Grass();
+                    setTile(x, y, new Grass(true));
                     break;
             }
             tile[x][y].loc.set(x, y);
@@ -158,8 +155,38 @@ public class World implements java.io.Serializable{
 
     Thing getThing(int x, int y){
         if (A.inRange(tile, x, y))
-            return tile[x][y].thing;
+            return tile[x][y].getThing();
         return null;
+    }
+
+    void setTile(int x, int y, Tile t){
+        if (t == null)
+            return;
+        if (A.inRange(tile, x, y)) {
+            if (tile[x][y] != null) {
+                t.setThing(tile[x][y].takeThing());
+
+            }
+            tile[x][y] = t;
+            t.setPos(x, y);
+            updateDyn(x, y);
+        }
+    }
+
+    Thing checkCollision(float x, float y){
+
+        for (int xi = -1; xi < 2; xi++){
+            for (int yi = -1; yi < 2; yi++){
+                if (A.inRange(tile, (int)x+xi, (int)y+yi)) {
+                    Thing t = tile[(int) x + xi][(int) y + yi].getThing();
+                    if (t != null && t.contains(x, y)) {
+                        return t;
+                    }
+                }
+            }
+        }
+        return null;
+
     }
 }
 

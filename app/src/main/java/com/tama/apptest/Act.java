@@ -60,9 +60,9 @@ class GoTo extends ActSequence {
 
     public ActState update(World m, Pet p) {
         if (status == ActState.start){
-            Vec2[] path = new Path(dist).findPath(m, p.loc.x, p.loc.y, x, y);
+            Vec2<Integer>[] path = new Path(dist).findPath(m, p.loc.x(), p.loc.y(), x, y);
             if (path == null) {
-                Log.d("Act: ", "path was null");
+                Log.d("Act", "path was null");
                 return ActState.failed;
             }
 
@@ -75,7 +75,7 @@ class GoTo extends ActSequence {
             }
         }
         status = super.update(m, p);
-        Log.d("goto status: ", status + " ");
+        // Log.d("goto status: ", status + " ");
         return (status);
     }
 }
