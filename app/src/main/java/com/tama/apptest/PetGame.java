@@ -38,7 +38,7 @@ public class PetGame implements java.io.Serializable {
     void drawUI(DisplayAdapter d){
 
         if (held != null)
-            d.displayUI(held.loc);
+            d.displayManual(held.loc.sprite, heldPos.x, heldPos.y);
 
     }
 
@@ -61,7 +61,7 @@ public class PetGame implements java.io.Serializable {
 
     void setSelectedAsHeld(){
         if (selected != null)
-            setHeld(selected.x(), selected.y());
+            setHeld(selected.loc.x, selected.loc.y);
         else
             held = null;
     }
@@ -73,8 +73,8 @@ public class PetGame implements java.io.Serializable {
         }
         Thing t = map.checkCollision(x, y);
         if (t != null){
-            held = map.takeThing(t.x(), t.y());
-            held.pickedUp();
+            held = map.takeThing(t.loc.x, t.loc.y);
+            // held.pickedUp();
             setHeldPosition(x, y);
         }
     }

@@ -25,6 +25,7 @@ import android.view.SurfaceView;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
@@ -40,8 +41,7 @@ public class GameActivity extends Activity{
     final String CHANNEL_ID = "01", channel_name = "ch1", channel_desc = "test channel";
     Canvas canvas;
     Matrix mat, idmat;
-    GestureDetectorCompat gdc;
-    ScaleGestureDetector sgd;
+
     GameGesture controls;
     Display d;
     AndroidDisplay displayAdapter;
@@ -172,12 +172,12 @@ public class GameActivity extends Activity{
             ObjectOutputStream oos = new ObjectOutputStream(fos);
             oos.writeObject(game);
             Log.d("GameActivity", "serialization complete");
-        } catch (Exception e){
-            Log.d("GameActivity", "serialisation problem");
+        } catch (IOException e){
+            Log.d("GameActivity", e.getMessage());
         }
+
     }
 
-    public boolean onTouchEvent(MotionEvent e){
 
 
     float[] convertScreenToGame(float x, float y){
@@ -194,9 +194,8 @@ public class GameActivity extends Activity{
 
     @Override
     public boolean onTouchEvent(MotionEvent e){
-         // gdc.onTouchEvent(e);
-         // sgd.onTouchEvent(e);
-         controls.onTouchEvent(e);
+
+        controls.onTouchEvent(e);
         return true;// super.onTouchEvent(e);
 
     }
@@ -297,7 +296,7 @@ class Rand{
 
 }
 
-class Vec2<T>{
+class Vec2<T> implements java.io.Serializable{
     T x, y;
     Vec2(T x, T y){
         this.x = x;

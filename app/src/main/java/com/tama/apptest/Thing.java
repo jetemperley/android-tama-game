@@ -10,7 +10,7 @@ abstract class Thing implements java.io.Serializable{
     WorldObject loc;
 
     Thing() {
-        loc = new WorldObject();
+        loc = new WorldObject(null);
         loc.sprite = getAsset();
     }
     void display(DisplayAdapter d){
@@ -40,7 +40,7 @@ abstract class Thing implements java.io.Serializable{
         return true;
     }
 
-    boolean isColliding(float x, float y) {
+    boolean contains(float x, float y) {
         if (x > loc.x + (loc.xoff/100f)
                 && x < loc.x + (loc.xoff/100f) + 1
                 && y > loc.y + (loc.yoff/100f)

@@ -16,8 +16,7 @@ public class World implements java.io.Serializable{
         tile = new Tile[celln][celln];
         for (int x = 0; x < celln; x++) {
             for (int y = 0; y < celln; y++) {
-                tile[x][y] = new Grass();
-                tile[x][y].loc.set(x, y);
+                setTile(x, y, new Grass());
             }
         }
 
@@ -48,14 +47,13 @@ public class World implements java.io.Serializable{
             return;
 
         if (tile[x][y].isEmpty()) {
-            tile[x][y].set(t);
-            t.loc.x = x;
-            t.loc.y = y;
+            tile[x][y].setThing(t);
+            t.loc.setPos(x, y);
         }
     }
 
     void removeThing(Thing t) {
-        if (tile[t.loc.x][t.loc.y].thing == t)
+        if (tile[t.loc.x][t.loc.y].getThing() == t)
             tile[t.loc.x][t.loc.y].takeThing();
     }
 
@@ -124,10 +122,9 @@ public class World implements java.io.Serializable{
 
                 case ground:
                     Log.d("map", "set ground");
-                    setTile(x, y, new Grass(true));
+                    setTile(x, y, new Grass());
                     break;
             }
-            tile[x][y].loc.set(x, y);
             updateDyn(x, y);
         }
 

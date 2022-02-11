@@ -60,14 +60,14 @@ class GoTo extends ActSequence {
 
     public ActState update(World m, Pet p) {
         if (status == ActState.start){
-            Vec2<Integer>[] path = new Path(dist).findPath(m, p.loc.x(), p.loc.y(), x, y);
+            Vec2<Integer>[] path = new Path(dist).findPath(m, p.loc.x, p.loc.y, x, y);
             if (path == null) {
                 Log.d("Act", "path was null");
                 return ActState.failed;
             }
 
             int xi = p.loc.x, yi = p.loc.y;
-            for (Vec2 s : path){
+            for (Vec2<Integer> s : path){
                 Log.d("goto path: ", (s.x - xi) + " " + (s.y - yi));
                 acts.add(new Step(s.x - xi, s.y - yi));
                 xi = s.x;
