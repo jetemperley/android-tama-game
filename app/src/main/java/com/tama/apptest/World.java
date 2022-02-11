@@ -17,7 +17,8 @@ public class World {
         tile = new Tile[celln][celln];
         for (int x = 0; x < celln; x++) {
             for (int y = 0; y < celln; y++) {
-                tile[x][y] = new Grass(x, y, true);
+                tile[x][y] = new Grass();
+                tile[x][y].loc.set(x, y);
             }
         }
 
@@ -122,16 +123,16 @@ public class World {
             switch (type) {
                 case water:
                     Log.d("map", "set water");
-                    tile[x][y] = new DynTile(this, x, y);
-                    updateDyn(x, y);
+                    tile[x][y] = new DynTile(this);
                     break;
 
                 case ground:
                     Log.d("map", "set ground");
-                    tile[x][y] = new Grass(x, y, true);
-                    updateDyn(x, y);
+                    tile[x][y] = new Grass();
                     break;
             }
+            tile[x][y].loc.set(x, y);
+            updateDyn(x, y);
         }
 
     }

@@ -10,7 +10,7 @@ class Food extends Thing{
 
 
     Food(int ID){
-        super(Assets.sprites.get(ID));
+        super();
         id = ID;
 
         switch (id){
@@ -65,6 +65,11 @@ class Food extends Thing{
 
         }
     }
+
+    void loadAssets(){
+        loc.sprite = Assets.sprites.get(id);
+    }
+
     Type type(){
         return Type.food;
     }

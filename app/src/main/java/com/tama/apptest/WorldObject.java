@@ -21,4 +21,9 @@ public class WorldObject {
     void display(DisplayAdapter d){
         d.displayWorld(this);
     }
+
+    void set(int x, int y){
+        this.x = x;
+        this.y = y;
+    }
 }

@@ -5,8 +5,9 @@ import android.util.Log;
 
 public class Axe extends Thing {
 
-    Axe() {
-        super(Assets.sprites.get(R.drawable.static_axe));
+
+    void loadAssets(){
+        loc.sprite = Assets.sprites.get(R.drawable.static_axe);
     }
 
     boolean isItem() {
@@ -40,8 +41,9 @@ public class Axe extends Thing {
 }
 
 class Shovel extends Thing {
-    Shovel() {
-        super(Assets.sprites.get(R.drawable.static_shovel));
+
+    void loadAssets(){
+        loc.sprite = Assets.sprites.get(R.drawable.static_shovel);
     }
 
     boolean isItem() {
@@ -68,10 +70,10 @@ class Shovel extends Thing {
 
 class Hammer extends Thing {
 
-
-    Hammer() {
-        super(Assets.sprites.get(R.drawable.static_axe));
+    void loadAssets(){
+        loc.sprite = Assets.sprites.get(R.drawable.static_axe);
     }
+
 
     boolean isItem() {
         return true;

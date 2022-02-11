@@ -47,7 +47,6 @@ public class GameActivity extends Activity{
     PetGame game;
     DepthDisplay dc;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

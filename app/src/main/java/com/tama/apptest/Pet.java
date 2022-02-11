@@ -1,7 +1,7 @@
 package com.tama.apptest;
 import java.util.ArrayList;
 
-abstract class Pet extends Thing {
+abstract class Pet extends Thing{
 
     static final int down = 0, right = 1, up = 2, left = 3;
 
@@ -20,14 +20,18 @@ abstract class Pet extends Thing {
     int sleep = 0;
 
 
-    Pet(Animator pa) {
-        super(pa);
-        pa.play();
-        pa.repeat(true);
+    Pet() {
+        anim = new Animator(null);
+        loadAssets();
+        anim.play();
+        anim.repeat(true);
         state = new Wander();
         acts = new ArrayList<Act>();
         name = "";
-        anim = pa;
+    }
+
+    void loadAssets(){
+        anim.sheet = Assets.sheets.get(R.drawable.sheet_16_blob);
     }
 
     void update(World map) {
@@ -94,17 +98,15 @@ abstract class Pet extends Thing {
 
 class Blob extends Pet {
 
-    Blob() {
-        super(new Animator(Assets.sheets.get(R.drawable.sheet_16_blob)));
-
+    void loadAssets(){
+        anim.sheet = Assets.sheets.get(R.drawable.sheet_16_blob);
     }
 }
 
 class Walker extends Pet {
 
-    Walker() {
-        super(new Animator(Assets.sheets.get(R.drawable.sheet_16_walker)));
-
+    void loadAssets(){
+        anim.sheet = Assets.sheets.get(R.drawable.sheet_16_walker);
     }
 }
 
@@ -115,11 +117,15 @@ class Egg extends Thing {
     int hatchAge;
 
     Egg() {
-        super(new Animator(Assets.sheets.get(R.drawable.sheet_16_egg)));
-        anim = (Animator) sprite;
+        super();
+        anim = new Animator(null);
         age = 0;
         hatchAge = 20000;
 
+    }
+
+    void loadAssets(){
+        anim.sheet = Assets.sheets.get(R.drawable.sheet_16_egg);
     }
 
     void update(World map) {

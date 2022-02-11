@@ -4,10 +4,17 @@ import android.util.Log;
 enum Type {
     food, pet, tree, undefined, junk
 }
-abstract class Thing extends WorldObject {
+abstract class Thing extends WorldObject{
 
-    Thing(Displayable img) {
-        super(img);
+    WorldObject loc;
+
+    Thing() {
+        loc = new WorldObject();
+        loadAssets();
+    }
+
+    void loadAssets(){
+        loc.sprite = Assets.sprites.get(R.drawable.static_poop);
     }
 
     boolean isItem(){
@@ -17,9 +24,6 @@ abstract class Thing extends WorldObject {
     void update(World map) {
 
     }
-
-
-
 
     void click() {
     }
@@ -50,20 +54,16 @@ abstract class Thing extends WorldObject {
 
 class Rock extends Thing {
 
-    Rock(){
-
-        super(Assets.sprites.get(R.drawable.static_rock));
+    void loadAssets(){
+        loc.sprite = Assets.sprites.get(R.drawable.static_rock);
     }
 
 }
 
 class Poo extends Thing {
 
-    Poo() {
-        super(Assets.sprites.get(R.drawable.static_poop));
-    }
-
-    void update(World map) {
+    void loadAssets(){
+        loc.sprite = Assets.sprites.get(R.drawable.static_poop);
     }
     boolean isItem(){
         return true;
@@ -75,10 +75,9 @@ class Tree extends Thing {
     int level = 0;
     int growth = 0;
 
-    Tree() {
-        super(Assets.sprites.get(R.drawable.static_tree));
+    void loadAssets(){
+        loc.sprite = Assets.sprites.get(R.drawable.static_tree);
     }
-
 
 
     void update(World m){
@@ -101,8 +100,8 @@ class Tree extends Thing {
 
 class Seed extends Thing{
 
-    Seed(){
-        super(Assets.sprites.get(R.drawable.static_seed));
+    void loadAssets(){
+        loc.sprite = Assets.sprites.get(R.drawable.static_seed);
     }
 
     boolean isItem(){
@@ -138,10 +137,9 @@ class Seed extends Thing{
 
 class Wood extends Thing{
 
-    Wood(){
-        super(Assets.sprites.get(R.drawable.static_log));
+    void loadAssets(){
+        loc.sprite = Assets.sprites.get(R.drawable.static_log);
     }
-
 
     boolean isItem(){
         return true;
