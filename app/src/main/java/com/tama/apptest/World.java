@@ -52,6 +52,15 @@ public class World implements java.io.Serializable{
         }
     }
 
+    void reLoadAllAssets(){
+        for (int x = 0; x < tile.length; x++){
+            for (int y = 0; y < tile[x].length; y++){
+                tile[x][y].reLoadAsset();
+                tile[x][y].updateDetails(this);
+            }
+        }
+    }
+
     void removeThing(Thing t) {
         if (tile[t.loc.x][t.loc.y].getThing() == t)
             tile[t.loc.x][t.loc.y].takeThing();

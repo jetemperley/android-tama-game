@@ -17,6 +17,13 @@ abstract class Tile implements java.io.Serializable {
         return Assets.sheets.get(R.drawable.sheet_16_terrain).getSprite(0, 0);
     }
 
+    void reLoadAsset(){
+        loc.sprite = getAssets();
+        if (thing != null){
+            thing.reLoadAsset();
+        }
+    }
+
     void display(DisplayAdapter d) {
         if (visible) {
             d.displayWorld(loc);
@@ -113,7 +120,12 @@ class LongGrass extends Tile{
     }
 
     Displayable getAssets(){
-        return Assets.sprites.get(R.drawable.static_longgrass);
+        Displayable d = Assets.sprites.get(R.drawable.static_longgrass);
+        if (sprite2 != null) {
+            sprite2.sprite = d;
+            sprite3.sprite = d;
+        }
+        return d;
     }
 
     void setPos(int x, int y){
@@ -135,7 +147,7 @@ class LongGrass extends Tile{
 class DynTile extends Tile {
     // considers the surrounding tiles to create a dynamic tile graphic
     static SpriteSheet sheet;
-    transient WorldObject[][] parts;
+    WorldObject[][] parts;
 
     
 
@@ -158,10 +170,12 @@ class DynTile extends Tile {
 
     }
 
-    void loadAssets(){
+    Displayable getAssets(){
 
         if (sheet == null)
             sheet = Assets.sheets.get(R.drawable.sheet_8_watersimp);
+        return null;
+
     }
 
     public TileType type(){

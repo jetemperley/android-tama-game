@@ -42,6 +42,12 @@ public class PetGame implements java.io.Serializable {
 
     }
 
+    void reLoadAllAssets(){
+        map.reLoadAllAssets();
+        if (held != null)
+            held.reLoadAsset();
+    }
+
     void setHeldPosition(float x, float y){
 
         heldPos.x = x*16;

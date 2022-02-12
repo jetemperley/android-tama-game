@@ -22,6 +22,10 @@ abstract class Thing implements java.io.Serializable{
         return Assets.sprites.get(R.drawable.static_poop);
     }
 
+    void reLoadAsset(){
+        loc.sprite = getAsset();
+    }
+
     boolean isItem(){
         return false;
     }
