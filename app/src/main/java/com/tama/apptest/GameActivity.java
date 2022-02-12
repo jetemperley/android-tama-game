@@ -23,8 +23,16 @@ import android.view.ScaleGestureDetector;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Timer;
 
 public class GameActivity extends Activity{
@@ -37,15 +45,14 @@ public class GameActivity extends Activity{
     final String CHANNEL_ID = "01", channel_name = "ch1", channel_desc = "test channel";
     Canvas canvas;
     Matrix mat, idmat;
-    GestureDetectorCompat gdc;
-    ScaleGestureDetector sgd;
+
     GameGesture controls;
     Display d;
     AndroidDisplay displayAdapter;
     DepthDisplay depthDisplay;
     PetGame game;
     static int period = 25;
-
+    final static String dataFile = "gameData.ser";
 
 
     @Override
@@ -98,7 +105,7 @@ public class GameActivity extends Activity{
         Assets.init(getResources());
         Log.d("Setup", "finished loading resources");
 
-        game = new PetGame();
+
         Log.d("display height ", " " + d.getHeight() +" " + view.getHeight() + " " + view.getTop());
         depthDisplay = new DepthDisplay();
         displayAdapter = new AndroidDisplay(16, d.getWidth(), d.getHeight(), 0);
@@ -132,6 +139,8 @@ public class GameActivity extends Activity{
 
     }
 
+
+
     public void draw() {
         controls.update();
         if (view.surface.getSurface().isValid()) {
@@ -157,6 +166,55 @@ public class GameActivity extends Activity{
         }
     }
 
+    @Override
+    public void onStop(){
+        super.onStop();
+        Context context = getApplicationContext();
+
+
+        try {
+            FileOutputStream fos = context.openFileOutput(dataFile, Context.MODE_PRIVATE);
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
+            oos.writeObject(game);
+            oos.close();
+            Log.d("GameActivity", "serialization complete");
+        } catch (IOException e){
+            Log.d("GameActivity", e.getMessage());
+        }
+
+    }
+
+    @Override
+    public void onStart(){
+        super.onStart();
+        Context context = getApplicationContext();
+        File dir = context.getFilesDir();
+        File[] content = dir.listFiles();
+        File data = null;
+        for (File f : content){
+            if (f.getName().equals(dataFile)) {
+                data = f;
+                break;
+            }
+        }
+        if (data != null){
+            try{
+                ObjectInputStream in =
+                        new ObjectInputStream(
+                        new FileInputStream(data));
+                game = (PetGame)in.readObject();
+                game.reLoadAllAssets();
+                in.close();
+                Log.d("GameActivity", "deserialization complete");
+            } catch (Exception e){
+                game = new PetGame();
+                Log.d("GameActivity", "deserialization failed");
+            }
+        } else {
+            game = new PetGame();
+        }
+    }
+
 
 
     float[] convertScreenToGame(float x, float y){
@@ -173,9 +231,8 @@ public class GameActivity extends Activity{
 
     @Override
     public boolean onTouchEvent(MotionEvent e){
-         // gdc.onTouchEvent(e);
-         // sgd.onTouchEvent(e);
-         controls.onTouchEvent(e);
+
+        controls.onTouchEvent(e);
         return true;// super.onTouchEvent(e);
 
     }
@@ -276,7 +333,7 @@ class Rand{
 
 }
 
-class Vec2<T>{
+class Vec2<T> implements java.io.Serializable{
     T x, y;
     Vec2(T x, T y){
         this.x = x;

@@ -2,7 +2,7 @@ package com.tama.apptest;
 
 import android.util.Log;
 
-public class PetGame {
+public class PetGame implements java.io.Serializable {
 
     World map;
     Thing held, selected;
@@ -38,9 +38,14 @@ public class PetGame {
     void drawUI(DisplayAdapter d){
 
         if (held != null)
-            d.displayManual(held.sprite, heldPos.x, heldPos.y);
+            d.displayManual(held.loc.sprite, heldPos.x, heldPos.y);
 
+    }
 
+    void reLoadAllAssets(){
+        map.reLoadAllAssets();
+        if (held != null)
+            held.reLoadAsset();
     }
 
     void setHeldPosition(float x, float y){
@@ -62,7 +67,7 @@ public class PetGame {
 
     void setSelectedAsHeld(){
         if (selected != null)
-            setHeld(selected.x(), selected.y());
+            setHeld(selected.loc.x, selected.loc.y);
         else
             held = null;
     }
@@ -74,8 +79,8 @@ public class PetGame {
         }
         Thing t = map.checkCollision(x, y);
         if (t != null){
-            held = map.takeThing(t.x(), t.y());
-            held.pickedUp();
+            held = map.takeThing(t.loc.x, t.loc.y);
+            // held.pickedUp();
             setHeldPosition(x, y);
         }
     }

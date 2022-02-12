@@ -32,9 +32,9 @@ public class SpriteSheet{
 
 
 
-class Animator implements Displayable{
+class Animator implements Displayable, java.io.Serializable{
 
-    SpriteSheet sheet;
+    transient SpriteSheet sheet;
     boolean play = false, repeat = false;
     int animID = 0, animTime = 0;
     int animDur = 1000;

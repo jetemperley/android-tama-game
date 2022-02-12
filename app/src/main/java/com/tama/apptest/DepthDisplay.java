@@ -49,7 +49,7 @@ public class DepthDisplay implements DisplayAdapter {
                 return -1;
             if (b.flat)
                 return 1;
-            return (a.y() + a.yoff/100f) > (b.y() + b.yoff/100f) ? 1 : -1;
+            return (a.y + a.yoff/100f) > (b.y + b.yoff/100f) ? 1 : -1;
         }
     }
 

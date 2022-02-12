@@ -1,14 +1,13 @@
 package com.tama.apptest;
 
 
-interface State{
+abstract class State implements java.io.Serializable {
 
-    void update(Pet p);
-
+    abstract void update(Pet p);
 
 }
 
-class Wander implements State{
+class Wander extends State{
 
     int waitTime = 0;
     boolean wait = true;
@@ -56,7 +55,7 @@ class Wander implements State{
 
 }
 
-class Homeostasis implements State{
+class Homeostasis extends State{
     public void update(Pet p){
         // check stats to find what is needed
     }
@@ -64,7 +63,7 @@ class Homeostasis implements State{
 
 
 
-class Inspect implements State{
+class Inspect extends State{
 
     int x, y;
 

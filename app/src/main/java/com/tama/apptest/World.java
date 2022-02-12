@@ -1,11 +1,12 @@
 package com.tama.apptest;
 import android.util.Log;
 
-public class World {
+public class World implements java.io.Serializable{
 
     private Tile[][] tile;
     int celln, openSpace;
     float xoff, yoff;
+    Pet target;
 
     World(int size) {
         celln = size;
@@ -15,8 +16,7 @@ public class World {
         tile = new Tile[celln][celln];
         for (int x = 0; x < celln; x++) {
             for (int y = 0; y < celln; y++) {
-                setTile(x, y, new Grass(true));
-                // add(new Poo(), x, y);
+                setTile(x, y, new Grass());
             }
         }
 
@@ -48,13 +48,22 @@ public class World {
 
         if (tile[x][y].isEmpty()) {
             tile[x][y].setThing(t);
-            t.setPos(x, y);
+            t.loc.setPos(x, y);
+        }
+    }
+
+    void reLoadAllAssets(){
+        for (int x = 0; x < tile.length; x++){
+            for (int y = 0; y < tile[x].length; y++){
+                tile[x][y].reLoadAsset();
+                tile[x][y].updateDetails(this);
+            }
         }
     }
 
     void removeThing(Thing t) {
-        if (tile[t.x()][t.y()].getThing() == t)
-            tile[t.x()][t.y()].takeThing();
+        if (tile[t.loc.x][t.loc.y].getThing() == t)
+            tile[t.loc.x][t.loc.y].takeThing();
     }
 
     void removeThing(int x, int y) {
@@ -122,9 +131,10 @@ public class World {
 
                 case ground:
                     Log.d("map", "set ground");
-                    setTile(x, y, new Grass(true));
+                    setTile(x, y, new Grass());
                     break;
             }
+            updateDyn(x, y);
         }
 
     }

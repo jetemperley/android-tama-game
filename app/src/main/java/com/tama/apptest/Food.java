@@ -2,15 +2,16 @@ package com.tama.apptest;
 
 
 import android.graphics.Bitmap;
+import android.view.Display;
 
-class Food extends Thing{
+class Food extends Thing implements java.io.Serializable{
     int id;
     int sust;
     String name;
 
 
     Food(int ID){
-        super(Assets.sprites.get(ID));
+        super();
         id = ID;
 
         switch (id){
@@ -65,6 +66,11 @@ class Food extends Thing{
 
         }
     }
+
+    Displayable getAsset(){
+        return Assets.sprites.get(id);
+    }
+
     Type type(){
         return Type.food;
     }

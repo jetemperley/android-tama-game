@@ -33,8 +33,8 @@ class AndroidDisplay implements DisplayAdapter {
             return;
         }
         canvas.drawBitmap( t.sprite.getSprite(),
-                t.x()*cellSize + t.xoff*cellSize/100f,
-                t.y()*cellSize + t.yoff*cellSize/100f,
+                t.x*cellSize + t.xoff*cellSize/100f,
+                t.y*cellSize + t.yoff*cellSize/100f,
                 GameActivity.black);
     }
 
@@ -49,7 +49,7 @@ class AndroidDisplay implements DisplayAdapter {
             Thing t = inv.get(i);
             canvas.drawBitmap(Assets.sprites.get(R.drawable.static_inv).getSprite(), 0, 0, GameActivity.black);
             if (t != null)
-                canvas.drawBitmap(t.sprite.getUISprite(), 0, 0, GameActivity.black);
+                canvas.drawBitmap(t.loc.sprite.getUISprite(), 0, 0, GameActivity.black);
             mat.preTranslate(cellSize, 0);
             canvas.setMatrix(mat);
         }

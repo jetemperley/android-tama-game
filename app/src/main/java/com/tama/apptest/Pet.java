@@ -1,14 +1,14 @@
 package com.tama.apptest;
 import java.util.ArrayList;
 
-abstract class Pet extends Thing {
+abstract class Pet extends Thing{
 
     static final int down = 0, right = 1, up = 2, left = 3;
 
     State state;
     String name;
     int speed = 3;
-    Movement moves;
+    // Movement moves;
     ArrayList<Act> acts;
     // this pet animator is the same object as Displayable.sprite;
     Animator anim;
@@ -20,14 +20,22 @@ abstract class Pet extends Thing {
     int sleep = 0;
 
 
-    Pet(Animator pa) {
-        super(pa);
-        pa.play();
-        pa.repeat(true);
+    Pet() {
+        super();
         state = new Wander();
         acts = new ArrayList<Act>();
         name = "";
-        anim = pa;
+    }
+
+    Displayable getAsset(){
+        if (anim == null) {
+            anim = new Animator(Assets.sheets.get(R.drawable.sheet_16_blob));
+            anim.play();
+            anim.repeat(true);
+        } else {
+            anim.sheet = Assets.sheets.get(R.drawable.sheet_16_blob);
+        }
+        return anim;
     }
 
     void update(World map) {
@@ -94,17 +102,19 @@ abstract class Pet extends Thing {
 
 class Blob extends Pet {
 
-    Blob() {
-        super(new Animator(Assets.sheets.get(R.drawable.sheet_16_blob)));
-
+    Displayable getAsset(){
+        super.getAsset();
+        anim.sheet = Assets.sheets.get(R.drawable.sheet_16_blob);
+        return anim;
     }
 }
 
 class Walker extends Pet {
 
-    Walker() {
-        super(new Animator(Assets.sheets.get(R.drawable.sheet_16_walker)));
-
+    Displayable getAsset(){
+        super.getAsset();
+        anim.sheet = Assets.sheets.get(R.drawable.sheet_16_walker);
+        return anim;
     }
 }
 
@@ -115,11 +125,23 @@ class Egg extends Thing {
     int hatchAge;
 
     Egg() {
-        super(new Animator(Assets.sheets.get(R.drawable.sheet_16_egg)));
-        anim = (Animator) sprite;
+        super();
+        anim = new Animator(null);
         age = 0;
         hatchAge = 20000;
 
+    }
+
+    Displayable getAsset(){
+
+        if (anim == null) {
+            anim = new Animator(Assets.sheets.get(R.drawable.sheet_16_egg));
+            anim.play();
+            anim.repeat(true);
+        } else {
+            anim.sheet = Assets.sheets.get(R.drawable.sheet_16_blob);
+        }
+        return anim;
     }
 
     void update(World map) {
@@ -130,7 +152,7 @@ class Egg extends Thing {
         if (age > hatchAge) {
             // hatch
             map.removeThing(this);
-            map.add(new Blob(), x(), y());
+            map.add(new Blob(), loc.x, loc.y);
         }
     }
 

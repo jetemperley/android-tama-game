@@ -1,12 +1,12 @@
 package com.tama.apptest;
 
-public class WorldObject {
+public class WorldObject implements java.io.Serializable{
 
-    Displayable sprite;
-    private int x, y;
+    transient Displayable sprite;
+    int x, y;
     int xoff, yoff;
     // flat indicates if the sprite is displayed as a ground base layer
-    boolean flat = true;
+    boolean flat = false;
 
     WorldObject(Displayable img) {
 
@@ -17,16 +17,7 @@ public class WorldObject {
         yoff = 0;
     }
 
-    void display(DisplayAdapter d){
-        d.displayWorld(this);
-    }
 
-    int x(){
-        return x;
-    }
-    int y(){
-        return y;
-    }
     void setPos(int x, int y){
         this.x = x;
         this.y = y;
