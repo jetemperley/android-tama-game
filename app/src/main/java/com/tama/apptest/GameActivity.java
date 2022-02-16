@@ -38,20 +38,20 @@ import java.util.Timer;
 public class GameActivity extends Activity{
 
     ConstraintLayout lay;
-    static Paint red, black;
+    static Paint red, black, white;
     CustomView view;
     Timer timer;
     Rect screenSize;
     final String CHANNEL_ID = "01", channel_name = "ch1", channel_desc = "test channel";
     Canvas canvas;
     Matrix mat, idmat;
+    static int frameTime = 0;
 
     GameGesture controls;
     Display d;
     AndroidDisplay displayAdapter;
     DepthDisplay depthDisplay;
     PetGame game;
-    static int period = 25;
     final static String dataFile = "gameData.ser";
 
 
@@ -75,6 +75,12 @@ public class GameActivity extends Activity{
         black.setARGB(255, 0, 0, 0);
         black.setDither(false);
         black.setFilterBitmap(false);
+
+        white = new Paint();
+        white.setARGB(255, 255, 255, 255);
+        white.setDither(false);
+        white.setFilterBitmap(false);
+        white.setTextSize(30);
 
         // gesture setup
         controls = new GameGesture();
@@ -120,14 +126,13 @@ public class GameActivity extends Activity{
 
             LocalTime start;
             LocalTime end = LocalTime.now();
-            long frameTime;
 
             while(true) {
                 start = end;
                 this.draw();
                 end = LocalTime.now();
-                frameTime = ChronoUnit.MILLIS.between(start, end);
-                long ytime = period - frameTime;
+                frameTime = (int)ChronoUnit.MILLIS.between(start, end);
+                long ytime = PetGame.gameSpeed - frameTime;
                 // Log.d("Time", "" + ytime);
                 try {
                     if (ytime > 0)
@@ -154,11 +159,10 @@ public class GameActivity extends Activity{
                 // Log.d("canvas clip ", " "  +size.top + " " + size.bottom + " " + size.left + " " + size.right);
                 displayAdapter.topIn = d.getHeight() - canvas.getHeight();
                 canvas.drawColor(Color.BLACK);
+                game.update();
                 game.drawEnv(depthDisplay);
                 depthDisplay.drawQ();
                 depthDisplay.clearQ();
-
-                // canvas.setMatrix(idmat);
                 game.drawUI(displayAdapter);
 
                 view.surface.unlockCanvasAndPost(canvas);

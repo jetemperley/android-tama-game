@@ -1,4 +1,6 @@
 package com.tama.apptest;
+import android.util.Log;
+
 import java.util.ArrayList;
 
 abstract class Pet extends Thing{
@@ -7,24 +9,21 @@ abstract class Pet extends Thing{
 
     State state;
     String name;
-    int speed = 3;
+
     // Movement moves;
     ArrayList<Act> acts;
     // this pet animator is the same object as Displayable.sprite;
     Animator anim;
 
-    int poop = 0;
-    int hunger = 0;
-    int thirst = 0;
-    int happy = 0;
-    int sleep = 0;
-
+    int speed = 3;
+    Stats stats;
 
     Pet() {
         super();
         state = new Wander();
         acts = new ArrayList<Act>();
         name = "";
+        stats = new Stats();
     }
 
     Displayable getAsset(){
@@ -39,28 +38,10 @@ abstract class Pet extends Thing{
     }
 
     void update(World map) {
-
-        updateStats();
+        stats.updateStats(this);
         updateActions(map);
 
         state.update(this);
-    }
-
-
-    void updateStats() {
-        if (hunger == 0) {
-            happy--;
-        } else if (hunger > 0) {
-
-            hunger -= GameActivity.period;
-            poop += GameActivity.period;
-        }
-        poop++;
-        if (poop > 10000) {
-            // println("pooping");
-            acts.add(new Poop());
-            poop -= 10000;
-        }
     }
 
     void updateActions(World m) {
@@ -98,6 +79,11 @@ abstract class Pet extends Thing{
         else if (y == 1)
             anim.animID = down;
     }
+
+    String getDescription(){
+        return super.getDescription() + "It's a Pet!";
+    }
+
 }
 
 class Blob extends Pet {
@@ -145,16 +131,20 @@ class Egg extends Thing {
     }
 
     void update(World map) {
-        if (!anim.play && Rand.RandInt(0, 100) < 20*(GameActivity.period/1000f)) {
+        if (!anim.play && Rand.RandInt(0, 100) < 20*(PetGame.gameSpeed/1000f)) {
             anim.play = true;
         }
-        age += GameActivity.period;
+        age += PetGame.gameSpeed;
         if (age > hatchAge) {
             // hatch
             map.removeThing(this);
             map.add(new Blob(), loc.x, loc.y);
         }
     }
+    String getDescription(){
+        return super.getDescription() + "An egg, age " + age + ".";
+    }
+
 
 }
 

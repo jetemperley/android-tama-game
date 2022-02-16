@@ -62,6 +62,10 @@ abstract class Thing implements java.io.Serializable{
     }
 
     void poke(){}
+
+    String getDescription(){
+        return "Loc: " + loc.x + ", " + loc.y + ". ";
+    }
 }
 
 class Rock extends Thing {
@@ -70,15 +74,29 @@ class Rock extends Thing {
         return Assets.sprites.get(R.drawable.static_rock);
     }
 
+    String getDescription(){
+        return super.getDescription() + "Just a rock.";
+
+    }
 }
 
-class Poo extends Thing {
+class Poop extends Thing {
+
+    final static int poopTime = 10000;
 
     Displayable getAsset(){
         return Assets.sprites.get(R.drawable.static_poop);
     }
     boolean isItem(){
         return true;
+    }
+
+    String getDescription(){
+        return super.getDescription() + "Ew, a poo. And this is a " +
+                "super duper  duper duper duper duper duper duper duper" +
+                "duper duper duper duper duper duper duper duper duper" +
+                " duper duper duper duper duper duper duper duper duper" +
+                "long description";
     }
 
 }
@@ -107,6 +125,9 @@ class Tree extends Thing implements java.io.Serializable{
         return Type.tree;
     }
 
+    String getDescription(){
+        return super.getDescription() + "Its a tree, level " + level + ".";
+    }
 
 }
 
@@ -143,7 +164,9 @@ class Seed extends Thing{
         return this;
     }
 
-
+    String getDescription(){
+        return super.getDescription() + "A seed, plant it and it will grow.";
+    }
 
 }
 
@@ -155,6 +178,10 @@ class Wood extends Thing{
 
     boolean isItem(){
         return true;
+    }
+
+    String getDescription(){
+        return "A chunk of wood.";
     }
 }
 

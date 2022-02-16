@@ -6,7 +6,6 @@ public class World implements java.io.Serializable{
     private Tile[][] tile;
     int celln, openSpace;
     float xoff, yoff;
-    Pet target;
 
     World(int size) {
         celln = size;
@@ -80,7 +79,8 @@ public class World implements java.io.Serializable{
     boolean canStepOnto(int px, int py, int x, int y) {
         // Log.d("Map", "" + px + " " + py);
         Thing t = tile[px][py].getThing();
-        if (isEmpty(x, y) && ((tile[x][y].type() == TileType.ground == t.canWalk()) || (tile[x][y].type() == TileType.water == t.canSwim())))
+        if (isEmpty(x, y) && ((tile[x][y].type() == TileType.ground == t.canWalk())
+                || (tile[x][y].type() == TileType.water == t.canSwim())))
             return true;
         return false;
     }

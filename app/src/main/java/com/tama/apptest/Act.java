@@ -2,6 +2,8 @@ package com.tama.apptest;
 
 import android.util.Log;
 
+import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 
 interface Act {
@@ -14,14 +16,16 @@ enum ActState{
     start, doing, complete, failed
 }
 
-abstract class ActSequence implements Act {
+// completes a sequence of actions
+// and fails when the first action fails
+class ActSequence implements Act {
     ArrayList<Act> acts;
     ActState status = ActState.start;
     ActSequence() {
         acts = new ArrayList<Act>();
     }
 
-    void addAct(Act b) {
+    void add(Act b) {
         acts.add(b);
     }
 
@@ -47,19 +51,23 @@ class Consume implements Act {
     }
 }
 
-class GoTo extends ActSequence {
+class GoTo implements Act {
+
     int x, y;
     int dist;
+    ActSequence pathActs;
 
     GoTo(int x, int y, int dist) {
         super();
         this.x = x;
         this.y = y;
         this.dist = dist;
+        pathActs = null;
     }
 
     public ActState update(World m, Pet p) {
-        if (status == ActState.start){
+        if (pathActs == null){
+            pathActs = new ActSequence();
             Vec2<Integer>[] path = new Path(dist).findPath(m, p.loc.x, p.loc.y, x, y);
             if (path == null) {
                 Log.d("Act", "path was null");
@@ -69,14 +77,13 @@ class GoTo extends ActSequence {
             int xi = p.loc.x, yi = p.loc.y;
             for (Vec2<Integer> s : path){
                 Log.d("goto path: ", (s.x - xi) + " " + (s.y - yi));
-                acts.add(new Step(s.x - xi, s.y - yi));
+                pathActs.add(new Step(s.x - xi, s.y - yi));
                 xi = s.x;
                 yi = s.y;
             }
         }
-        status = super.update(m, p);
         // Log.d("goto status: ", status + " ");
-        return (status);
+        return pathActs.update(m, p);
     }
 }
 
@@ -86,34 +93,78 @@ class Pat implements Act {
     }
 }
 
-class Poop implements Act {
+class DoPoop implements Act {
+    ActState state;
+    Step step;
+    long startTime;
+
+    DoPoop(){
+        startTime = PetGame.time;
+    }
+
     public ActState update(World m, Pet p) {
-        return ActState.failed;
+
+        // make a random Step
+        if (step == null) {
+            boolean vert = Math.random() < 0.5;
+            int d = Math.random() < 0.5 ? -1 : 1;
+            if (vert) {
+                step = new Step(d, 0);
+            } else {
+                step = new Step(0, d);
+            }
+        }
+        int x = p.loc.x;
+        int y = p.loc.y;
+
+        if (step.state == ActState.start){
+            state = step.update(m, p);
+
+            if (state == ActState.doing){
+                m.add(new Poop(), x, y);
+
+            }
+        } else if (state == ActState.doing){
+            state = step.update(m, p);
+
+        }
+        if (state == ActState.failed){
+
+            long now = PetGame.time;
+            long time = startTime - now;
+            startTime = now;
+            // p.sickness += time;
+            step = null;
+            state = ActState.doing;
+
+        }
+
+        return state;
     }
 }
 
 class Step implements Act {
     int x, y;
-    ActState status;
+    ActState state;
 
     Step(int x, int y) {
         this.x = x;
         this.y = y;
-        status = ActState.start;
+        state = ActState.start;
     }
 
     public ActState update(World m, Pet p) {
         // println("updating");
-        if (status == ActState.start) {
+        if (state == ActState.start) {
             if (!step(m, p, x, y)) {
-                return (status = ActState.failed);
+                return (state = ActState.failed);
             }
-            return (status = ActState.doing);
-        } else if (status == ActState.doing) {
+            return (state = ActState.doing);
+        } else if (state == ActState.doing) {
             if (updateOffsets(p))
-                return (status = ActState.complete);
+                return (state = ActState.complete);
         }
-        return status;
+        return state;
     }
 
     boolean step(World m, Pet p, int X, int Y) {

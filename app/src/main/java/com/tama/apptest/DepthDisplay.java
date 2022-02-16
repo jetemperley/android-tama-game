@@ -19,7 +19,7 @@ public class DepthDisplay implements DisplayAdapter {
     public void displayWorld(WorldObject t){
         draws.add(t);
     }
-    public void displayUI(Inventory t){
+    public void displayUI(Thing t){
 
     }
     public void displayManual(Displayable d, float x, float y) {

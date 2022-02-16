@@ -28,7 +28,7 @@ class Wander extends State{
             }
         } else {
 
-            waitTime -= GameActivity.period;
+            waitTime -= PetGame.gameSpeed;
         }
     }
 
