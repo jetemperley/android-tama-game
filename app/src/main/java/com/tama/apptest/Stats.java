@@ -1,7 +1,14 @@
 package com.tama.apptest;
 
 public class Stats {
-    final static int health = 0, hunger = 1, energy = 2, sleep = 3, poop = 4, happy = 5, weight =6;
+    final static int
+            health = 0,
+            hunger = 1,
+            energy = 2,
+            sleep = 3,
+            poop = 4,
+            happy = 5,
+            weight =6;
     Stat[] stats;
 
     Stats(){

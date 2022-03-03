@@ -1,10 +1,13 @@
 package com.tama.apptest;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
+
+import java.io.File;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -23,6 +26,17 @@ public class MainActivity extends AppCompatActivity {
         String msg = textBox.getText().toString();
         intent.putExtra(EXTRA_MESSAGE, msg);
         startActivity(intent);
+    }
+
+    public void reset(View view){
+        Context context = getApplicationContext();
+        File dir = context.getFilesDir();
+        File[] content = dir.listFiles();
+        for (File f : content){
+            if (f.getName().equals(GameActivity.dataFile)){
+                f.delete();
+            }
+        }
     }
 
     public void startGame(View view){

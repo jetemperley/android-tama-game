@@ -45,7 +45,7 @@ class Gesture {
 
     public boolean onTouchEvent(MotionEvent e){
 
-        Log.d("Game Gesture", "event " + e.getAction());
+        // Log.d("Game Gesture", "event " + e.getAction());
         stateidx = state[stateidx].onMotion(e);
         // Log.d("Game Gesture", "state " + stateidx);
 

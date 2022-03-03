@@ -20,7 +20,7 @@ abstract class Tile implements java.io.Serializable {
     void reLoadAsset(){
         loc.sprite = getAssets();
         if (thing != null){
-            thing.reLoadAsset();
+            thing.loadAsset();
         }
     }
 
@@ -66,7 +66,9 @@ abstract class Tile implements java.io.Serializable {
     }
 
     Thing takeThing(){
-        Thing t = thing;
+        if (thing == null)
+            return null;
+        Thing t = thing.pickup();
         thing = null;
         return t;
     }
@@ -93,10 +95,10 @@ class Grass extends Tile {
 
 }
 
-class Bush extends Tile{
+class Sand extends Tile{
 
     Displayable getAssets(){
-        return Assets.sprites.get(R.drawable.static_bush1);
+        return Assets.sheets.get(R.drawable.sheet_16_terrainsimp).getSprite(0, 2);
     }
 
 }
@@ -185,7 +187,7 @@ class DynTile extends Tile {
     void display(DisplayAdapter d) {
         for (int a = 0; a < parts.length; a++) {
             for (int b = 0; b < parts[a].length; b++) {
-                if (parts[a][b] != null)
+                if (parts[a][b].sprite != null)
                     d.displayWorld(parts[a][b]);
             }
         }
@@ -318,5 +320,5 @@ class DynTile extends Tile {
 
 enum TileType {
 
-    water, ground, grass
+    water, ground, grass, sand
 }

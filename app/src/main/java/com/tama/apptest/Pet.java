@@ -24,15 +24,18 @@ abstract class Pet extends Thing{
         acts = new ArrayList<Act>();
         name = "";
         stats = new Stats();
+
+        asset = Assets.sheet_16_blob;
+        loadAsset();
     }
 
     Displayable getAsset(){
         if (anim == null) {
-            anim = new Animator(Assets.sheets.get(R.drawable.sheet_16_blob));
+            anim = new Animator(Assets.getSheet(asset));
             anim.play();
             anim.repeat(true);
         } else {
-            anim.sheet = Assets.sheets.get(R.drawable.sheet_16_blob);
+            anim.sheet = Assets.getSheet(asset);
         }
         return anim;
     }
@@ -88,19 +91,19 @@ abstract class Pet extends Thing{
 
 class Blob extends Pet {
 
-    Displayable getAsset(){
-        super.getAsset();
-        anim.sheet = Assets.sheets.get(R.drawable.sheet_16_blob);
-        return anim;
+    Blob(){
+        super();
+        asset = Assets.sheet_16_blob;
+        loadAsset();
     }
 }
 
 class Walker extends Pet {
 
-    Displayable getAsset(){
-        super.getAsset();
-        anim.sheet = Assets.sheets.get(R.drawable.sheet_16_walker);
-        return anim;
+    Walker(){
+        super();
+        asset = Assets.sheet_16_walker;
+        loadAsset();
     }
 }
 
@@ -116,16 +119,19 @@ class Egg extends Thing {
         age = 0;
         hatchAge = 20000;
 
+        asset = Assets.sheet_16_egg;
+        loadAsset();
+
     }
 
     Displayable getAsset(){
 
         if (anim == null) {
-            anim = new Animator(Assets.sheets.get(R.drawable.sheet_16_egg));
+            anim = new Animator(Assets.getSheet(asset));
             anim.play();
             anim.repeat(true);
         } else {
-            anim.sheet = Assets.sheets.get(R.drawable.sheet_16_blob);
+            anim.sheet = Assets.getSheet(asset);
         }
         return anim;
     }

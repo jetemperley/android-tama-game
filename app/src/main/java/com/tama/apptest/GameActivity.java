@@ -259,9 +259,11 @@ public class GameActivity extends Activity{
         void singleTapConfirmed(float x, float y){
             float[] f = convertScreenToGame(x, y);
             game.select(f[0], f[1]);
+            game.poke(f[0], f[1]);
         }
 
         void longPressConfirmed(float x, float y){
+            float[] f = convertScreenToGame(x, y);
 
         }
 

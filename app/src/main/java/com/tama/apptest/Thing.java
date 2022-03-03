@@ -8,6 +8,7 @@ enum Type {
 abstract class Thing implements java.io.Serializable{
 
     WorldObject loc;
+    String asset = Assets.static_poop;
 
     Thing() {
         loc = new WorldObject(null);
@@ -18,24 +19,17 @@ abstract class Thing implements java.io.Serializable{
     }
 
     Displayable getAsset(){
-
-        return Assets.sprites.get(R.drawable.static_poop);
+        return Assets.getSprite(asset);
     }
 
-    void reLoadAsset(){
+    void loadAsset(){
         loc.sprite = getAsset();
-    }
-
-    boolean isItem(){
-        return false;
     }
 
     void update(World map) {
 
     }
 
-    void click() {
-    }
 
     boolean canSwim() {
         return false;
@@ -66,12 +60,18 @@ abstract class Thing implements java.io.Serializable{
     String getDescription(){
         return "Loc: " + loc.x + ", " + loc.y + ". ";
     }
+
+    Thing pickup(){
+        return this;
+    }
 }
 
 class Rock extends Thing {
 
-    Displayable getAsset(){
-        return Assets.sprites.get(R.drawable.static_rock);
+    Rock(){
+        super();
+        asset = Assets.static_rock;
+        loadAsset();
     }
 
     String getDescription(){
@@ -84,9 +84,12 @@ class Poop extends Thing {
 
     final static int poopTime = 10000;
 
-    Displayable getAsset(){
-        return Assets.sprites.get(R.drawable.static_poop);
+    Poop(){
+        super();
+        asset = Assets.static_poop;
+        loadAsset();
     }
+
     boolean isItem(){
         return true;
     }
@@ -102,23 +105,45 @@ class Poop extends Thing {
 }
 
 class Tree extends Thing implements java.io.Serializable{
-    int level = 0;
+    int lvl = 0;
     int growth = 0;
+    Animator anim;
+
+    Tree(int level){
+        super();
+        asset = Assets.static_poop;
+        loadAsset();
+
+        lvl = level;
+        if (lvl < 0 || lvl > 4)
+            lvl = 0;
+        anim.animID = lvl;
+
+    }
 
     Displayable getAsset(){
-        return Assets.sprites.get(R.drawable.static_tree);
+        if (anim == null){
+            anim = new Animator(Assets.sheets.get(R.drawable.sheet_16_treegrowth));
+        } else {
+            anim.sheet = Assets.sheets.get(R.drawable.sheet_16_treegrowth);
+        }
+        return anim;
     }
 
 
     void update(World m){
-        if (growth < 1000) {
-            growth ++;
-        } else if (growth > 1000-2 && level < 2){
-            level++;
-            loc.sprite = Assets.sprites.get(16+level);
-            growth = 0;
-        }
-        Log.d("Tree", "" + growth);
+//        if (growth < 1000) {
+//            growth ++;
+//        } else if (growth > 1000-2 && level < 2){
+//            level++;
+//            loc.sprite = Assets.sprites.get(16+level);
+//            growth = 0;
+//        }
+        // Log.d("Tree", "" + growth);
+    }
+
+    void poke(){
+        anim.play();
     }
 
     Type type() {
@@ -126,15 +151,30 @@ class Tree extends Thing implements java.io.Serializable{
     }
 
     String getDescription(){
-        return super.getDescription() + "Its a tree, level " + level + ".";
+        return super.getDescription() + "Its a tree, level " + lvl + ".";
+    }
+
+    Thing pickup(){
+        return this;
     }
 
 }
 
+class PulledBush extends Thing{
+
+    PulledBush(){
+        super();
+        asset = Assets.static_pullbush;
+        loadAsset();
+    }
+}
+
 class Seed extends Thing{
 
-    Displayable getAsset(){
-        return Assets.sprites.get(R.drawable.static_seed);
+    Seed(){
+        super();
+        asset = Assets.static_seed;
+        loadAsset();
     }
 
     boolean isItem(){
@@ -145,7 +185,7 @@ class Seed extends Thing{
 
         Thing t = m.takeThing(ax, ay);
         if (t==null){
-            m.add(new Tree(), ax, ay);
+            m.add(new Tree(0), ax, ay);
             return null;
         }
 
@@ -172,8 +212,9 @@ class Seed extends Thing{
 
 class Wood extends Thing{
 
-    Displayable getAsset(){
-        return Assets.sprites.get(R.drawable.static_log);
+    Wood(){
+        asset = Assets.static_log;
+        loadAsset();
     }
 
     boolean isItem(){
@@ -182,6 +223,44 @@ class Wood extends Thing{
 
     String getDescription(){
         return "A chunk of wood.";
+    }
+}
+
+class Bush extends Thing{
+
+    Animator anim;
+
+    Bush(){
+        asset = Assets.sheet_16_bush;
+        loadAsset();
+    }
+
+    Displayable getAsset(){
+
+        if (anim == null){
+            anim = new Animator(Assets.getSheet(asset));
+        } else {
+            anim.sheet = Assets.getSheet(asset);
+        }
+        anim.animID= 1;
+        anim.animDur = 500;
+        return anim;
+    }
+
+    void poke(){
+        anim.play();
+    }
+
+    boolean isItem(){
+        return true;
+    }
+
+    String getDescription(){
+        return "A little bush.";
+    }
+
+    Thing pickup(){
+        return new PulledBush();
     }
 }
 

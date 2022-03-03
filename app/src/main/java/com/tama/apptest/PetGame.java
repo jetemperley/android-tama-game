@@ -12,19 +12,11 @@ public class PetGame implements java.io.Serializable {
 
     PetGame(){
 
-        map = new World(10);
+        map = WorldFactory.makeWorld();
         held = null;
-        map.add(new Poop(), 9, 9);
-        map.add(new Blob(), 1, 1);
-        map.setTile(2, 2, TileType.water);
-        map.setTile(2, 3, TileType.water);
-        map.setTile(3, 2, TileType.water);
 
-        for (int x = 4; x < 8; x++){
-            for (int y = 4; y < 8; y++){
-                map.setTile(x, y, new LongGrass());
-            }
-        }
+
+
         heldPos = new Vec2<>(0f, 0f);
     }
 
@@ -55,7 +47,7 @@ public class PetGame implements java.io.Serializable {
     void reLoadAllAssets(){
         map.reLoadAllAssets();
         if (held != null)
-            held.reLoadAsset();
+            held.loadAsset();
     }
 
     void setHeldPosition(float x, float y){
@@ -105,5 +97,12 @@ public class PetGame implements java.io.Serializable {
     void select(float x, float y){
         Thing t = map.checkCollision(x, y);
         selected = t;
+    }
+
+    void poke(float x, float y){
+        Thing t = map.checkCollision(x, y);
+        if (t != null){
+            t.poke();
+        }
     }
 }

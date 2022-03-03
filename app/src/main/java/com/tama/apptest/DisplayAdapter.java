@@ -31,7 +31,7 @@ class AndroidDisplay implements DisplayAdapter {
     public void displayWorld(WorldObject t){
 
         if (t.sprite == null) {
-            Log.d("display adapter ", "sprite was null");
+            Log.d("Display Adapter ", t.getClass().getName() + " sprite was null");
             return;
         }
         canvas.drawBitmap( t.sprite.getSprite(),

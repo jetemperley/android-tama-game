@@ -21,6 +21,7 @@ public class SpriteSheet{
     }
 
     public StaticSprite getSprite(int row, int col){
+
         return sheet[row][col];
     }
 
@@ -77,9 +78,7 @@ class Animator implements Displayable, java.io.Serializable{
 
     void cancelAnim() {
         animTime = 0;
-        animID = 0;
         play = false;
-
 
     }
 

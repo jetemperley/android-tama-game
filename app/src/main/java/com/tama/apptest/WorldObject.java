@@ -3,6 +3,7 @@ package com.tama.apptest;
 public class WorldObject implements java.io.Serializable{
 
     transient Displayable sprite;
+    String asset;
     int x, y;
     int xoff, yoff;
     // flat indicates if the sprite is displayed as a ground base layer
@@ -21,6 +22,10 @@ public class WorldObject implements java.io.Serializable{
     void setPos(int x, int y){
         this.x = x;
         this.y = y;
+    }
+
+    void loadAsset(){
+
     }
 
 }

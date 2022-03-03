@@ -7,6 +7,10 @@ public class World implements java.io.Serializable{
     int celln, openSpace;
     float xoff, yoff;
 
+    World(){
+        this(10);
+    }
+
     World(int size) {
         celln = size;
         xoff = 0;
