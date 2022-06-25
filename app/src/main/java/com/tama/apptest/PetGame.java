@@ -7,6 +7,7 @@ public class PetGame implements java.io.Serializable {
     World map;
     Thing held, selected;
     Pet target;
+    Inventory inv;
     Vec2<Float> heldPos;
 
     PetGame(){
@@ -26,6 +27,7 @@ public class PetGame implements java.io.Serializable {
 
             }
         }
+        inv = new Inventory();
         heldPos = new Vec2<>(0f, 0f);
     }
 
@@ -37,6 +39,7 @@ public class PetGame implements java.io.Serializable {
 
     void drawUI(DisplayAdapter d){
 
+        // inv.display(d);
         if (held != null)
             d.displayManual(held.loc.sprite, heldPos.x, heldPos.y);
 
@@ -48,11 +51,51 @@ public class PetGame implements java.io.Serializable {
             held.reLoadAsset();
     }
 
+    // the tap location in game coords
+    void singlePress(float x, float y){
+        Thing t = map.checkCollision(x, y);
+        if (t == null){
+            singlePress((int)x, (int)y);
+        }
+    }
+
+    // the tap in array coords
+    void singlePress(int x, int y){
+        // Log.d("game press ", " " +x+ " " + y);
+        //  target.acts.add(new GoTo(x, y, 0));
+        setSelected(x, y);
+    }
+
+    void longPress(int x, int y){
+        // Log.d("PetGame", "longpress");
+        if (held != null)
+            held = held.apply(map, x, y);
+    }
+
+    void doublePress(int x, int y){
+
+    }
+
+    // x and y are distance dragged
+    void drag(float x, float y){
+        heldPos.x +=x;
+        heldPos.y +=y;
+    }
+
+    void releaseHeld(int x, int y){
+        if (held != null){
+            int ax = held.x(), ay = held.y();
+            held = map.swap(held, x, y);
+            map.add(held, ax, ay);
+            held = null;
+        }
+    }
+
     void setHeldPosition(float x, float y){
-
-        heldPos.x = x*16;
-        heldPos.y = y*16;
-
+        if (held != null){
+            heldPos.x = x;
+            heldPos.y = y;
+        }
     }
 
     void setHeld(int x, int y){
