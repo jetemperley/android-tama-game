@@ -68,7 +68,7 @@ class GoTo extends ActSequence {
 
             int xi = p.loc.x, yi = p.loc.y;
             for (Vec2<Integer> s : path){
-                Log.d("goto path: ", (s.x - xi) + " " + (s.y - yi));
+                // Log.d("goto path: ", (s.x - xi) + " " + (s.y - yi));
                 acts.add(new Step(s.x - xi, s.y - yi));
                 xi = s.x;
                 yi = s.y;

@@ -84,7 +84,7 @@ public class PetGame implements java.io.Serializable {
 
     void releaseHeld(int x, int y){
         if (held != null){
-            int ax = held.x(), ay = held.y();
+            int ax = held.loc.x, ay = held.loc.y;
             held = map.swap(held, x, y);
             map.add(held, ax, ay);
             held = null;

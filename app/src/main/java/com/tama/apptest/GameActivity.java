@@ -49,7 +49,6 @@ public class GameActivity extends Activity{
     Matrix mat, idmat;
     GestureDetectorCompat gdc;
     ScaleGestureDetector sgd;
-    GameControls controls;
     Display d;
     AndroidDisplay displayAdapter;
     DepthDisplay depthDisplay;
@@ -82,7 +81,6 @@ public class GameActivity extends Activity{
         // gesture setup
         gdc = new GestureDetectorCompat(this, new Gestures());
         sgd = new ScaleGestureDetector(this, new ScaleGesture());
-        controls = new GameControls();
 
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -133,7 +131,7 @@ public class GameActivity extends Activity{
                 end = LocalTime.now();
                 frameTime = ChronoUnit.MILLIS.between(start, end);
                 long ytime = period - frameTime;
-                Log.d("Time", "" + ytime);
+                //Log.d("Time", "" + ytime);
                 try {
                     if (ytime > 0)
                         Thread.currentThread().wait(ytime);
@@ -236,9 +234,9 @@ public class GameActivity extends Activity{
     @Override
     public boolean onTouchEvent(MotionEvent e){
 
-        controls.onTouchEvent(e);
-        return true;// super.onTouchEvent(e);
-
+        this.gdc.onTouchEvent(e);
+        this.sgd.onTouchEvent(e);// super.onTouchEvent(e);
+        return super.onTouchEvent(e);
     }
 
 
@@ -254,67 +252,11 @@ public class GameActivity extends Activity{
 
     }
 
-    class GameControls {
-        boolean down = false;
-        LocalTime downtime;
-
-        public boolean onTouchEvent(MotionEvent e){
-
-            float[] f = convertScreenToGame(e.getX(), e.getY());
-
-            if (e.getAction() == MotionEvent.ACTION_DOWN){
-                game.setSelected((int)f[0], (int)f[1]);
-                down = true;
-                downtime = LocalTime.now();
-                Log.d("Game Controld", "down");
-
-            } else if (e.getAction() == MotionEvent.ACTION_MOVE){
-                if (down){
-                    // the press was dragged for the first time
-                    game.setSelectedAsHeld();
-                    game.setHeldPosition(f[0]*16, f[1]*16);
-
-                    if (false){
-                        // if the move is near the edge, move the world
-                    }
-                    down = false;
-                }
-                // Log.d("Game Controld", "move");
-                game.setHeldPosition(f[0]*16, f[1]*16);
-
-            } else if (e.getAction() == MotionEvent.ACTION_UP) {
-                if (down){
-                    // there was a regular press
-                    game.singlePress((int)f[0], (int)f[1]);
-                }
-                game.releaseHeld((int)f[0], (int)f[1]);
-                down = false;
-                Log.d("Game Controls", "up");
-            }
-            return true;
-
-        }
-
-        void singleTapConfirmed(){
-
-        }
-
-        void doubleTapConfirmed(){
-
-        }
-
-        void drag(){
-
-        }
-
-        void scale(){
-
-        }
-    }
 
     class Gestures extends GestureDetector.SimpleOnGestureListener{
 
         boolean down = false;
+        boolean dragging = false;
 
         @Override
         public boolean onDown(MotionEvent e){
@@ -335,8 +277,10 @@ public class GameActivity extends Activity{
         @Override
         public boolean onScroll(MotionEvent e1, MotionEvent e2, float d1, float d2){
             Log.d("Gesture", "scroll");
-            float[] f = convertScreenToGame(e2.getX(), e2.getY());
-            game.setHeldPosition(f[0]*16, f[1]*16);
+//            float[] f = convertScreenToGame(e2.getX(), e2.getY());
+//            game.setHeldPosition(f[0]*16, f[1]*16);
+
+
             return true;
         }
 
@@ -360,11 +304,34 @@ public class GameActivity extends Activity{
 
     private class ScaleGesture extends ScaleGestureDetector.SimpleOnScaleGestureListener{
 
+        float[] prevFocus = new float[] {-1, -1};
+
+        @Override
+        public boolean onScaleBegin(ScaleGestureDetector d){
+            prevFocus[0] = d.getFocusX();
+            prevFocus[1] = d.getFocusY();
+            return true;
+        }
+
         @Override
         public boolean onScale(ScaleGestureDetector d){
-            Log.d("ScaleGesture", "scale");
-            mat.preScale(d.getScaleFactor(), d.getScaleFactor());
+            Log.d("Gesture", "scale");
+            float xs = d.getFocusX();
+            float ys = d.getFocusY();
+            mat.postTranslate(xs - prevFocus[0], ys - prevFocus[1]);
+            mat.postTranslate(-xs, -ys);
+            mat.postScale(d.getScaleFactor(), d.getScaleFactor());
+//            xs = canvas.getWidth()/2*scale;
+//            ys = canvas.getHeight()/2*scale;
+            mat.postTranslate(xs, ys);
+            prevFocus[0] = xs;
+            prevFocus[1] = ys;
             return true;
+        }
+
+        @Override
+        public void onScaleEnd(ScaleGestureDetector d){
+
         }
     }
 }
