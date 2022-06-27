@@ -183,7 +183,7 @@ public class World implements java.io.Serializable{
 
         for (int xi = -1; xi < 2; xi++){
             for (int yi = -1; yi < 2; yi++){
-                Thing t = tile[(int)x+xi][(int)y+yi].getThing();
+                Thing t = getThing((int)x+xi, (int)y+yi);
                 if (t != null && t.contains(x, y)) {
                     return t;
                 }

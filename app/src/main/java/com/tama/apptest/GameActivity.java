@@ -31,6 +31,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.time.Instant;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -47,14 +48,15 @@ public class GameActivity extends Activity{
     final String CHANNEL_ID = "01", channel_name = "ch1", channel_desc = "test channel";
     Canvas canvas;
     Matrix mat, idmat;
-    GestureDetectorCompat gdc;
-    ScaleGestureDetector sgd;
+
     Display d;
     AndroidDisplay displayAdapter;
     DepthDisplay depthDisplay;
     PetGame game;
     static int period = 25;
     final static String dataFile = "gameData.ser";
+
+    Controls controls;
 
 
     @Override
@@ -78,9 +80,7 @@ public class GameActivity extends Activity{
         black.setDither(false);
         black.setFilterBitmap(false);
 
-        // gesture setup
-        gdc = new GestureDetectorCompat(this, new Gestures());
-        sgd = new ScaleGestureDetector(this, new ScaleGesture());
+
 
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -140,6 +140,10 @@ public class GameActivity extends Activity{
             }
         }).start();
 
+        setupGame();
+        // gesture setup
+        controls = new Controls(this, game);
+
     }
 
 
@@ -189,6 +193,10 @@ public class GameActivity extends Activity{
     @Override
     public void onStart(){
         super.onStart();
+
+    }
+
+    void setupGame(){
         Context context = getApplicationContext();
         File dir = context.getFilesDir();
         File[] content = dir.listFiles();
@@ -203,7 +211,7 @@ public class GameActivity extends Activity{
             try{
                 ObjectInputStream in =
                         new ObjectInputStream(
-                        new FileInputStream(data));
+                                new FileInputStream(data));
                 game = (PetGame)in.readObject();
                 game.reLoadAllAssets();
                 in.close();
@@ -218,24 +226,24 @@ public class GameActivity extends Activity{
     }
 
 
-
-    float[] convertScreenToGame(float x, float y){
+    Matrix inv = new Matrix();
+    float[] convertScreenToGame(float x, float y, float[] out){
         float[] f2 = new float[9];
         mat.getValues(f2);
-        float[] f = {(x - f2[2])/16, (y - f2[5]- displayAdapter.topIn)/16};
+        out[0] = (x - f2[2])/16;
+        out[1] = (y - f2[5]- displayAdapter.topIn)/16;
 
-        Matrix inv = new Matrix();
+        inv.reset();
         mat.invert(inv);
-        inv.mapVectors(f);
-        return f;
+        inv.mapVectors(out);
+        return out;
 
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent e){
 
-        this.gdc.onTouchEvent(e);
-        this.sgd.onTouchEvent(e);// super.onTouchEvent(e);
+        controls.onTouchEvent(e);
         return super.onTouchEvent(e);
     }
 
@@ -252,89 +260,163 @@ public class GameActivity extends Activity{
 
     }
 
+    class Controls {
+        PetGame game;
 
-    class Gestures extends GestureDetector.SimpleOnGestureListener{
+        // time to check if a 2nd pointer is down
+        int waitTime = 100;
+        long touchTime = -1;
+        float[] touchPos = new float[] {-1, -1};
+        Vec2<Float> prev0 = new Vec2(-1f, -1f);
+        Vec2<Float> prev1 = new Vec2(-1f, -1f);
 
-        boolean down = false;
-        boolean dragging = false;
 
-        @Override
-        public boolean onDown(MotionEvent e){
-            Log.d("Gesture", "down");
-            down = true;
+        Runnable r = () -> {
+            try {
+                Thread.sleep(waitTime);
+            } catch (Exception e){
+                Log.d("controls exception", e.getMessage());
+                resetTouch();
+                return;
+            }
+            Log.d("controls ", "holding");
+            game.setHeld(touchPos[0], touchPos[1]);
+
+        };
+        Thread t;
+
+        Controls(Activity a, PetGame p){
+            game = p;
+            t = new Thread(r);
+        }
+
+        boolean onTouchEvent(MotionEvent e){
+            for (int i = 0; i < e.getPointerCount(); i++){
+
+//                int id = e.getPointerId(i);
+//
+//                Log.d("controls ", "id "+ id + " event code "
+//                    + MotionEvent.actionToString(e.getAction())
+//                    + " " + e.getAction());
+
+                switch (e.getAction()){
+
+                    // placed the first finger down
+                    case MotionEvent.ACTION_DOWN:{
+                        // now in milliseconds
+                        touchTime = Instant.now().toEpochMilli();
+                        touchPos = convertScreenToGame(e.getX(), e.getY(), touchPos);
+                        Log.d("controls ", touchPos[0] + " " + touchPos[1]);
+                        if (t.getState() == Thread.State.WAITING)
+                            t.interrupt();
+                        t = new Thread(r);
+                        t.start();
+                        prev0.set(e.getX(), e.getY());
+
+
+                    }
+                    break;
+
+                    // brought the final finger up finger up
+                    case MotionEvent.ACTION_POINTER_UP:
+                        // all fingers are up
+                    case MotionEvent.ACTION_UP: {
+                        resetTouch();
+                        release(e);
+                    }
+                    break;
+
+                    // placed the second finger down
+                    case MotionEvent.ACTION_POINTER_2_DOWN:{
+                        if (Instant.now().toEpochMilli() - touchTime < waitTime) {
+                            t.interrupt();
+                        }
+                        prev1.set(e.getX(1), e.getY(1));
+
+                    }
+                    break;
+
+                    // 2nd finger up
+                    case MotionEvent.ACTION_POINTER_2_UP:{
+
+
+                    }
+                    break;
+
+                    // fingers were moved
+                    case MotionEvent.ACTION_MOVE:
+                    {
+
+                        if (e.getPointerCount() > 1){
+
+                            twoFingerDrag(e);
+                            if (touchPos[0] != -1)
+                                itemDrag(e);
+
+                            prev0.set(e.getX(0), e.getY(0));
+                            prev1.set(e.getX(1), e.getY(1));
+
+                        } else {
+
+                            if (touchPos[1] != -1)
+                                itemDrag(e);
+                            else
+                                emptyDrag(e);
+                            prev0.set(e.getX(0), e.getY(0));
+                        }
+
+
+
+                    }
+                    break;
+
+                }
+            }
+
             return true;
         }
 
+        float[] temp = new float[2];
+        void itemDrag(MotionEvent e){
+            Log.d("controls ", "item drag");
+            temp[0] = e.getX();
+            temp[1] = e.getY();
+            mat.mapVectors(temp);
+            game.setHeldPosition(temp[0], temp[1]);
 
-        @Override
-        public boolean onSingleTapConfirmed(MotionEvent e){
-            Log.d("Gesture", "single tap");
-            float[] f = convertScreenToGame(e.getX(), e.getY());
-            game.singlePress((int)f[0], (int)f[1]);
-            return true;
         }
 
-        @Override
-        public boolean onScroll(MotionEvent e1, MotionEvent e2, float d1, float d2){
-            Log.d("Gesture", "scroll");
-//            float[] f = convertScreenToGame(e2.getX(), e2.getY());
-//            game.setHeldPosition(f[0]*16, f[1]*16);
-
-
-            return true;
+        void emptyDrag(MotionEvent e){
+            Log.d("controls ", "empty drag ");
+            // + (prev0.x -e.getX()) + " " + (prev1.y -e.getY()));
+            mat.postTranslate(e.getX() - prev0.x, e.getY()- prev0.y);
         }
 
-        @Override
-        public boolean onDoubleTap(MotionEvent e){
-            Log.d("Gesture", "double tap");
-            float[] f = convertScreenToGame(e.getX(), e.getY());
-            game.doublePress((int)f[0], (int)f[1]);
-            return true;
+        void twoFingerDrag(MotionEvent e){
+            Log.d("controls ", "two drag");
+
         }
 
-        @Override
-        public void onLongPress(MotionEvent e){
-            Log.d("Gesture", "long press");
-            float[] f = convertScreenToGame(e.getX(), e.getY());
-            game.longPress((int)f[0], (int)f[1]);
+        void release(MotionEvent e){
+            Log.d("controls ", "release drag");
+            temp[0] = e.getX();
+            temp[1] = e.getY();
+            mat.mapVectors(temp);
+            game.dropHeld(temp[0], temp[1]);
+        }
+
+        private synchronized void resetTouch(){
+            touchTime = -1;
+            touchPos[0] = -1f;
+            touchPos[1] = -1f;
         }
 
     }
 
 
-    private class ScaleGesture extends ScaleGestureDetector.SimpleOnScaleGestureListener{
-
-        float[] prevFocus = new float[] {-1, -1};
-
-        @Override
-        public boolean onScaleBegin(ScaleGestureDetector d){
-            prevFocus[0] = d.getFocusX();
-            prevFocus[1] = d.getFocusY();
-            return true;
-        }
-
-        @Override
-        public boolean onScale(ScaleGestureDetector d){
-            Log.d("Gesture", "scale");
-            float xs = d.getFocusX();
-            float ys = d.getFocusY();
-            mat.postTranslate(xs - prevFocus[0], ys - prevFocus[1]);
-            mat.postTranslate(-xs, -ys);
-            mat.postScale(d.getScaleFactor(), d.getScaleFactor());
-//            xs = canvas.getWidth()/2*scale;
-//            ys = canvas.getHeight()/2*scale;
-            mat.postTranslate(xs, ys);
-            prevFocus[0] = xs;
-            prevFocus[1] = ys;
-            return true;
-        }
-
-        @Override
-        public void onScaleEnd(ScaleGestureDetector d){
-
-        }
-    }
 }
+
+
 
 
 
