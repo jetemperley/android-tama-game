@@ -1,5 +1,6 @@
 package com.tama.apptest;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -24,6 +25,7 @@ import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.View;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -194,6 +196,8 @@ public class GameActivity extends Activity{
     public void onStart(){
         super.onStart();
 
+
+
     }
 
     void setupGame(){
@@ -235,7 +239,7 @@ public class GameActivity extends Activity{
 
         inv.reset();
         mat.invert(inv);
-        inv.mapVectors(out);
+        inv.mapPoints(out);
         return out;
 
     }
@@ -267,6 +271,7 @@ public class GameActivity extends Activity{
         int waitTime = 100;
         long touchTime = -1;
         float[] touchPos = new float[] {-1, -1};
+        int id0 = -1, id1 = -1;
         Vec2<Float> prev0 = new Vec2(-1f, -1f);
         Vec2<Float> prev1 = new Vec2(-1f, -1f);
 
@@ -275,12 +280,14 @@ public class GameActivity extends Activity{
             try {
                 Thread.sleep(waitTime);
             } catch (Exception e){
-                Log.d("controls exception", e.getMessage());
+                // Log.d("controls exception",  "cancelled" +  e.getMessage());
                 resetTouch();
                 return;
             }
-            Log.d("controls ", "holding");
-            game.setHeld(touchPos[0], touchPos[1]);
+            // Log.d("controls ", "holding");
+            if (!game.setHeld(touchPos[0], touchPos[1])){
+                resetTouch();
+            }
 
         };
         Thread t;
@@ -291,18 +298,20 @@ public class GameActivity extends Activity{
         }
 
         boolean onTouchEvent(MotionEvent e){
-            for (int i = 0; i < e.getPointerCount(); i++){
-
-//                int id = e.getPointerId(i);
+//            Log.d("control pointers ", e.getPointerCount()+"");
+//             for (int i = 0; i < e.getPointerCount(); i++) {
 //
-//                Log.d("controls ", "id "+ id + " event code "
-//                    + MotionEvent.actionToString(e.getAction())
-//                    + " " + e.getAction());
+//                 int id = e.getPointerId(i);
+//
+//                 Log.d("controls ", "index " + i + " id " + id + " event code "
+//                         + MotionEvent.actionToString(e.getAction())
+//                         + " " + e.getAction());
+//             }
 
-                switch (e.getAction()){
+                switch (e.getAction()) {
 
                     // placed the first finger down
-                    case MotionEvent.ACTION_DOWN:{
+                    case MotionEvent.ACTION_DOWN: {
                         // now in milliseconds
                         touchTime = Instant.now().toEpochMilli();
                         touchPos = convertScreenToGame(e.getX(), e.getY(), touchPos);
@@ -312,14 +321,29 @@ public class GameActivity extends Activity{
                         t = new Thread(r);
                         t.start();
                         prev0.set(e.getX(), e.getY());
+                        id0 = e.getPointerId(0);
 
 
                     }
                     break;
 
                     // brought the final finger up finger up
-                    case MotionEvent.ACTION_POINTER_UP:
-                        // all fingers are up
+                    // swap fingers
+                    case MotionEvent.ACTION_POINTER_UP:{
+
+                        prev0.x = prev1.x;
+                        prev0.y = prev1.y;
+
+                    }
+                    break;
+
+                    case MotionEvent.ACTION_POINTER_DOWN:{
+                        prev1.set(prev0);
+                        prev0.set(e.getX(), e.getY());
+                    }
+                    break;
+
+                    // all fingers are up
                     case MotionEvent.ACTION_UP: {
                         resetTouch();
                         release(e);
@@ -332,6 +356,7 @@ public class GameActivity extends Activity{
                             t.interrupt();
                         }
                         prev1.set(e.getX(1), e.getY(1));
+                        id1 = e.getPointerId(0);
 
                     }
                     break;
@@ -362,43 +387,65 @@ public class GameActivity extends Activity{
                                 itemDrag(e);
                             else
                                 emptyDrag(e);
+
                             prev0.set(e.getX(0), e.getY(0));
                         }
-
-
-
                     }
                     break;
 
                 }
-            }
+
 
             return true;
         }
 
         float[] temp = new float[2];
         void itemDrag(MotionEvent e){
-            Log.d("controls ", "item drag");
+            // Log.d("controls ", "item drag");
             temp[0] = e.getX();
             temp[1] = e.getY();
-            mat.mapVectors(temp);
+            // mat.mapVectors(temp);
+            temp = convertScreenToGame(e.getX(), e.getY(), temp);
             game.setHeldPosition(temp[0], temp[1]);
 
         }
 
         void emptyDrag(MotionEvent e){
-            Log.d("controls ", "empty drag ");
+            // Log.d("controls ", "empty drag ");
             // + (prev0.x -e.getX()) + " " + (prev1.y -e.getY()));
             mat.postTranslate(e.getX() - prev0.x, e.getY()- prev0.y);
         }
 
+        Vec2<Float> t0 = new Vec2(0f,0f), t1 = new Vec2(0f, 0f);
         void twoFingerDrag(MotionEvent e){
-            Log.d("controls ", "two drag");
+            // Log.d("controls ", "two drag");
+
+            t0.set(e.getX(0), e.getY(0));
+            t1.set(e.getX(1), e.getY(1));
+
+            float tfx = (t0.x + t1.x)/2f;
+            float tfy = (t0.y + t1.y)/2f;
+            mat.postTranslate(-tfx, -tfy);
+
+            // calculate the length of each set of scale gestures
+            float td = (t0.x - t1.x)*(t0.x - t1.x) + (t0.y - t1.y)*(t0.y - t1.y);
+            td = (float)Math.sqrt(td);
+            float pd = (prev0.x - prev1.x)*(prev0.x - prev1.x) + (prev0.y - prev1.y)*(prev0.y - prev1.y);
+            pd = (float)Math.sqrt(pd);
+            mat.postScale(td/pd, td/pd);
+            // Log.d("scale ", td/pd +"");
+            mat.postTranslate(tfx, tfy);
+
+            float pfx = (prev0.x+prev1.x)/2f;
+            float pfy = (prev0.y+prev1.y)/2f;
+
+            mat.postTranslate(tfx - pfx, tfy - pfy);
+
+//            Log.d("scale points ", t0.x + " " t1.);
 
         }
 
         void release(MotionEvent e){
-            Log.d("controls ", "release drag");
             temp[0] = e.getX();
             temp[1] = e.getY();
             mat.mapVectors(temp);
@@ -438,6 +485,10 @@ class Vec2<T> implements java.io.Serializable{
     void set(T x, T y){
         this.x = x;
         this.y = y;
+    }
+    void set(Vec2<T> other){
+        x = other.x;
+        y = other.y;
     }
 }
 

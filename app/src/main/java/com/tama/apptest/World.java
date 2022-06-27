@@ -42,14 +42,17 @@ public class World implements java.io.Serializable{
 
     }
 
-    void add(Thing t, int x, int y) {
+    boolean add(Thing t, int x, int y) {
         if (t == null)
-            return;
+            return true;
 
-        if (tile[x][y].isEmpty()) {
+        if (A.inRange(tile, x, y) && tile[x][y].isEmpty()) {
             tile[x][y].setThing(t);
             t.loc.setPos(x, y);
+            return true;
         }
+        return false;
+
     }
 
     void reLoadAllAssets(){

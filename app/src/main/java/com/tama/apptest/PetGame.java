@@ -110,6 +110,7 @@ public class PetGame implements java.io.Serializable {
     }
 
     void dropHeld(float x, float y){
+
         if (map.getThing((int)x, (int)y) == null){
             map.add(held, (int)x, (int)y);
             held = null;
@@ -121,9 +122,11 @@ public class PetGame implements java.io.Serializable {
         selected = t;
     }
 
-    void setHeld(float x, float y){
+    // sets the held object to x,y and returns true if sucessful
+    boolean setHeld(float x, float y){
         Thing t = map.checkCollision(x, y);
         held = t;
+        return t != null;
     }
 
 
