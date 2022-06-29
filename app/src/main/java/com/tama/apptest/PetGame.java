@@ -1,7 +1,5 @@
 package com.tama.apptest;
 
-import android.util.Log;
-
 public class PetGame implements java.io.Serializable {
 
     World map;
@@ -15,8 +13,8 @@ public class PetGame implements java.io.Serializable {
         map = new World(10);
         held = null;
         target = new Blob();
-        map.add(new Poo(), 9, 9);
-        map.add(target, 1, 1);
+        map.put(new Poo(), 9, 9);
+        map.put(target, 1, 1);
         map.setTile(2, 2, TileType.water);
         map.setTile(2, 3, TileType.water);
         map.setTile(3, 2, TileType.water);
@@ -63,15 +61,6 @@ public class PetGame implements java.io.Serializable {
         heldPos.y +=y;
     }
 
-    void releaseHeld(int x, int y){
-        if (held != null){
-            int ax = held.loc.x, ay = held.loc.y;
-            held = map.swap(held, x, y);
-            map.add(held, ax, ay);
-            held = null;
-        }
-    }
-
     void setHeldPosition(float x, float y){
         if (held != null){
             heldPos.x = x;
@@ -110,14 +99,12 @@ public class PetGame implements java.io.Serializable {
     }
 
     void dropHeld(float x, float y){
+        map.put(held, (int)x, (int)y);
+        held = null;
 
-        if (map.getThing((int)x, (int)y) == null){
-            map.add(held, (int)x, (int)y);
-            held = null;
-        }
     }
 
-    void select(float x, float y){
+    void setSelected(float x, float y){
         Thing t = map.checkCollision(x, y);
         selected = t;
     }
@@ -125,8 +112,14 @@ public class PetGame implements java.io.Serializable {
     // sets the held object to x,y and returns true if sucessful
     boolean setHeld(float x, float y){
         Thing t = map.checkCollision(x, y);
-        held = t;
-        return t != null;
+        if (t == null)
+            return false;
+        setHeld(t.loc.x, t.loc.y);
+        return true;
+    }
+
+    void nudge(float x, float y){
+
     }
 
 

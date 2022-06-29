@@ -121,7 +121,7 @@ class Step implements Act {
         if (m.canStepOnto(p.loc.x, p.loc.y, p.loc.x + X, p.loc.y + Y)) {
             p.setDir(X, Y);
             m.removeThing(p.loc.x, p.loc.y);
-            m.add(p, p.loc.x + X, p.loc.y + Y);
+            m.put(p, p.loc.x + X, p.loc.y + Y);
             p.anim.play();
             p.loc.xoff = -X * 100;
             p.loc.yoff = -Y * 100;

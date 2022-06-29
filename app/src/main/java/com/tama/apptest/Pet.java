@@ -152,7 +152,7 @@ class Egg extends Thing {
         if (age > hatchAge) {
             // hatch
             map.removeThing(this);
-            map.add(new Blob(), loc.x, loc.y);
+            map.put(new Blob(), loc.x, loc.y);
         }
     }
 

@@ -1,5 +1,4 @@
 package com.tama.apptest;
-import android.graphics.drawable.Drawable;
 import android.util.Log;
 
 enum Type {
@@ -124,7 +123,7 @@ class Seed extends Thing{
 
         Thing t = m.takeThing(ax, ay);
         if (t==null){
-            m.add(new Tree(), ax, ay);
+            m.put(new Tree(), ax, ay);
             return null;
         }
 

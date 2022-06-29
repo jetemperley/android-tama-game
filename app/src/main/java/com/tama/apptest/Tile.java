@@ -147,6 +147,7 @@ class LongGrass extends Tile{
 class DynTile extends Tile {
     // considers the surrounding tiles to create a dynamic tile graphic
     static SpriteSheet sheet;
+    static SpriteSheet bubbles;
     WorldObject[][] parts;
 
     
@@ -156,7 +157,8 @@ class DynTile extends Tile {
         super();
         if (sheet == null)
             sheet = Assets.sheets.get(R.drawable.sheet_8_watersimp);
-
+        if (bubbles == null)
+            bubbles = Assets.sheets.get(R.drawable.sheet_16_bubbles);
         parts = new WorldObject[2][2];
 
         for (int a = 0; a < parts.length; a++) {

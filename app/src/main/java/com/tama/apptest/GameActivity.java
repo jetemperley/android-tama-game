@@ -26,6 +26,7 @@ import android.view.ScaleGestureDetector;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
+import android.view.Window;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -45,8 +46,10 @@ public class GameActivity extends Activity{
     ConstraintLayout lay;
     static Paint red, black;
     CustomView view;
+    View window;
     Timer timer;
     Rect screenSize;
+    int statusBarHeight;
     final String CHANNEL_ID = "01", channel_name = "ch1", channel_desc = "test channel";
     Canvas canvas;
     Matrix mat, idmat;
@@ -68,11 +71,11 @@ public class GameActivity extends Activity{
         view = new CustomView(this);
         setContentView(view);
 
+
         d = getWindowManager().getDefaultDisplay();
         screenSize = new Rect();
         d.getRectSize(screenSize);
-
-        Log.i("sizes: " , screenSize.top + " " + screenSize.bottom + " " + screenSize.left + " " + screenSize.right);
+        Log.d("sizes: " , screenSize.top + " " + screenSize.bottom + " " + screenSize.left + " " + screenSize.right);
 
         red = new Paint();
         red.setARGB(255, 255, 0, 0);
@@ -81,9 +84,6 @@ public class GameActivity extends Activity{
         black.setARGB(255, 0, 0, 0);
         black.setDither(false);
         black.setFilterBitmap(false);
-
-
-
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             CharSequence name = channel_name;
@@ -109,7 +109,6 @@ public class GameActivity extends Activity{
         Log.d("Setup", "staring setup");
         Assets.init(getResources());
         Log.d("Setup", "finished loading resources");
-
 
         Log.d("display height ", " " + d.getHeight() +" " + view.getHeight() + " " + view.getTop());
         depthDisplay = new DepthDisplay();
@@ -149,8 +148,14 @@ public class GameActivity extends Activity{
     }
 
 
-
+    Rect rectangle = new Rect();
     public void draw() {
+
+        Window window = getWindow();
+        window.getDecorView().getWindowVisibleDisplayFrame(rectangle);
+        statusBarHeight = rectangle.top;
+        // Log.d("top", view.getHeight() + " " + statusBarHeight);
+
         if (view.surface.getSurface().isValid()) {
             canvas = view.surface.lockCanvas();
 
@@ -158,8 +163,8 @@ public class GameActivity extends Activity{
                 canvas.setMatrix(mat);
                 depthDisplay.display = displayAdapter;
                 displayAdapter.canvas = canvas;
-                // size = canvas.getClipBounds();
-                // Log.d("canvas clip ", " "  +size.top + " " + size.bottom + " " + size.left + " " + size.right);
+                //Rect size = canvas.getClipBounds();
+                //Log.d("canvas clip ", " "  +size.top + " " + size.bottom + " " + size.left + " " + size.right);
                 displayAdapter.topIn = d.getHeight() - canvas.getHeight();
                 canvas.drawColor(Color.BLACK);
                 game.drawEnv(depthDisplay);
@@ -179,7 +184,6 @@ public class GameActivity extends Activity{
         super.onStop();
         Context context = getApplicationContext();
 
-
         try {
             FileOutputStream fos = context.openFileOutput(dataFile, Context.MODE_PRIVATE);
             ObjectOutputStream oos = new ObjectOutputStream(fos);
@@ -195,8 +199,6 @@ public class GameActivity extends Activity{
     @Override
     public void onStart(){
         super.onStart();
-
-
 
     }
 
@@ -231,24 +233,28 @@ public class GameActivity extends Activity{
 
 
     Matrix inv = new Matrix();
-    float[] convertScreenToGame(float x, float y, float[] out){
-        float[] f2 = new float[9];
-        mat.getValues(f2);
-        out[0] = (x - f2[2])/16;
-        out[1] = (y - f2[5]- displayAdapter.topIn)/16;
+    int[] loc = new int[] {-1, -1};
+    float[] convertScreenToGame(float[] point){
+
+        point[1] -= statusBarHeight;
 
         inv.reset();
         mat.invert(inv);
-        inv.mapPoints(out);
-        return out;
+
+        inv.mapPoints(point);
+        point[0] /= 16;
+        point[1] /= 16;
+
+
+        return point;
 
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent e){
-
+        super.onTouchEvent(e);
         controls.onTouchEvent(e);
-        return super.onTouchEvent(e);
+        return true;
     }
 
 
@@ -314,8 +320,10 @@ public class GameActivity extends Activity{
                     case MotionEvent.ACTION_DOWN: {
                         // now in milliseconds
                         touchTime = Instant.now().toEpochMilli();
-                        touchPos = convertScreenToGame(e.getX(), e.getY(), touchPos);
-                        Log.d("controls ", touchPos[0] + " " + touchPos[1]);
+                        touchPos[0] = e.getX();
+                        touchPos[1] = e.getY();
+                        touchPos = convertScreenToGame(touchPos);
+                        Log.d("control down loc ", touchPos[0] + " " + touchPos[1]);
                         if (t.getState() == Thread.State.WAITING)
                             t.interrupt();
                         t = new Thread(r);
@@ -345,6 +353,8 @@ public class GameActivity extends Activity{
 
                     // all fingers are up
                     case MotionEvent.ACTION_UP: {
+                        if (Instant.now().toEpochMilli() - touchTime < waitTime)
+                            tap(e);
                         resetTouch();
                         release(e);
                     }
@@ -402,11 +412,11 @@ public class GameActivity extends Activity{
         float[] temp = new float[2];
         void itemDrag(MotionEvent e){
             // Log.d("controls ", "item drag");
+
             temp[0] = e.getX();
             temp[1] = e.getY();
-            // mat.mapVectors(temp);
-            temp = convertScreenToGame(e.getX(), e.getY(), temp);
-            game.setHeldPosition(temp[0], temp[1]);
+            temp = convertScreenToGame(temp);
+            game.setHeldPosition(temp[0]*16 - 8, temp[1]*16 - 8);
 
         }
 
@@ -448,8 +458,16 @@ public class GameActivity extends Activity{
         void release(MotionEvent e){
             temp[0] = e.getX();
             temp[1] = e.getY();
-            mat.mapVectors(temp);
+            convertScreenToGame(temp);
             game.dropHeld(temp[0], temp[1]);
+        }
+
+        void tap(MotionEvent e){
+            Log.d("controls", "tap");
+            temp[0] = e.getX();
+            temp[1] = e.getY();
+            convertScreenToGame(temp);
+            game.setSelected(temp[0], temp[1]);
         }
 
         private synchronized void resetTouch(){
@@ -463,42 +481,3 @@ public class GameActivity extends Activity{
 
 }
 
-
-
-
-
-class Rand{
-
-    static int RandInt(int min, int max){
-        return (int)(Math.random()*(max-min) + min);
-    }
-
-}
-
-class Vec2<T> implements java.io.Serializable{
-    T x, y;
-    Vec2(T x, T y){
-        this.x = x;
-        this.y = y;
-    }
-
-    void set(T x, T y){
-        this.x = x;
-        this.y = y;
-    }
-    void set(Vec2<T> other){
-        x = other.x;
-        y = other.y;
-    }
-}
-
-class A{
-
-    static boolean inRange(Object[][] arr, int x, int y) {
-        return !(x < 0 || y < 0 || x > arr.length -1 || y > arr[x].length -1);
-    }
-
-    static boolean inRange(Object[] arr, int idx){
-        return !(idx < 0 || idx > arr.length-1);
-    }
-}

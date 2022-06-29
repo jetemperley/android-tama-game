@@ -1,6 +1,5 @@
 package com.tama.apptest;
 
-import android.graphics.Bitmap;
 import android.util.Log;
 
 public class Axe extends Thing {
@@ -27,7 +26,7 @@ public class Axe extends Thing {
                 Tree tree = (Tree) t;
                 m.takeThing(ax, ay);
                 if (tree.level == 2) {
-                    m.add(new Wood(), tree.loc.x, tree.loc.y);
+                    m.put(new Wood(), tree.loc.x, tree.loc.y);
                 }
                 break;
 
