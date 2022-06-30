@@ -160,4 +160,36 @@ class Step implements Act {
         }
         return false;
     }
+
+}
+
+class Panic implements Act{
+
+    int switchTime = 200;
+    int time = 0;
+    ActState state = ActState.start;
+
+
+    public ActState update(World m, Pet p){
+
+        if (state == ActState.start) {
+            p.anim.animIDX = Pet.right;
+            state = ActState.doing;
+            p.loc.xoff = 0;
+            p.loc.yoff = 0;
+        }
+
+        time += 25;
+
+        if (time >= switchTime) {
+            time = 0;
+
+            if (p.anim.animIDX == Pet.right)
+                p.anim.animIDX = Pet.left;
+            else
+                p.anim.animIDX = Pet.right;
+        }
+        return ActState.doing;
+    }
+
 }

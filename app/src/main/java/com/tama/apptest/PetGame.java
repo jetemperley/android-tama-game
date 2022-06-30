@@ -14,6 +14,11 @@ public class PetGame implements java.io.Serializable {
         held = null;
         target = new Blob();
         map.put(new Poo(), 9, 9);
+        map.put(new Rock(), 0, 0);
+        map.put(new Rock(), 0, 1);
+        map.put(new Rock(), 1, 0);
+        map.put(new Rock(), 2, 5);
+
         map.put(target, 1, 1);
         map.setTile(2, 2, TileType.water);
         map.setTile(2, 3, TileType.water);
@@ -31,6 +36,8 @@ public class PetGame implements java.io.Serializable {
 
     void drawEnv(DisplayAdapter d) {
         map.update();
+        if (held != null)
+            held.update(map);
         map.display(d);
 
     }
@@ -68,38 +75,17 @@ public class PetGame implements java.io.Serializable {
         }
     }
 
-    void setHeld(int x, int y){
-        held = map.takeThing(x, y);
-
-    }
-
     void select(int x, int y){
         selected = map.getThing(x, y);
 
     }
 
-    void setSelectedAsHeld(){
-        if (selected != null)
-            setHeld(selected.loc.x, selected.loc.y);
-        else
-            held = null;
-    }
-
-    void pickup(float x, float y){
-        if (held != null) {
-            heldPos.set(x, y);
-            return;
-        }
-        Thing t = map.checkCollision(x, y);
-        if (t != null){
-            held = map.takeThing(t.loc.x, t.loc.y);
-            // held.pickedUp();
-            setHeldPosition(x, y);
-        }
-    }
 
     void dropHeld(float x, float y){
+        if (held == null)
+            return;
         map.put(held, (int)x, (int)y);
+        held.onDrop();
         held = null;
 
     }
@@ -109,17 +95,34 @@ public class PetGame implements java.io.Serializable {
         selected = t;
     }
 
-    // sets the held object to x,y and returns true if sucessful
-    boolean setHeld(float x, float y){
+    boolean pickup(float x, float y){
+        if (held != null) {
+            heldPos.set(x, y);
+            return true;
+        }
         Thing t = map.checkCollision(x, y);
         if (t == null)
             return false;
-        setHeld(t.loc.x, t.loc.y);
+        held = map.takeThing(t.loc.x, t.loc.y);
+        if (held == null)
+            return false;
+        held.onPickup();
+        heldPos.set(x*16 -8, y*16 -8);
         return true;
     }
 
-    void nudge(float x, float y){
+    void poke(float x, float y){
+        Thing t = map.checkCollision(x, y);
+        t.poke(map);
+    }
 
+    void release(float x, float y){
+        dropHeld(x, y);
+
+    }
+
+    void dragHeld(float x, float y){
+        setHeldPosition(x*16 - 8, y*16 - 8);
     }
 
 

@@ -3,12 +3,11 @@ import java.util.ArrayList;
 
 abstract class Pet extends Thing{
 
-    static final int down = 0, right = 1, up = 2, left = 3;
+    static final int down = 0, up = 1, right = 2, left = 3;
 
     State state;
     String name;
     int speed = 3;
-    // Movement moves;
     ArrayList<Act> acts;
     // this pet animator is the same object as Displayable.sprite;
     Animator anim;
@@ -78,25 +77,35 @@ abstract class Pet extends Thing{
         return true;
     }
 
-    void click() {
-        // println("patted");
-        acts.add(0, new Pat());
-
-    }
-
     Type type() {
         return Type.pet;
     }
 
     void setDir(int x, int y){
         if (x == 1)
-            anim.animID = right;
+            anim.animIDX = right;
         else if (x == -1)
-            anim.animID = left;
+            anim.animIDX = left;
         else if (y == -1)
-            anim.animID = up;
+            anim.animIDX = up;
         else if (y == 1)
-            anim.animID = down;
+            anim.animIDX = down;
+    }
+
+    @Override
+    void onPickup(){
+        acts.clear();
+        acts.add(new Panic());
+    }
+
+    @Override
+    void onDrop(){
+        acts.clear();
+    }
+
+    @Override
+    void poke(World w){
+
     }
 }
 

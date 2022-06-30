@@ -1,9 +1,6 @@
 package com.tama.apptest;
 
 import android.graphics.Bitmap;
-import android.util.Log;
-
-import java.util.ArrayList;
 
 public class SpriteSheet{
 
@@ -36,7 +33,7 @@ class Animator implements Displayable, java.io.Serializable{
 
     transient SpriteSheet sheet;
     boolean play = false, repeat = false;
-    int animID = 0, animTime = 0;
+    int animIDX = 0, animTime = 0;
     int animDur = 1000;
 
     Animator(SpriteSheet ss) {
@@ -58,7 +55,7 @@ class Animator implements Displayable, java.io.Serializable{
                 animTime %= animDur;
             }
         }
-        return  getSlide(animTime, animDur, animID);
+        return  getSlide(animTime, animDur, animIDX);
     }
 
     void play(){
@@ -77,7 +74,7 @@ class Animator implements Displayable, java.io.Serializable{
 
     void cancelAnim() {
         animTime = 0;
-        animID = 0;
+        animIDX = 0;
         play = false;
 
 

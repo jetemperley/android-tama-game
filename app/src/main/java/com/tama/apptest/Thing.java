@@ -60,7 +60,9 @@ abstract class Thing implements java.io.Serializable{
         return this;
     }
 
-    void poke(){}
+    void poke(World w){}
+    void onPickup(){}
+    void onDrop(){}
 }
 
 class Rock extends Thing {

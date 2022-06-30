@@ -1,28 +1,22 @@
 package com.tama.apptest;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.Build;
-import android.support.annotation.RequiresApi;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.os.Bundle;
-import android.support.v4.view.GestureDetectorCompat;
 import android.util.Log;
 import android.view.Display;
-import android.view.GestureDetector;
 import android.view.MotionEvent;
-import android.view.ScaleGestureDetector;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
@@ -37,8 +31,6 @@ import java.io.ObjectOutputStream;
 import java.time.Instant;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Timer;
 
 public class GameActivity extends Activity{
@@ -281,7 +273,7 @@ public class GameActivity extends Activity{
         Vec2<Float> prev0 = new Vec2(-1f, -1f);
         Vec2<Float> prev1 = new Vec2(-1f, -1f);
 
-
+        Thread t;
         Runnable r = () -> {
             try {
                 Thread.sleep(waitTime);
@@ -290,13 +282,9 @@ public class GameActivity extends Activity{
                 resetTouch();
                 return;
             }
-            // Log.d("controls ", "holding");
-            if (!game.setHeld(touchPos[0], touchPos[1])){
-                resetTouch();
-            }
 
+            press();
         };
-        Thread t;
 
         Controls(Activity a, PetGame p){
             game = p;
@@ -409,6 +397,14 @@ public class GameActivity extends Activity{
             return true;
         }
 
+        // a single finger presses the screen and is not released
+        void press(){
+            if (!game.pickup(touchPos[0], touchPos[1])){
+                resetTouch();
+            }
+        }
+
+        // an item was dragged with a single finger
         float[] temp = new float[2];
         void itemDrag(MotionEvent e){
             // Log.d("controls ", "item drag");
@@ -416,16 +412,18 @@ public class GameActivity extends Activity{
             temp[0] = e.getX();
             temp[1] = e.getY();
             temp = convertScreenToGame(temp);
-            game.setHeldPosition(temp[0]*16 - 8, temp[1]*16 - 8);
+            game.dragHeld(temp[0], temp[1]);
 
         }
 
+        // a drag occured but did not press an item
         void emptyDrag(MotionEvent e){
             // Log.d("controls ", "empty drag ");
             // + (prev0.x -e.getX()) + " " + (prev1.y -e.getY()));
             mat.postTranslate(e.getX() - prev0.x, e.getY()- prev0.y);
         }
 
+        // two fingers were dragged
         Vec2<Float> t0 = new Vec2(0f,0f), t1 = new Vec2(0f, 0f);
         void twoFingerDrag(MotionEvent e){
             // Log.d("controls ", "two drag");
@@ -451,23 +449,24 @@ public class GameActivity extends Activity{
 
             mat.postTranslate(tfx - pfx, tfy - pfy);
 
-//            Log.d("scale points ", t0.x + " " t1.);
 
         }
 
+        // the primary finger was removed
         void release(MotionEvent e){
             temp[0] = e.getX();
             temp[1] = e.getY();
             convertScreenToGame(temp);
-            game.dropHeld(temp[0], temp[1]);
+            game.release(temp[0], temp[1]);
         }
 
+        // a single finger was confirmed to tap
         void tap(MotionEvent e){
             Log.d("controls", "tap");
             temp[0] = e.getX();
             temp[1] = e.getY();
             convertScreenToGame(temp);
-            game.setSelected(temp[0], temp[1]);
+            game.poke(temp[0], temp[1]);
         }
 
         private synchronized void resetTouch(){

@@ -65,13 +65,13 @@ abstract class Tile implements java.io.Serializable {
             t.loc.setPos(loc.x, loc.y);
     }
 
-    Thing takeThing(){
+    final Thing takeThing(){
         Thing t = thing;
         thing = null;
         return t;
     }
 
-    Thing getThing(){
+    final Thing getThing(){
         return thing;
     }
 
