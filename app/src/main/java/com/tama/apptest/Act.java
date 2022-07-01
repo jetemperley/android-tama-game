@@ -1,12 +1,13 @@
 package com.tama.apptest;
 
+import android.graphics.Matrix;
 import android.util.Log;
 
 import java.util.ArrayList;
 
 interface Act {
 
-    ActState update(World m, Pet p);
+    ActState update(World m, Thing t);
 
 }
 
@@ -42,7 +43,7 @@ abstract class ActSequence implements Act {
 }
 
 class Consume implements Act {
-    public ActState update(World m, Pet p) {
+    public ActState update(World m, Thing t) {
         return ActState.failed;
     }
 }
@@ -58,7 +59,8 @@ class GoTo extends ActSequence {
         this.dist = dist;
     }
 
-    public ActState update(World m, Pet p) {
+    public ActState update(World m, Thing t) {
+        Pet p = (Pet)t;
         if (status == ActState.start){
             Vec2<Integer>[] path = new Path(dist).findPath(m, p.loc.x, p.loc.y, x, y);
             if (path == null) {
@@ -81,13 +83,13 @@ class GoTo extends ActSequence {
 }
 
 class Pat implements Act {
-    public ActState update(World m, Pet p) {
+    public ActState update(World m, Thing t) {
         return ActState.failed;
     }
 }
 
 class Poop implements Act {
-    public ActState update(World m, Pet p) {
+    public ActState update(World m, Thing t) {
         return ActState.failed;
     }
 }
@@ -102,7 +104,8 @@ class Step implements Act {
         status = ActState.start;
     }
 
-    public ActState update(World m, Pet p) {
+    public ActState update(World m, Thing t) {
+        Pet p = (Pet)t;
         // println("updating");
         if (status == ActState.start) {
             if (!step(m, p, x, y)) {
@@ -170,8 +173,8 @@ class Panic implements Act{
     ActState state = ActState.start;
 
 
-    public ActState update(World m, Pet p){
-
+    public ActState update(World m, Thing t){
+        Pet p = (Pet)t;
         if (state == ActState.start) {
             p.anim.animIDX = Pet.right;
             state = ActState.doing;
@@ -192,4 +195,62 @@ class Panic implements Act{
         return ActState.doing;
     }
 
+}
+
+class Nudge implements Act{
+
+    private ActState state = ActState.complete;
+    private int shakeTime = 100;
+    private int time = 0;
+    private float[] off = new float[] {0, 0};
+    final static private int maxDist = 15, minDist = 5;
+
+    Matrix mat = new Matrix();
+    @Override
+    public ActState update(World w, Thing t) {
+
+        switch (state){
+
+            case start:{
+                mat.reset();
+                mat.postRotate(Rand.RandInt(0, 360));
+                off[0] = Rand.RandInt(minDist, maxDist);
+                mat.mapPoints(off);
+                t.loc.xoff += off[0];
+                t.loc.yoff += off[1];
+                state = ActState.doing;
+            }
+            break;
+
+            case doing:{
+                time += 25;
+                if (time >shakeTime){
+                    state = ActState.complete;
+                    t.loc.xoff -= off[0];
+                    t.loc.yoff -= off[1];
+                }
+            }
+            break;
+
+            case complete:{
+
+            }
+            break;
+
+        }
+
+        return state;
+
+    }
+
+    public void start(Thing t){
+        if (state == ActState.doing){
+            t.loc.xoff -= off[0];
+            t.loc.yoff -= off[1];
+        }
+
+        time = 0;
+        state = ActState.start;
+
+    }
 }

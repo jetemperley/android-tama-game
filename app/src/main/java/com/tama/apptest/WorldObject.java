@@ -3,7 +3,9 @@ package com.tama.apptest;
 public class WorldObject implements java.io.Serializable{
 
     transient Displayable sprite;
+    // grid location
     int x, y;
+    // percentage offsets
     int xoff, yoff;
     // flat indicates if the sprite is displayed as a ground base layer
     boolean flat = false;

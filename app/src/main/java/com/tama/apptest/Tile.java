@@ -66,8 +66,10 @@ abstract class Tile implements java.io.Serializable {
     }
 
     final Thing takeThing(){
-        Thing t = thing;
-        thing = null;
+        if (thing == null)
+            return null;
+        Thing t = thing.take();
+        thing = thing.leaveBehind();
         return t;
     }
 

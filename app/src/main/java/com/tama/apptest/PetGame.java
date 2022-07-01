@@ -1,5 +1,7 @@
 package com.tama.apptest;
 
+import android.util.Log;
+
 public class PetGame implements java.io.Serializable {
 
     World map;
@@ -113,7 +115,10 @@ public class PetGame implements java.io.Serializable {
 
     void poke(float x, float y){
         Thing t = map.checkCollision(x, y);
-        t.poke(map);
+        if (t != null) {
+            Log.d("PetGame poke", "poking " + t.getClass().getSimpleName());
+            t.poke();
+        }
     }
 
     void release(float x, float y){

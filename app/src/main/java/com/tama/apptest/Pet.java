@@ -104,7 +104,7 @@ abstract class Pet extends Thing{
     }
 
     @Override
-    void poke(World w){
+    void poke(){
 
     }
 }

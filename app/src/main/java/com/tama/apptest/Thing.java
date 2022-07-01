@@ -4,6 +4,7 @@ import android.util.Log;
 enum Type {
     food, pet, tree, undefined, junk
 }
+
 abstract class Thing implements java.io.Serializable{
 
     WorldObject loc;
@@ -60,17 +61,35 @@ abstract class Thing implements java.io.Serializable{
         return this;
     }
 
-    void poke(World w){}
+    void poke(){}
     void onPickup(){}
     void onDrop(){}
+    Thing leaveBehind(){return null;}
+    Thing take(){return this;}
 }
 
 class Rock extends Thing {
+
+    Nudge a = new Nudge();
+    int health = 5;
+    SpriteSheet sheet;
 
     Displayable getAsset(){
         return Assets.sprites.get(R.drawable.static_rock);
     }
 
+    @Override
+    Thing leaveBehind(){return this;}
+
+    @Override
+    Thing take(){return null;}
+
+    @Override
+    void poke(){
+        Log.d("Rock", "poke");
+        a.start(this);
+
+    }
 }
 
 class Poo extends Thing {

@@ -40,6 +40,8 @@ class Vec2<T> implements java.io.Serializable{
 
 public class A{
 
+    final static float TAU = (float)(2*Math.PI);
+
     static boolean inRange(Object[][] arr, int x, int y) {
         return !(x < 0 || y < 0 || x > arr.length -1 || y > arr[x].length -1);
     }

@@ -45,39 +45,6 @@ class Assets{
                 }
             } catch (Exception e){ Log.d("Assets: ", "failed to load resource"); }
         }
-    //    Bitmap bm = BitmapFactory.decodeResource(r, R.drawable., opts);
-//        processStaticSprites(BitmapFactory.decodeResource(r, R.drawable.tree, opts), 16);
-//        processStaticSprites(BitmapFactory.decodeResource(r, R.drawable.items, opts), 16);
-//        processStaticSprites(BitmapFactory.decodeResource(r, R.drawable.tools, opts), 16);
-//        processStaticSprites(BitmapFactory.decodeResource(r, R.drawable.treegrowth, opts), 16);
-//        processStaticSprites(BitmapFactory.decodeResource(r, R.drawable.seed, opts), 16);
-//        processStaticSprites(BitmapFactory.decodeResource(r, R.drawable.terrainsimp, opts), 16);
-//        processStaticSprites(BitmapFactory.decodeResource(r, R.drawable.bush1, opts), 16);
-//        processStaticSprites(BitmapFactory.decodeResource(r, R.drawable.longgrass, opts), 16);
-//        processStaticSprites(BitmapFactory.decodeResource(r, R.drawable.rock, opts), 16);
-//        Log.d("Assets init", staticSprites.size() + "");
-
-        // Log.d("Assets", "sprites = " + sprites.size());
-        // Log.d("Assets", "added seed");
-
-        // sheets = new ArrayList<SpriteSheet>();
-//        SpriteSheet ss = new SpriteSheet(
-//                processSpriteSheet(BitmapFactory.decodeResource(r, R.drawable.watersimp, opts), 8));
-//        sheets.add(ss);
-//
-//        ss = new SpriteSheet(
-//                processSpriteSheet(BitmapFactory.decodeResource(r, R.drawable.blob, opts), 16));
-//        sheets.add(ss);
-//
-//        ss = new SpriteSheet(
-//                processSpriteSheet(BitmapFactory.decodeResource(r, R.drawable.egg, opts), 16));
-//        sheets.add(ss);
-//
-//        ss = new SpriteSheet(
-//                processSpriteSheet(BitmapFactory.decodeResource(r, R.drawable.walker, opts), 16));
-//        sheets.add(ss);
-
-
 
     }
 

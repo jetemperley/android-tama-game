@@ -133,7 +133,8 @@ public class GameActivity extends Activity{
             }
         }).start();
 
-        setupGame();
+        // setupGame();
+        game = new PetGame();
         // gesture setup
         controls = new Controls(this, game);
 
@@ -176,15 +177,6 @@ public class GameActivity extends Activity{
         super.onStop();
         Context context = getApplicationContext();
 
-        try {
-            FileOutputStream fos = context.openFileOutput(dataFile, Context.MODE_PRIVATE);
-            ObjectOutputStream oos = new ObjectOutputStream(fos);
-            oos.writeObject(game);
-            oos.close();
-            Log.d("GameActivity", "serialization complete");
-        } catch (IOException e){
-            Log.d("GameActivity", e.getMessage());
-        }
 
     }
 
@@ -220,6 +212,20 @@ public class GameActivity extends Activity{
             }
         } else {
             game = new PetGame();
+        }
+    }
+
+    void saveGame(){
+        Context context = getApplicationContext();
+
+        try {
+            FileOutputStream fos = context.openFileOutput(dataFile, Context.MODE_PRIVATE);
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
+            oos.writeObject(game);
+            oos.close();
+            Log.d("GameActivity", "serialization complete");
+        } catch (IOException e){
+            Log.d("GameActivity", e.getMessage());
         }
     }
 
@@ -266,7 +272,7 @@ public class GameActivity extends Activity{
         PetGame game;
 
         // time to check if a 2nd pointer is down
-        int waitTime = 100;
+        int waitTime = 150;
         long touchTime = -1;
         float[] touchPos = new float[] {-1, -1};
         int id0 = -1, id1 = -1;
