@@ -4,7 +4,7 @@ import android.graphics.Matrix;
 import android.util.Log;
 
 public interface DisplayAdapter {
-    void displayWorld(WorldObject t);
+    void displayWorld(WorldObject t, Displayable d);
     void displayUI(Inventory t);
     void displayManual(Displayable d, float x, float y);
 
@@ -27,12 +27,13 @@ class AndroidDisplay implements DisplayAdapter {
 
     }
 
-    public void displayWorld(WorldObject t){
-        if (t.sprite == null) {
+    @Override
+    public void displayWorld(WorldObject t, Displayable d){
+        if (d == null) {
             Log.d("display adapter ", "sprite was null");
             return;
         }
-        canvas.drawBitmap( t.sprite.getSprite(),
+        canvas.drawBitmap( d.getSprite(),
                 t.x*cellSize + t.xoff*cellSize/100f,
                 t.y*cellSize + t.yoff*cellSize/100f,
                 GameActivity.black);
@@ -47,9 +48,9 @@ class AndroidDisplay implements DisplayAdapter {
         canvas.setMatrix(mat);
         for (int i = 0; i < inv.len(); i++){
             Thing t = inv.get(i);
-            canvas.drawBitmap(Assets.sprites.get(R.drawable.static_inv).getSprite(), 0, 0, GameActivity.black);
+            // canvas.drawBitmap(Assets.sprites.get(R.drawable.static_inv).getSprite(), 0, 0, GameActivity.black);
             if (t != null)
-                canvas.drawBitmap(t.loc.sprite.getUISprite(), 0, 0, GameActivity.black);
+                // canvas.drawBitmap(t.wo.sprite.getUISprite(), 0, 0, GameActivity.black);
             mat.preTranslate(cellSize, 0);
             canvas.setMatrix(mat);
         }

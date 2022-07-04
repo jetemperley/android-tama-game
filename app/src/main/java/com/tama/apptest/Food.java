@@ -67,8 +67,9 @@ class Food extends Thing implements java.io.Serializable{
         }
     }
 
-    Displayable getAsset(){
-        return Assets.sprites.get(id);
+    @Override
+    protected Displayable createVis (){
+        return new StaticSprite("static_poop");
     }
 
     Type type(){

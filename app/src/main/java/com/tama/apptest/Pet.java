@@ -26,16 +26,6 @@ abstract class Pet extends Thing{
         name = "";
     }
 
-    Displayable getAsset(){
-        if (anim == null) {
-            anim = new Animator(Assets.sheets.get(R.drawable.sheet_16_blob));
-            anim.play();
-            anim.repeat(true);
-        } else {
-            anim.sheet = Assets.sheets.get(R.drawable.sheet_16_blob);
-        }
-        return anim;
-    }
 
     void update(World map) {
 
@@ -111,20 +101,19 @@ abstract class Pet extends Thing{
 
 class Blob extends Pet {
 
-    Displayable getAsset(){
-        super.getAsset();
-        anim.sheet = Assets.sheets.get(R.drawable.sheet_16_blob);
+    @Override
+    protected Displayable createVis(){
+        anim = new Animator("sheet_16_blob");
+        anim.play();
+        anim.repeat(true);
         return anim;
     }
+
 }
 
 class Walker extends Pet {
 
-    Displayable getAsset(){
-        super.getAsset();
-        anim.sheet = Assets.sheets.get(R.drawable.sheet_16_walker);
-        return anim;
-    }
+
 }
 
 class Egg extends Thing {
@@ -141,17 +130,6 @@ class Egg extends Thing {
 
     }
 
-    Displayable getAsset(){
-
-        if (anim == null) {
-            anim = new Animator(Assets.sheets.get(R.drawable.sheet_16_egg));
-            anim.play();
-            anim.repeat(true);
-        } else {
-            anim.sheet = Assets.sheets.get(R.drawable.sheet_16_blob);
-        }
-        return anim;
-    }
 
     void update(World map) {
         if (!anim.play && Rand.RandInt(0, 100) < 20*(GameActivity.period/1000f)) {
@@ -161,7 +139,7 @@ class Egg extends Thing {
         if (age > hatchAge) {
             // hatch
             map.removeThing(this);
-            map.put(new Blob(), loc.x, loc.y);
+            map.put(new Blob(), wo.x, wo.y);
         }
     }
 

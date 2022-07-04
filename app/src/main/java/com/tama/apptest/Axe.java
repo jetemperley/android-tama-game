@@ -4,9 +4,9 @@ import android.util.Log;
 
 public class Axe extends Thing {
 
-
-    Displayable getAsset(){
-        return Assets.sprites.get(R.drawable.static_axe);
+    @Override
+    protected Displayable createVis (){
+        return new StaticSprite("static_axe");
     }
 
     boolean isItem() {
@@ -26,7 +26,7 @@ public class Axe extends Thing {
                 Tree tree = (Tree) t;
                 m.takeThing(ax, ay);
                 if (tree.level == 2) {
-                    m.put(new Wood(), tree.loc.x, tree.loc.y);
+                    m.put(new Wood(), tree.wo.x, tree.wo.y);
                 }
                 break;
 
@@ -41,8 +41,9 @@ public class Axe extends Thing {
 
 class Shovel extends Thing {
 
-    Displayable getAsset(){
-        return Assets.sprites.get(R.drawable.static_shovel);
+    @Override
+    protected Displayable createVis (){
+        return new StaticSprite("static_axe");
     }
 
     boolean isItem() {
@@ -69,10 +70,10 @@ class Shovel extends Thing {
 
 class Hammer extends Thing {
 
-    Displayable getAsset(){
-        return Assets.sprites.get(R.drawable.static_axe);
+    @Override
+    protected Displayable createVis (){
+        return new StaticSprite("static_axe");
     }
-
 
     boolean isItem() {
         return true;

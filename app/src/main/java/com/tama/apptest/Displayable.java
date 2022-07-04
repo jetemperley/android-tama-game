@@ -9,21 +9,40 @@ public interface Displayable {
 
     Bitmap getSprite();
     Bitmap getUISprite();
+    void loadAsset();
+    void setAsset(String asset);
 }
 
 class StaticSprite implements Displayable {
 
     Bitmap img;
+    String assetName;
 
-    StaticSprite(Bitmap bm){
-        img = bm;
+    StaticSprite(String asset){
+        assetName = asset;
+        img = Assets.getSprite(asset);
     }
 
+    @Override
     public Bitmap getSprite(){
         return img;
     }
 
+    @Override
     public Bitmap getUISprite(){
         return img;
     }
+
+    @Override
+    public void loadAsset(){
+        img = Assets.getSprite(assetName);
+    }
+
+    @Override
+    public void setAsset(String asset){
+        assetName = asset;
+        loadAsset();
+    }
 }
+
+

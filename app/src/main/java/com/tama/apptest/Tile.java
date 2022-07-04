@@ -3,30 +3,26 @@ package com.tama.apptest;
 abstract class Tile implements java.io.Serializable {
 
     WorldObject loc;
+    Displayable vis;
+
     boolean visible;
     private Thing thing;
 
     Tile(){
-        loc = new WorldObject(null);
+        loc = new WorldObject();
         visible = true;
-        loc.sprite = getAssets();
         loc.flat = true;
+        vis = getDisp();
+
     }
 
-    Displayable getAssets(){
-        return Assets.sheets.get(R.drawable.sheet_16_terrain).getSprite(0, 0);
-    }
-
-    void reLoadAsset(){
-        loc.sprite = getAssets();
-        if (thing != null){
-            thing.reLoadAsset();
-        }
+    protected Displayable getDisp(){
+        return new SpriteSheet("sheet_16_terrain");
     }
 
     void display(DisplayAdapter d) {
         if (visible) {
-            d.displayWorld(loc);
+            d.displayWorld(loc, vis);
         }
         if (thing != null){
             thing.display(d);
@@ -47,8 +43,10 @@ abstract class Tile implements java.io.Serializable {
 
     }
 
-    public void setVisible(boolean visible) {
-        this.visible = visible;
+    void loadAsset(){
+        vis.loadAsset();
+        if (thing != null)
+            thing.loadAsset();
     }
 
     public TileType type() {
@@ -62,7 +60,7 @@ abstract class Tile implements java.io.Serializable {
     void setThing(Thing t){
         thing = t;
         if (t != null)
-            t.loc.setPos(loc.x, loc.y);
+            t.wo.setPos(loc.x, loc.y);
     }
 
     final Thing takeThing(){
@@ -85,9 +83,6 @@ abstract class Tile implements java.io.Serializable {
 
 class Grass extends Tile {
 
-    Displayable getAssets(){
-        return Assets.sheets.get(R.drawable.sheet_16_terrainsimp).getSprite(0, 0);
-    }
 
     public TileType type() {
         return TileType.grass;
@@ -97,89 +92,88 @@ class Grass extends Tile {
 
 class Bush extends Tile{
 
-    Displayable getAssets(){
-        return Assets.sprites.get(R.drawable.static_bush1);
-    }
 
 }
 
 class LongGrass extends Tile{
 
-    WorldObject sprite2;
-    WorldObject sprite3;
+    WorldObject loc0;
+    WorldObject loc1;
 
     LongGrass(){
 
         super();
         loc.flat = false;
         loc.yoff = 1;
-        sprite2 = new WorldObject(loc.sprite);
-        sprite2.yoff = -30;
-        sprite2.flat = false;
-        sprite3 = new WorldObject(loc.sprite);
-        sprite3.yoff = -60;
-        sprite3.flat = false;
+        loc0 = new WorldObject();
+        loc0.yoff = -30;
+        loc0.flat = false;
+        loc1 = new WorldObject();
+        loc1.yoff = -60;
+        loc1.flat = false;
     }
 
-    Displayable getAssets(){
-        Displayable d = Assets.sprites.get(R.drawable.static_longgrass);
-        if (sprite2 != null) {
-            sprite2.sprite = d;
-            sprite3.sprite = d;
-        }
-        return d;
+    @Override
+    public Displayable getDisp(){
+        return new StaticSprite("static_longgrass");
     }
+//    Displayable getAssets(){
+//        Displayable d = Assets.sprites.get(R.drawable.static_longgrass);
+//        if (sprite2 != null) {
+//            sprite2.sprite = d;
+//            sprite3.sprite = d;
+//        }
+//        return d;
+//    }
 
     void setPos(int x, int y){
         loc.setPos(x, y);
-        sprite2.setPos(x, y);
-        sprite3.setPos(x, y);
+        loc0.setPos(x, y);
+        loc1.setPos(x, y);
     }
 
     @Override
     void display(DisplayAdapter d){
 
         super.display(d);
-        d.displayWorld(sprite2);
-        d.displayWorld(sprite3);
+        d.displayWorld(loc0, vis);
+        d.displayWorld(loc1, vis);
     }
 
 }
 
 class DynTile extends Tile {
-    // considers the surrounding tiles to create a dynamic tile graphic
-    static SpriteSheet sheet;
-    static SpriteSheet bubbles;
-    WorldObject[][] parts;
 
-    
+    // considers the surrounding tiles to create a dynamic tile graphic
+    WorldObject[][] parts;
+    SpriteSheet[][] sprites;
 
     // img is 4 px sq 4*3 sprite sheet of possible configurations
     DynTile() {
         super();
-        if (sheet == null)
-            sheet = Assets.sheets.get(R.drawable.sheet_8_watersimp);
-        if (bubbles == null)
-            bubbles = Assets.sheets.get(R.drawable.sheet_16_bubbles);
+
         parts = new WorldObject[2][2];
+        sprites = new SpriteSheet[2][2];
 
         for (int a = 0; a < parts.length; a++) {
             for (int b = 0; b < parts[a].length; b++) {
-
-                parts[a][b] = new WorldObject(null);
+                sprites[a][b] = new SpriteSheet("sheet_8_watersimp");
+                parts[a][b] = new WorldObject();
                 parts[a][b].xoff = a*50;
                 parts[a][b].yoff = b*50;
             }
         }
 
+
     }
 
-    Displayable getAssets(){
-
-        if (sheet == null)
-            sheet = Assets.sheets.get(R.drawable.sheet_8_watersimp);
-        return null;
-
+    @Override
+    void loadAsset(){
+        for (int x = 0; x < sprites.length; x++){
+            for (int y = 0; y < sprites[x].length; y++){
+                sprites[x][y].loadAsset();
+            }
+        }
     }
 
     public TileType type(){
@@ -189,8 +183,9 @@ class DynTile extends Tile {
     void display(DisplayAdapter d) {
         for (int a = 0; a < parts.length; a++) {
             for (int b = 0; b < parts[a].length; b++) {
-                if (parts[a][b] != null)
-                    d.displayWorld(parts[a][b]);
+
+                d.displayWorld(parts[a][b], sprites[a][b]);
+
             }
         }
     }
@@ -214,7 +209,7 @@ class DynTile extends Tile {
 
     private void setTL(World m) {
 
-        parts[0][0].sprite = sheet.getSprite(2, 3);
+        sprites[0][0].setSprite(2, 3);
         Tile t = m.getTile(loc.x - 1, loc.y);
         boolean l = t != null && t.type() == TileType.water;
         t = m.getTile( loc.x, loc.y-1);
@@ -223,25 +218,25 @@ class DynTile extends Tile {
         boolean ul = t != null && t.type() == TileType.water;
 
         if (l) {
-            parts[0][0].sprite = sheet.getSprite(0, 0);
+            sprites[0][0].setSprite(0, 0);
             if (u) {
-                parts[0][0].sprite = sheet.getSprite(1, 3);
+                sprites[0][0].setSprite(1, 3);
 
                 if (ul) {
-                    parts[0][0].sprite = null;
+                    sprites[0][0].x = -1;
                 }
                 return;
             }
             return;
         }
         if (u) {
-            parts[0][0].sprite = sheet.getSprite(0, 3);
+            sprites[0][0].setSprite(0, 3);
         }
     }
 
     private void setTR(World m) {
 
-        parts[1][0].sprite = sheet.getSprite(2, 0);
+        sprites[1][0].setSprite(2, 0);
         Tile t = m.getTile(loc.x + 1, loc.y);
         boolean l = t != null && t.type() == TileType.water;
         t = m.getTile(loc.x , loc.y-1);
@@ -250,25 +245,25 @@ class DynTile extends Tile {
         boolean ul = t != null && t.type() == TileType.water;
 
         if (l) {
-            parts[1][0].sprite = sheet.getSprite(0, 0);
+            sprites[1][0].setSprite(0, 0);
             if (u) {
-                parts[1][0].sprite = sheet.getSprite(1, 0);
+                sprites[1][0].setSprite(1, 0);
 
                 if (ul) {
-                    parts[1][0].sprite = null;
+                    sprites[1][0].x = -1;
                 }
                 return;
             }
             return;
         }
         if (u) {
-            parts[1][0].sprite = sheet.getSprite(0, 1);
+            sprites[1][0].setSprite(0, 1);
         }
     }
 
     private void setBL(World m) {
 
-        parts[0][1].sprite = sheet.getSprite(2, 2);
+        sprites[0][1].setSprite(2, 2);
         Tile t = m.getTile(loc.x - 1, loc.y);
         boolean l = t != null && t.type() == TileType.water;
         t = m.getTile(loc.x, loc.y + 1);
@@ -277,24 +272,24 @@ class DynTile extends Tile {
         boolean ul = t != null && t.type() == TileType.water;
 
         if (l) {
-            parts[0][1].sprite = sheet.getSprite(0, 2);
+            sprites[0][1].setSprite(0, 2);
             if (u) {
-                parts[0][1].sprite = sheet.getSprite(1, 2);
+                sprites[0][1].setSprite(1, 2);
                 if (ul) {
-                    parts[0][1].sprite = null;
+                    sprites[0][1].x = -1;
                 }
                 return;
             }
             return;
         }
         if (u) {
-            parts[0][1].sprite = sheet.getSprite(0, 3);
+            sprites[0][1].setSprite(0, 3);
         }
     }
 
     private void setBR(World m) {
 
-        parts[1][1].sprite = sheet.getSprite(2, 1);
+        sprites[1][1].setSprite(2, 1);
         Tile t = m.getTile(loc.x + 1, loc.y);
         boolean l = t != null && t.type() == TileType.water;
         t = m.getTile(loc.x , loc.y + 1);
@@ -303,18 +298,18 @@ class DynTile extends Tile {
         boolean ul = t != null && t.type() == TileType.water;
 
         if (l) {
-            parts[1][1].sprite = sheet.getSprite(0, 2);
+            sprites[1][1].setSprite(0, 2);
             if (u) {
-                parts[1][1].sprite = sheet.getSprite(1, 1);
+                sprites[1][1].setSprite(1, 1);
                 if (ul) {
-                    parts[1][1].sprite = null;
+                    sprites[1][1].x = -1;
                 }
                 return;
             }
             return;
         }
         if (u) {
-            parts[1][1].sprite = sheet.getSprite(0, 1);
+            sprites[1][1].setSprite(0, 1);
         }
     }
 

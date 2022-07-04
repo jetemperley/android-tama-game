@@ -203,7 +203,7 @@ public class GameActivity extends Activity{
                         new ObjectInputStream(
                                 new FileInputStream(data));
                 game = (PetGame)in.readObject();
-                game.reLoadAllAssets();
+                game.loadAllAssets();
                 in.close();
                 Log.d("GameActivity", "deserialization complete");
             } catch (Exception e){

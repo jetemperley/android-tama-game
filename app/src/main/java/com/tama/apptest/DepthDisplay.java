@@ -10,14 +10,18 @@ public class DepthDisplay implements DisplayAdapter {
 
     DisplayAdapter display;
     PriorityQueue<WorldObject> draws;
+    PriorityQueue<Displayable> disps;
     boolean check = true;
 
     DepthDisplay() {
         draws = new PriorityQueue<>(200, new DepthComp());
     }
 
-    public void displayWorld(WorldObject t){
+    @Override
+    public void displayWorld(WorldObject t, Displayable d){
+
         draws.add(t);
+        disps.add(d);
     }
     public void displayUI(Inventory t){
 
@@ -28,10 +32,8 @@ public class DepthDisplay implements DisplayAdapter {
 
     void drawQ() {
         if (display != null) {
-            WorldObject b;
             while (!draws.isEmpty()) {
-                b = draws.poll();
-                display.displayWorld(b);
+                display.displayWorld(draws.poll(), disps.poll());
             }
         }
         check = false;

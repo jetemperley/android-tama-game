@@ -2,27 +2,55 @@ package com.tama.apptest;
 
 import android.graphics.Bitmap;
 
-public class SpriteSheet{
+public class SpriteSheet implements Displayable{
 
     // sheet is in [Y][X] coordinates
-    StaticSprite[][] sheet;
+    transient Bitmap[][] sheet;
 
-    SpriteSheet(StaticSprite[][] arr) {
-        sheet = arr;
+    // current sprite
+    int x = 0, y = 0;
+    String assetName;
+
+    SpriteSheet(String name) {
+        assetName = name;
+        loadAsset();
 
     }
 
-    public Bitmap get(int row, int col) {
-
-        return sheet[row][col].getSprite();
-    }
-
-    public StaticSprite getSprite(int row, int col){
+    public Bitmap getSprite(int row, int col){
         return sheet[row][col];
     }
 
     int len(int row){
         return sheet[row].length;
+    }
+
+    @Override
+    public Bitmap getSprite() {
+        if (x == -1)
+            return null;
+        return getSprite(y, x);
+    }
+
+    @Override
+    public Bitmap getUISprite() {
+        return null;
+    }
+
+    @Override
+    public void loadAsset() {
+        sheet = Assets.getSheet(assetName);
+    }
+
+    @Override
+    public void setAsset(String asset) {
+        assetName = asset;
+        loadAsset();
+    }
+
+    void setSprite(int row, int col){
+        x = col;
+        y = row;
     }
 
 }
@@ -31,21 +59,33 @@ public class SpriteSheet{
 
 class Animator implements Displayable, java.io.Serializable{
 
-    transient SpriteSheet sheet;
+    SpriteSheet sheet;
     boolean play = false, repeat = false;
     int animIDX = 0, animTime = 0;
     int animDur = 1000;
 
-    Animator(SpriteSheet ss) {
+    Animator(String sheetName) {
+        sheet = new SpriteSheet(sheetName);
 
-        sheet = ss;
     }
 
+    @Override
     public Bitmap getUISprite() {
 
-        return sheet.get(0, 0);
+        return sheet.getSprite(0, 0);
     }
 
+    @Override
+    public void loadAsset() {
+        sheet.loadAsset();
+    }
+
+    @Override
+    public void setAsset(String asset) {
+        sheet.setAsset(asset);
+    }
+
+    @Override
     public Bitmap getSprite() {
         if (play) {
             animTime += 25;
@@ -61,8 +101,6 @@ class Animator implements Displayable, java.io.Serializable{
     void play(){
         play = true;
     }
-
-
 
     void repeat(boolean repeat){
         this.repeat = repeat;
@@ -83,7 +121,8 @@ class Animator implements Displayable, java.io.Serializable{
     Bitmap getSlide(int time, int duration, int row){
         int perSlide = duration/sheet.len(row);
         int i = time/perSlide;
-        return sheet.get(row, i);
+        return sheet.getSprite(row, i);
     }
+
 
 }

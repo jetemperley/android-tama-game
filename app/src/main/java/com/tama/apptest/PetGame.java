@@ -48,14 +48,14 @@ public class PetGame implements java.io.Serializable {
 
         // inv.display(d);
         if (held != null)
-            d.displayManual(held.loc.sprite, heldPos.x, heldPos.y);
+            d.displayManual(held.vis, heldPos.x, heldPos.y);
 
     }
 
-    void reLoadAllAssets(){
-        map.reLoadAllAssets();
+    void loadAllAssets(){
+        map.loadAllAssets();
         if (held != null)
-            held.reLoadAsset();
+            held.loadAsset();
     }
 
     void applyHeldTo(int x, int y){
@@ -105,7 +105,7 @@ public class PetGame implements java.io.Serializable {
         Thing t = map.checkCollision(x, y);
         if (t == null)
             return false;
-        held = map.takeThing(t.loc.x, t.loc.y);
+        held = map.takeThing(t.wo.x, t.wo.y);
         if (held == null)
             return false;
         held.onPickup();

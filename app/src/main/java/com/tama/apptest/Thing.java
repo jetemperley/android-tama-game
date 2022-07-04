@@ -7,34 +7,28 @@ enum Type {
 
 abstract class Thing implements java.io.Serializable{
 
-    WorldObject loc;
+    WorldObject wo;
+    Displayable vis = null;
 
-    Thing() {
-        loc = new WorldObject(null);
-        loc.sprite = getAsset();
+    Thing(){
+        wo = new WorldObject();
+        vis = createVis();
     }
+
+    protected Displayable createVis (){
+        return new StaticSprite("static_poop");
+    }
+
+    void loadAsset(){
+        vis.loadAsset();
+    }
+
     void display(DisplayAdapter d){
-        d.displayWorld(loc);
-    }
-
-    Displayable getAsset(){
-
-        return Assets.sprites.get(R.drawable.static_poop);
-    }
-
-    void reLoadAsset(){
-        loc.sprite = getAsset();
-    }
-
-    boolean isItem(){
-        return false;
+        d.displayWorld(wo, vis);
     }
 
     void update(World map) {
 
-    }
-
-    void click() {
     }
 
     boolean canSwim() {
@@ -45,10 +39,10 @@ abstract class Thing implements java.io.Serializable{
     }
 
     boolean contains(float x, float y) {
-        if (x > loc.x + (loc.xoff/100f)
-                && x < loc.x + (loc.xoff/100f) + 1
-                && y > loc.y + (loc.yoff/100f)
-                && y < loc.y + (loc.yoff/100f) + 1)
+        if (x > wo.x + (wo.xoff/100f)
+                && x < wo.x + (wo.xoff/100f) + 1
+                && y > wo.y + (wo.yoff/100f)
+                && y < wo.y + (wo.yoff/100f) + 1)
             return true;
         return false;
     }
@@ -71,11 +65,13 @@ abstract class Thing implements java.io.Serializable{
 class Rock extends Thing {
 
     Nudge a = new Nudge();
-    int health = 5;
+    int health = 4;
     SpriteSheet sheet;
 
-    Displayable getAsset(){
-        return Assets.sprites.get(R.drawable.static_rock);
+    @Override
+    protected Displayable createVis (){
+        sheet = new SpriteSheet("sheet_16_rock");
+        return sheet;
     }
 
     @Override
@@ -94,33 +90,29 @@ class Rock extends Thing {
 
 class Poo extends Thing {
 
-    Displayable getAsset(){
-        return Assets.sprites.get(R.drawable.static_poop);
-    }
-    boolean isItem(){
-        return true;
-    }
 
 }
 
 class Tree extends Thing implements java.io.Serializable{
     int level = 0;
     int growth = 0;
-
-    Displayable getAsset(){
-        return Assets.sprites.get(R.drawable.static_tree);
-    }
-
+    SpriteSheet sheet;
 
     void update(World m){
         if (growth < 1000) {
             growth ++;
         } else if (growth > 1000-2 && level < 2){
             level++;
-            loc.sprite = Assets.sprites.get(16+level);
+            sheet.x++;
             growth = 0;
         }
         Log.d("Tree", "" + growth);
+    }
+
+    @Override
+    protected Displayable createVis (){
+        sheet = new SpriteSheet("sheet_16_treegrowth");
+        return sheet;
     }
 
     Type type() {
@@ -131,14 +123,6 @@ class Tree extends Thing implements java.io.Serializable{
 }
 
 class Seed extends Thing{
-
-    Displayable getAsset(){
-        return Assets.sprites.get(R.drawable.static_seed);
-    }
-
-    boolean isItem(){
-        return true;
-    }
 
     Thing apply(World m, int ax, int ay){
 
@@ -163,18 +147,17 @@ class Seed extends Thing{
         return this;
     }
 
-
+    @Override
+    protected Displayable createVis (){
+        return new StaticSprite("static_seed");
+    }
 
 }
 
 class Wood extends Thing{
-
-    Displayable getAsset(){
-        return Assets.sprites.get(R.drawable.static_log);
-    }
-
-    boolean isItem(){
-        return true;
+    @Override
+    protected Displayable createVis (){
+        return new StaticSprite("static_log");
     }
 }
 

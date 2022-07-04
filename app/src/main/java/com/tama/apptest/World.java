@@ -50,7 +50,7 @@ public class World implements java.io.Serializable{
 
         if (isEmpty(x, y)) {
             tile[x][y].setThing(t);
-            t.loc.setPos(x, y);
+            t.wo.setPos(x, y);
             return true;
         }  else {
             Vec2<Integer> v = findNearestEmpty((int)x, (int)y);
@@ -58,24 +58,24 @@ public class World implements java.io.Serializable{
             if (v == null)
                 return false;
             tile[v.x][v.y].setThing(t);
-            t.loc.setPos(v.x, v.y);
+            t.wo.setPos(v.x, v.y);
             return true;
         }
 
     }
 
-    void reLoadAllAssets(){
+    void loadAllAssets(){
         for (int x = 0; x < tile.length; x++){
             for (int y = 0; y < tile[x].length; y++){
-                tile[x][y].reLoadAsset();
+                tile[x][y].loadAsset();
                 tile[x][y].updateDetails(this);
             }
         }
     }
 
     void removeThing(Thing t) {
-        if (tile[t.loc.x][t.loc.y].getThing() == t)
-            tile[t.loc.x][t.loc.y].takeThing();
+        if (tile[t.wo.x][t.wo.y].getThing() == t)
+            tile[t.wo.x][t.wo.y].takeThing();
     }
 
     void removeThing(int x, int y) {
