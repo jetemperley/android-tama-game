@@ -79,6 +79,10 @@ abstract class Tile implements java.io.Serializable {
         loc.setPos(x, y);
     }
 
+    final void deleteThing(){
+        thing = null;
+    }
+
 }
 
 class Grass extends Tile {
@@ -117,14 +121,6 @@ class LongGrass extends Tile{
     public Displayable getDisp(){
         return new StaticSprite("static_longgrass");
     }
-//    Displayable getAssets(){
-//        Displayable d = Assets.sprites.get(R.drawable.static_longgrass);
-//        if (sprite2 != null) {
-//            sprite2.sprite = d;
-//            sprite3.sprite = d;
-//        }
-//        return d;
-//    }
 
     void setPos(int x, int y){
         loc.setPos(x, y);

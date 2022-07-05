@@ -44,6 +44,7 @@ public class World implements java.io.Serializable{
 
     }
 
+
     boolean put(Thing t, int x, int y) {
         if (t == null)
             return true;
@@ -74,13 +75,15 @@ public class World implements java.io.Serializable{
     }
 
     void removeThing(Thing t) {
+        if (t == null)
+            return;
         if (tile[t.wo.x][t.wo.y].getThing() == t)
-            tile[t.wo.x][t.wo.y].takeThing();
+            tile[t.wo.x][t.wo.y].deleteThing();
     }
 
     void removeThing(int x, int y) {
         if (A.inRange(tile, x, y)) {
-            tile[x][y].takeThing();
+            tile[x][y].deleteThing();
         }
     }
 

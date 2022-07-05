@@ -55,7 +55,7 @@ abstract class Thing implements java.io.Serializable{
         return this;
     }
 
-    void poke(){}
+    void poke(World w){}
     void onPickup(){}
     void onDrop(){}
     Thing leaveBehind(){return null;}
@@ -75,15 +75,28 @@ class Rock extends Thing {
     }
 
     @Override
+    public void update(World w){
+        a.update(w, this);
+    }
+
+    @Override
     Thing leaveBehind(){return this;}
 
     @Override
     Thing take(){return null;}
 
     @Override
-    void poke(){
+    void poke(World w){
         Log.d("Rock", "poke");
         a.start(this);
+        health--;
+        Log.d("Rock", "health " + health);
+        sheet.x++;
+        if (health <= 0){
+            sheet.x = 0;
+            health = 4;
+            w.removeThing(wo.x, wo.y);
+        }
 
     }
 }

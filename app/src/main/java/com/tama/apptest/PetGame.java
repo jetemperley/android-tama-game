@@ -116,8 +116,7 @@ public class PetGame implements java.io.Serializable {
     void poke(float x, float y){
         Thing t = map.checkCollision(x, y);
         if (t != null) {
-            Log.d("PetGame poke", "poking " + t.getClass().getSimpleName());
-            t.poke();
+            t.poke(map);
         }
     }
 
@@ -127,6 +126,7 @@ public class PetGame implements java.io.Serializable {
     }
 
     void dragHeld(float x, float y){
+
         setHeldPosition(x*16 - 8, y*16 - 8);
     }
 
