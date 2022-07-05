@@ -4,24 +4,28 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.PriorityQueue;
 
 public class DepthDisplay implements DisplayAdapter {
 
     DisplayAdapter display;
     PriorityQueue<WorldObject> draws;
-    PriorityQueue<Displayable> disps;
+    HashMap<WorldObject, Displayable> disps;
     boolean check = true;
 
     DepthDisplay() {
+
         draws = new PriorityQueue<>(200, new DepthComp());
+        disps = new HashMap<>();
+
     }
 
     @Override
     public void displayWorld(WorldObject t, Displayable d){
 
         draws.add(t);
-        disps.add(d);
+        disps.put(t, d);
     }
     public void displayUI(Inventory t){
 
@@ -32,15 +36,19 @@ public class DepthDisplay implements DisplayAdapter {
 
     void drawQ() {
         if (display != null) {
+            WorldObject wo;
             while (!draws.isEmpty()) {
-                display.displayWorld(draws.poll(), disps.poll());
+                wo = draws.poll();
+                display.displayWorld(wo, disps.get(wo));
             }
         }
         check = false;
     }
 
     void clearQ() {
+
         draws.clear();
+        disps.clear();
     }
 
     class DepthComp implements Comparator<WorldObject> {
