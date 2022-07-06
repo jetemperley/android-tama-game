@@ -8,7 +8,7 @@ public class World implements java.io.Serializable{
     private Tile[][] tile;
     int celln, openSpace;
     float xoff, yoff;
-    Pet target;
+    // List<Effect>
 
     World(int size) {
         celln = size;
@@ -232,10 +232,12 @@ public class World implements java.io.Serializable{
         return null;
     }
 
-
     public boolean isEmpty(int x, int y){
+
         return A.inRange(tile, x, y) && tile[x][y].isEmpty();
     }
+
+
 }
 
 

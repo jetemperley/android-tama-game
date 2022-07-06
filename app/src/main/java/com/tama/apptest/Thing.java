@@ -174,4 +174,13 @@ class Wood extends Thing{
     }
 }
 
+class Weed extends Thing {
+
+    @Override
+    protected Displayable createVis(){
+        return new StaticSprite("static_herb");
+
+    }
+}
+
 
