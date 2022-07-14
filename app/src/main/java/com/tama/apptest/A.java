@@ -3,9 +3,14 @@ package com.tama.apptest;
 class Rand{
 
     static int RandInt(int min, int max){
+
         return (int)(Math.random()*(max-min) + min);
     }
 
+    static float RandFloat(float min, float max){
+
+        return (float)(Math.random()*(max-min) + min);
+    }
 }
 
 class Vec2<T> implements java.io.Serializable{
@@ -49,4 +54,6 @@ public class A{
     static boolean inRange(Object[] arr, int idx){
         return !(idx < 0 || idx > arr.length-1);
     }
+
+
 }

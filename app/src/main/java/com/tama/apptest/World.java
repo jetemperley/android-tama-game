@@ -241,10 +241,12 @@ public class World implements java.io.Serializable{
         return null;
     }
 
-
     public boolean isEmpty(int x, int y){
+
         return A.inRange(tile, x, y) && tile[x][y].isEmpty();
     }
+
+
 }
 
 

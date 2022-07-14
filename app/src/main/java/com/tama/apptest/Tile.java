@@ -92,6 +92,16 @@ class Grass extends Tile {
         return TileType.grass;
     }
 
+    @Override
+    public void update(World w){
+        super.update(w);
+        if (getThing() == null) {
+            if (Rand.RandFloat(0, 100) * 1000/25 < 0.1f) {
+                setThing(new Weed());
+            }
+        }
+    }
+
 }
 
 class Bush extends Tile{
