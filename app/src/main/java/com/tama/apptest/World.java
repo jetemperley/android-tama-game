@@ -2,13 +2,14 @@ package com.tama.apptest;
 import android.util.Log;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class World implements java.io.Serializable{
 
     private Tile[][] tile;
     int celln, openSpace;
     float xoff, yoff;
-    Pet target;
+    List<Effect> effects;
 
     World(int size) {
         celln = size;
@@ -21,8 +22,7 @@ public class World implements java.io.Serializable{
                 setTile(x, y, new Grass());
             }
         }
-
-
+        effects = new ArrayList<>(10);
     }
 
     void update() {
@@ -32,6 +32,7 @@ public class World implements java.io.Serializable{
                 tile[x][y].update(this);
             }
         }
+
         
     }
 
@@ -39,6 +40,14 @@ public class World implements java.io.Serializable{
         for (int x = 0; x < celln; x++) {
             for (int y = 0; y < celln; y++) {
                 tile[x][y].display(d);
+            }
+        }
+        for (int i = 0; i < effects.size(); i++){
+            Effect e = effects.get(i);
+            Log.d("World", "draw effect");
+            if (e.display(d)){
+                effects.remove(i);
+                i--;
             }
         }
 

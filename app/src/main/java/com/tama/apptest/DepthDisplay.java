@@ -2,9 +2,12 @@ package com.tama.apptest;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.util.Log;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.PriorityQueue;
 
 public class DepthDisplay implements DisplayAdapter {
@@ -12,13 +15,20 @@ public class DepthDisplay implements DisplayAdapter {
     DisplayAdapter display;
     PriorityQueue<WorldObject> draws;
     HashMap<WorldObject, Displayable> disps;
+    List<Displayable> post;
+    List<Float> postX;
+    List<Float> postY;
+
+
     boolean check = true;
 
     DepthDisplay() {
 
         draws = new PriorityQueue<>(200, new DepthComp());
         disps = new HashMap<>();
-
+        post = new ArrayList<>();
+        postX = new ArrayList<>();
+        postY = new ArrayList<>();
     }
 
     @Override
@@ -31,7 +41,9 @@ public class DepthDisplay implements DisplayAdapter {
 
     }
     public void displayManual(Displayable d, float x, float y) {
-
+        post.add(d);
+        postX.add(x);
+        postY.add(y);
     }
 
     void drawQ() {
@@ -42,6 +54,10 @@ public class DepthDisplay implements DisplayAdapter {
                 display.displayWorld(wo, disps.get(wo));
             }
         }
+        for (int i = 0; i < post.size(); i++){
+            // Log.d("depth", "draw post");
+            display.displayManual(post.get(i), postX.get(i), postY.get(i));
+        }
         check = false;
     }
 
@@ -49,6 +65,9 @@ public class DepthDisplay implements DisplayAdapter {
 
         draws.clear();
         disps.clear();
+        post.clear();
+        postX.clear();
+        postY.clear();
     }
 
     class DepthComp implements Comparator<WorldObject> {

@@ -96,6 +96,8 @@ class Rock extends Thing {
             sheet.x = 0;
             health = 4;
             w.removeThing(wo.x, wo.y);
+            w.effects.add(new Break(vis.getSprite(), wo));
+            Log.d("Rock", "Added effect");
         }
 
     }

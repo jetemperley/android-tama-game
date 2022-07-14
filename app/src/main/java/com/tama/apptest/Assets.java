@@ -29,6 +29,11 @@ class Assets{
         BitmapFactory.Options opts = new BitmapFactory.Options();
         opts.inScaled = false;
 
+        int[] colors = new int[] {-1};
+
+        Bitmap b1 = Bitmap.createBitmap(colors, 1, 1, Bitmap.Config.ARGB_8888);
+        sprites.put("static_1", b1);
+
         Field[] fields = R.drawable.class.getFields();
         for (Field f : fields){
             String name = f.getName();
