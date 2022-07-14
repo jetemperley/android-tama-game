@@ -11,6 +11,7 @@ abstract class Pet extends Thing{
     ArrayList<Act> acts;
     // this pet animator is the same object as Displayable.sprite;
     Animator anim;
+    Thing held = null;
 
     int poop = 0;
     int hunger = 0;
@@ -94,9 +95,15 @@ abstract class Pet extends Thing{
     }
 
     @Override
-    void poke(World w){
+    boolean combine(Thing t, World w){
+        if (held == null) {
+            held = t;
+            return true;
+        }
 
+        return false;
     }
+
 }
 
 class Blob extends Pet {

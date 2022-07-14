@@ -57,10 +57,18 @@ abstract class Tile implements java.io.Serializable {
         return thing == null;
     }
 
-    void setThing(Thing t){
+    void set(Thing t){
         thing = t;
         if (t != null)
             t.wo.setPos(loc.x, loc.y);
+    }
+
+    boolean put(Thing t, World w) {
+        if (thing == null) {
+            set(t);
+            return true;
+        }
+        return thing.combine(t, w);
     }
 
     final Thing takeThing(){
@@ -97,7 +105,7 @@ class Grass extends Tile {
         super.update(w);
         if (getThing() == null) {
             if (Rand.RandFloat(0, 100) * 1000/25 < 0.1f) {
-                setThing(new Weed());
+                set(new Weed());
             }
         }
     }

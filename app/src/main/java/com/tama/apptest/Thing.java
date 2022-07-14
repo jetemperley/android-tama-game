@@ -55,11 +55,23 @@ abstract class Thing implements java.io.Serializable{
         return this;
     }
 
+    // events
     void poke(World w){}
     void onPickup(){}
     void onDrop(){}
+
+    // when this object is taken, return what should be left behind
     Thing leaveBehind(){return null;}
+    // when this object is taken, return what should be picked up
     Thing take(){return this;}
+
+    // when an object is dropped on this object,
+    // return weather or not they combined into a single object
+    boolean combine(Thing t, World w){
+        return false;
+    }
+
+
 }
 
 class Rock extends Thing {

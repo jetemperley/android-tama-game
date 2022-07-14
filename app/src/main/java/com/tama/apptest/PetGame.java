@@ -122,7 +122,6 @@ public class PetGame implements java.io.Serializable {
 
     void release(float x, float y){
         dropHeld(x, y);
-
     }
 
     void dragHeld(float x, float y){
