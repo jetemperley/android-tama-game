@@ -11,6 +11,10 @@ class Rand{
 
         return (float)(Math.random()*(max-min) + min);
     }
+
+    static boolean chancePerSecond(float chance){
+        return Rand.RandFloat(0, 100) * 1000/25 < chance;
+    }
 }
 
 class Vec2<T> implements java.io.Serializable{
