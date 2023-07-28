@@ -1,8 +1,9 @@
-package com.tama.apptest;
+package com.tama.core;
 
 import java.util.Random;
 
-class Noise {
+class Noise
+{
 
     private Random r1;
     private Random r2;
@@ -14,7 +15,8 @@ class Noise {
 
     // sigma is the normalization constant 0 for raw, 1 for smooth
     // size is the width of the average square edge
-    public Noise(int seedIn, int sizeIn, float sigma){
+    public Noise(int seedIn, int sizeIn, float sigma)
+    {
         norm = sigma;
         size = sizeIn;
         r1 = new Random();
@@ -24,13 +26,15 @@ class Noise {
         rs = new Random(seed);
     }
 
-    public Noise(int seedIn) {
+    public Noise(int seedIn)
+    {
         this(seedIn, 3, 0.175f);
     }
 
     // produces a psuedorandom value specific to x, y, and seed
     // but independent from x or y alone
-    float getCoord(int x, int y) {
+    float getCoord(int x, int y)
+    {
 
         rs.setSeed(seed);
         r1.setSeed(x + rs.nextInt());
@@ -49,15 +53,18 @@ class Noise {
     // uses the average of the 9 rand coords around x, y
     // and re maps from a normal distribution to a
     // *roughly* normal distribution 0-1
-    float getNoise(int x, int y) {
+    float getNoise(int x, int y)
+    {
         float f = 0;
-        int  lim = size/2;
-        for (int i = -lim; i <= lim; i++) {
-            for (int j = -lim; j <= lim; j++) {
+        int lim = size / 2;
+        for (int i = -lim; i <= lim; i++)
+        {
+            for (int j = -lim; j <= lim; j++)
+            {
                 f += getCoord(x + i, y + j);
             }
         }
-        f /= (2*lim + 1)*(2*lim + 1);
+        f /= (2 * lim + 1) * (2 * lim + 1);
         return (float) (cdf(f, 0.5, norm));
     }
 
@@ -68,13 +75,19 @@ class Noise {
     // pdf = probability density function
 
     // return cdf(z) = standard Gaussian cdf using Taylor approximation
-    public static double cdf(double z) {
+    public static double cdf(double z)
+    {
         if (z < -8.0)
+        {
             return 0.0;
+        }
         if (z > 8.0)
+        {
             return 1.0;
+        }
         double sum = 0.0, term = z;
-        for (int i = 3; sum + term != sum; i += 2) {
+        for (int i = 3; sum + term != sum; i += 2)
+        {
             sum = sum + term;
             term = term * z * z / i;
         }
@@ -82,16 +95,19 @@ class Noise {
     }
 
     // return cdf(z, mu, sigma) = Gaussian cdf with mean mu and stddev sigma
-    public static double cdf(double z, double mu, double sigma) {
+    public static double cdf(double z, double mu, double sigma)
+    {
         return cdf((z - mu) / sigma);
     }
 
-    public static double pdf(double x) {
+    public static double pdf(double x)
+    {
         return Math.exp(-x * x / 2) / Math.sqrt(2 * Math.PI);
     }
 
     // return pdf(x, mu, signma) = Gaussian pdf with mean mu and stddev sigma
-    public static double pdf(double x, double mu, double sigma) {
+    public static double pdf(double x, double mu, double sigma)
+    {
         return pdf((x - mu) / sigma) / sigma;
     }
 

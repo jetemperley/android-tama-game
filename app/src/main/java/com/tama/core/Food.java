@@ -1,20 +1,22 @@
-package com.tama.apptest;
+package com.tama.core;
 
 
-import android.graphics.Bitmap;
-import android.view.Display;
+import com.tama.apptest.R;
 
-class Food extends Thing implements java.io.Serializable{
+class Food extends Thing implements java.io.Serializable
+{
     int id;
     int sust;
     String name;
 
 
-    Food(int ID){
+    Food(int ID)
+    {
         super();
         id = ID;
 
-        switch (id){
+        switch (id)
+        {
             case R.drawable.static_meat:
                 name = "meat";
                 break;
@@ -67,29 +69,36 @@ class Food extends Thing implements java.io.Serializable{
         }
     }
 
-    Displayable getAsset(){
+    Displayable getAsset()
+    {
         return Assets.sprites.get(id);
     }
 
-    Type type(){
+    Type type()
+    {
         return Type.food;
     }
 
-    boolean isItem(){
+    boolean isItem()
+    {
         return true;
     }
 
-    Thing apply(World m, int ax, int ay){
+    Thing apply(World m, int ax, int ay)
+    {
 
         Thing t = m.getThing(ax, ay);
-        if (t==null){
+        if (t == null)
+        {
             return m.swap(this, ax, ay);
         }
 
-        switch (t.type()){
+        switch (t.type())
+        {
             case pet:
-                Pet p = (Pet)t;
-                if (p.consume(this)){
+                Pet p = (Pet) t;
+                if (p.consume(this))
+                {
                     return null;
                 }
                 return this;

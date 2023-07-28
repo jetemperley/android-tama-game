@@ -1,15 +1,17 @@
-package com.tama.apptest;
+package com.tama.core;
 
-public class WorldObject implements java.io.Serializable{
+public class WorldObject implements java.io.Serializable
+{
 
     transient Displayable sprite;
     String asset;
-    int x, y;
-    int xoff, yoff;
+    public int x, y;
+    public int xoff, yoff;
     // flat indicates if the sprite is displayed as a ground base layer
     boolean flat = false;
 
-    WorldObject(Displayable img) {
+    WorldObject(Displayable img)
+    {
 
         sprite = img;
         x = 0;
@@ -19,12 +21,14 @@ public class WorldObject implements java.io.Serializable{
     }
 
 
-    void setPos(int x, int y){
+    void setPos(int x, int y)
+    {
         this.x = x;
         this.y = y;
     }
 
-    void loadAsset(){
+    void loadAsset()
+    {
 
     }
 

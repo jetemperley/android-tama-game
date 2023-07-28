@@ -1,33 +1,39 @@
-package com.tama.apptest;
+package com.tama.core;
 
-import android.graphics.Bitmap;
 import android.util.Log;
 
-public class Axe extends Thing {
+public class Axe extends Thing
+{
 
-    Axe(){
+    Axe()
+    {
         super();
         asset = Assets.static_axe;
         loadAsset();
     }
 
-    boolean isItem() {
+    boolean isItem()
+    {
         return true;
     }
 
-    Thing apply(World m, int ax, int ay) {
+    Thing apply(World m, int ax, int ay)
+    {
 
         Thing t = m.getThing(ax, ay);
-        if (t == null) {
+        if (t == null)
+        {
             return this;
         }
 
-        switch (t.type()) {
+        switch (t.type())
+        {
             case tree:
 
                 Tree tree = (Tree) t;
                 m.takeThing(ax, ay);
-                if (tree.lvl == 2) {
+                if (tree.lvl == 2)
+                {
                     m.add(new Wood(), tree.loc.x, tree.loc.y);
                 }
                 break;
@@ -41,28 +47,35 @@ public class Axe extends Thing {
     }
 }
 
-class Shovel extends Thing {
+class Shovel extends Thing
+{
 
-    Shovel(){
+    Shovel()
+    {
         super();
         asset = Assets.static_shovel;
         loadAsset();
     }
 
-    boolean isItem() {
+    boolean isItem()
+    {
         return true;
     }
 
-    Thing apply(World m, int ax, int ay) {
+    Thing apply(World m, int ax, int ay)
+    {
 
         Thing t = m.takeThing(ax, ay);
         TileType tt = m.getTile(ax, ay).type();
         Log.d("shovel", "apply" + tt);
-        if (tt == TileType.water) {
+        if (tt == TileType.water)
+        {
             Log.d("shovel", "apply ground");
             m.setTile(ax, ay, TileType.grass);
 
-        } else if (tt == TileType.grass) {
+        }
+        else if (tt == TileType.grass)
+        {
             Log.d("shovel", "apply water");
             m.setTile(ax, ay, TileType.water);
         }
@@ -71,19 +84,23 @@ class Shovel extends Thing {
     }
 }
 
-class Hammer extends Thing {
+class Hammer extends Thing
+{
 
-    Hammer(){
+    Hammer()
+    {
         super();
         asset = Assets.static_axe;
         loadAsset();
     }
 
-    boolean isItem() {
+    boolean isItem()
+    {
         return true;
     }
 
-    Thing apply(World m, int ax, int ay) {
+    Thing apply(World m, int ax, int ay)
+    {
 
         Thing t = m.takeThing(ax, ay);
 

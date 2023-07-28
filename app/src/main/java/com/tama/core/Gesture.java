@@ -1,4 +1,4 @@
-package com.tama.apptest;
+package com.tama.core;
 
 import android.util.Log;
 import android.view.MotionEvent;
@@ -6,7 +6,8 @@ import android.view.MotionEvent;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 
-class Gesture {
+class Gesture
+{
 
     private GState[] state;
     private int stateidx = 0;
@@ -21,11 +22,12 @@ class Gesture {
     private Vec2<Float> prev1, prev2, new1, new2;
 
 
-    Gesture(){
+    Gesture()
+    {
         prev1 = new Vec2(0, 0);
-        prev2 = new Vec2(0,0);
-        new1 = new Vec2(0,0);
-        new2 = new Vec2(0,0);
+        prev2 = new Vec2(0, 0);
+        new1 = new Vec2(0, 0);
+        new2 = new Vec2(0, 0);
 
         state = new GState[7];
         state[0] = new Wait();
@@ -38,12 +40,14 @@ class Gesture {
 
     }
 
-    void update(){
+    void update()
+    {
         // Log.d("Game Gesture", "update");
         state[stateidx].update();
     }
 
-    public boolean onTouchEvent(MotionEvent e){
+    public boolean onTouchEvent(MotionEvent e)
+    {
 
         // Log.d("Game Gesture", "event " + e.getAction());
         stateidx = state[stateidx].onMotion(e);
@@ -53,59 +57,79 @@ class Gesture {
 
     }
 
-    void singleTapConfirmed(float x, float y){
+    void singleTapConfirmed(float x, float y)
+    {
         Log.d("Game Gensture", "single tap confirm");
     }
 
-    void longPressConfirmed(float x, float y){
+    void longPressConfirmed(float x, float y)
+    {
         Log.d("Game Gensture", "long press confirm");
     }
 
-    void doubleTapConfirmed(MotionEvent e){
+    void doubleTapConfirmed(MotionEvent e)
+    {
         Log.d("Game Gensture", "double tap confirm");
     }
 
-    void doubleTapRelease(float x, float y){
+    void doubleTapRelease(float x, float y)
+    {
         Log.d("Game Gensture", "double tap release");
     }
 
-    void dragStart(MotionEvent e){
+    void dragStart(MotionEvent e)
+    {
         Log.d("Game Gensture", "drag start");
     }
-    void drag(float x, float y){
+
+    void drag(float x, float y)
+    {
         Log.d("Game Gensture", "drag confirm");
     }
 
-    void dragEnd(float x, float y){
+    void dragEnd(float x, float y)
+    {
         Log.d("Game Gensture", "drag end");
     }
 
-    void scale(Vec2<Float> p1, Vec2<Float> p2, Vec2<Float> n1, Vec2<Float> n2){
+    void scale(Vec2<Float> p1, Vec2<Float> p2, Vec2<Float> n1, Vec2<Float> n2)
+    {
         Log.d("Game Gensture", "scale confirm");
     }
 
-    void scroll(Vec2<Float> prev, Vec2<Float> next){
+    void scroll(Vec2<Float> prev, Vec2<Float> next)
+    {
         Log.d("Game Gensture", "scroll confirm");
 
     }
 
 
-    abstract class GState{
+    abstract class GState
+    {
 
         final int clickTime = 250, sensetivity = 5000;
+
         abstract void start(MotionEvent e);
+
         abstract int onMotion(MotionEvent e);
-        void update(){}
+
+        void update()
+        {
+        }
     }
 
-    class Wait extends GState{
+    class Wait extends GState
+    {
 
-        void start(MotionEvent e){
+        void start(MotionEvent e)
+        {
             //reset everything?
         }
 
-        int onMotion(MotionEvent e){
-            if (e.getAction() == MotionEvent.ACTION_DOWN) {
+        int onMotion(MotionEvent e)
+        {
+            if (e.getAction() == MotionEvent.ACTION_DOWN)
+            {
                 state[down].start(e);
                 return down;
             }
@@ -113,40 +137,49 @@ class Gesture {
         }
     }
 
-    class Down extends GState{
+    class Down extends GState
+    {
 
         LocalTime downTime;
         Vec2<Float> loc;
 
-        Down(){
+        Down()
+        {
             loc = new Vec2(0, 0);
         }
 
-        void start(MotionEvent e){
+        void start(MotionEvent e)
+        {
             downTime = LocalTime.now();
             loc.set(e.getX(), e.getY());
         }
 
-        void update(){
-            if (ChronoUnit.MILLIS.between(downTime, LocalTime.now()) > clickTime){
+        void update()
+        {
+            if (ChronoUnit.MILLIS.between(downTime, LocalTime.now()) > clickTime)
+            {
                 longPressConfirmed(loc.x, loc.y);
                 stateidx = wait;
             }
         }
 
-        int onMotion(MotionEvent e){
+        int onMotion(MotionEvent e)
+        {
 
-            switch (e.getAction()){
+            switch (e.getAction())
+            {
 
                 case MotionEvent.ACTION_MOVE:
-                    if (Vec2.distSq(loc, new Vec2(e.getX(), e.getY())) > sensetivity) {
+                    if (Vec2.distSq(loc, new Vec2(e.getX(), e.getY())) > sensetivity)
+                    {
                         state[scroll].start(e);
                         return scroll;
                     }
                     return down;
 
                 case MotionEvent.ACTION_UP:
-                    if (ChronoUnit.MILLIS.between(downTime, LocalTime.now()) < clickTime){
+                    if (ChronoUnit.MILLIS.between(downTime, LocalTime.now()) < clickTime)
+                    {
                         state[singleTap].start(e);
                         return singleTap;
                     }
@@ -162,37 +195,45 @@ class Gesture {
         }
     }
 
-    class SingleTap extends GState{
+    class SingleTap extends GState
+    {
 
         boolean still = false;
         LocalTime upTime;
         Vec2<Float> loc;
 
-        SingleTap(){
+        SingleTap()
+        {
             loc = new Vec2(0, 0);
         }
 
-        void start(MotionEvent e){
+        void start(MotionEvent e)
+        {
 
             upTime = LocalTime.now();
             loc.set(e.getX(), e.getY());
 
         }
 
-        void update(){
-            if (ChronoUnit.MILLIS.between(upTime, LocalTime.now()) > clickTime){
+        void update()
+        {
+            if (ChronoUnit.MILLIS.between(upTime, LocalTime.now()) > clickTime)
+            {
                 singleTapConfirmed(loc.x, loc.y);
                 stateidx = wait;
             }
 
         }
 
-        int onMotion(MotionEvent e){
+        int onMotion(MotionEvent e)
+        {
 
-            switch (e.getAction()){
+            switch (e.getAction())
+            {
 
                 case MotionEvent.ACTION_DOWN:
-                    if (ChronoUnit.MILLIS.between(upTime, LocalTime.now()) < clickTime) {
+                    if (ChronoUnit.MILLIS.between(upTime, LocalTime.now()) < clickTime)
+                    {
                         state[doubleTap].start(e);
                         return doubleTap;
                     }
@@ -203,15 +244,19 @@ class Gesture {
         }
     }
 
-    class Drag extends GState{
+    class Drag extends GState
+    {
 
-        void start(MotionEvent e){
+        void start(MotionEvent e)
+        {
             dragStart(e);
         }
 
-        int onMotion(MotionEvent e){
+        int onMotion(MotionEvent e)
+        {
 
-            switch (e.getAction()){
+            switch (e.getAction())
+            {
 
                 case MotionEvent.ACTION_MOVE:
                     drag(e.getX(), e.getY());
@@ -228,28 +273,31 @@ class Gesture {
     }
 
 
-
-
-
-    class DoubleTap extends GState{
+    class DoubleTap extends GState
+    {
 
         Vec2<Float> loc;
 
-        DoubleTap(){
+        DoubleTap()
+        {
             loc = new Vec2(0, 0);
         }
 
-        void start(MotionEvent e){
+        void start(MotionEvent e)
+        {
             loc.set(e.getX(), e.getY());
             doubleTapConfirmed(e);
         }
 
-        int onMotion(MotionEvent e){
+        int onMotion(MotionEvent e)
+        {
 
-            switch (e.getAction()){
+            switch (e.getAction())
+            {
 
                 case MotionEvent.ACTION_MOVE:
-                    if (Vec2.distSq(loc, new Vec2(e.getX(), e.getY())) > sensetivity){
+                    if (Vec2.distSq(loc, new Vec2(e.getX(), e.getY())) > sensetivity)
+                    {
                         state[drag].start(e);
                         return drag;
                     }
@@ -259,7 +307,7 @@ class Gesture {
                     doubleTapRelease(e.getX(), e.getY());
                     return wait;
 
-                    // pretty sure this is not meant to be here
+                // pretty sure this is not meant to be here
 //                case 261:
 //                    state[doubleTap].start(e);
 //                    return doubleTap;
@@ -270,23 +318,28 @@ class Gesture {
         }
     }
 
-    class Scroll extends GState {
+    class Scroll extends GState
+    {
 
         Vec2<Float> prev, next;
 
 
-        Scroll(){
+        Scroll()
+        {
             prev = new Vec2(0, 0);
             next = new Vec2(0, 0);
         }
 
-        void start(MotionEvent e) {
+        void start(MotionEvent e)
+        {
             prev.set(next);
             next.set(e.getX(), e.getY());
         }
 
-        int onMotion(MotionEvent e){
-            switch (e.getAction()){
+        int onMotion(MotionEvent e)
+        {
+            switch (e.getAction())
+            {
 
                 case MotionEvent.ACTION_MOVE:
                     start(e);
@@ -305,23 +358,29 @@ class Gesture {
         }
     }
 
-    class Scale extends GState{
+    class Scale extends GState
+    {
 
         int point2ID = -1;
         Vec2<Float> next1, next2, prev1, prev2;
 
-        Scale(){
+        Scale()
+        {
             prev1 = new Vec2(0, 0);
-            prev2 = new Vec2(0,0);
+            prev2 = new Vec2(0, 0);
             next1 = new Vec2(0, 0);
-            next2 = new Vec2(0,0);
+            next2 = new Vec2(0, 0);
         }
-        void start(MotionEvent e){
-            if (point2ID == -1){
+
+        void start(MotionEvent e)
+        {
+            if (point2ID == -1)
+            {
                 point2ID = e.getPointerId(1);
             }
             int idx = e.findPointerIndex(point2ID);
-            if (idx != -1){
+            if (idx != -1)
+            {
                 prev1.set(next1);
                 next1.set(e.getX(), e.getY());
                 prev2.set(next2);
@@ -331,9 +390,11 @@ class Gesture {
 
         }
 
-        int onMotion(MotionEvent e){
+        int onMotion(MotionEvent e)
+        {
 
-            switch (e.getAction()){
+            switch (e.getAction())
+            {
 
                 case MotionEvent.ACTION_MOVE:
 

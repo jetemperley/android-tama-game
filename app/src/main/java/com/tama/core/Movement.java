@@ -1,15 +1,20 @@
-package com.tama.apptest;
+package com.tama.core;
 
-public interface Movement {
+public interface Movement
+{
 
     Vec2[] getMoves();
 }
 
-class OneStepAdj implements Movement{
+class OneStepAdj implements Movement
+{
 
     static private Vec2[] steps;
-    OneStepAdj(){
-        if (steps == null) {
+
+    OneStepAdj()
+    {
+        if (steps == null)
+        {
             steps = new Vec2[4];
             steps[0] = new Vec2(-1, 0);
             steps[1] = new Vec2(1, 0);
@@ -18,7 +23,8 @@ class OneStepAdj implements Movement{
         }
     }
 
-    public Vec2[] getMoves(){
+    public Vec2[] getMoves()
+    {
         return steps;
     }
 }

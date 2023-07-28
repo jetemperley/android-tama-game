@@ -1,14 +1,18 @@
-package com.tama.apptest;
+package com.tama.core;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
 
-public class DisplayMessageActivity extends AppCompatActivity {
+import com.tama.apptest.R;
+
+public class DisplayMessageActivity extends AppCompatActivity
+{
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_message);
 

@@ -1,9 +1,9 @@
-package com.tama.apptest;
-import android.util.Log;
+package com.tama.core;
 
-import java.util.ArrayList;
+import com.tama.command.CommandQueue;
 
-abstract class Pet extends Thing{
+public abstract class Pet extends Thing
+{
 
     static final int down = 0, right = 1, up = 2, left = 3;
 
@@ -11,17 +11,17 @@ abstract class Pet extends Thing{
     String name;
 
     // Movement moves;
-    ArrayList<Act> acts;
+    CommandQueue actions;
     // this pet animator is the same object as Displayable.sprite;
     Animator anim;
 
     int speed = 3;
     Stats stats;
 
-    Pet() {
+    Pet()
+    {
         super();
         state = new Wander();
-        acts = new ArrayList<Act>();
         name = "";
         stats = new Stats();
 
@@ -29,91 +29,87 @@ abstract class Pet extends Thing{
         loadAsset();
     }
 
-    Displayable getAsset(){
-        if (anim == null) {
+    Displayable getAsset()
+    {
+        if (anim == null)
+        {
             anim = new Animator(Assets.getSheet(asset));
             anim.play();
             anim.repeat(true);
-        } else {
+        }
+        else
+        {
             anim.sheet = Assets.getSheet(asset);
         }
         return anim;
     }
 
-    void update(World map) {
+    public void update(World map)
+    {
         stats.updateStats(this);
-        updateActions(map);
 
         state.update(this);
     }
 
-    void updateActions(World m) {
-
-        if (acts.size() > 0) {
-            ActState stat = acts.get(0).update(m, this);
-            if (stat == ActState.complete || stat == ActState.failed) {
-                acts.remove(0);
-            }
-        }
-    }
-
-    boolean consume(Thing t) {
+    public boolean consume(Thing t)
+    {
         //COMPLETE
         return true;
     }
 
-    void click() {
-        // println("patted");
-        acts.add(0, new Pat());
-
-    }
-
-    Type type() {
+    public Type type()
+    {
         return Type.pet;
     }
 
-    void setDir(int x, int y){
-        if (x == 1)
-            anim.animID = right;
-        else if (x == -1)
-            anim.animID = left;
-        else if (y == -1)
-            anim.animID = up;
-        else if (y == 1)
-            anim.animID = down;
+    public void setDir(Direction dir)
+    {
+        anim.animID = dir.ordinal();
     }
 
-    String getDescription(){
+    String getDescription()
+    {
         return super.getDescription() + "It's a Pet!";
+    }
+
+    public boolean canMoveOnto(Tile tile)
+    {
+        return tile.isEmpty();
     }
 
 }
 
-class Blob extends Pet {
+class Blob extends Pet
+{
 
-    Blob(){
+    Blob()
+    {
         super();
         asset = Assets.sheet_16_blob;
         loadAsset();
     }
 }
 
-class Walker extends Pet {
+class Walker extends Pet
+{
 
-    Walker(){
+    Walker()
+    {
         super();
         asset = Assets.sheet_16_walker;
         loadAsset();
     }
 }
 
-class Egg extends Thing {
+class Egg extends Thing
+{
 
     Animator anim;
     int age;
     int hatchAge;
 
-    Egg() {
+    Egg()
+    {
         super();
         anim = new Animator(null);
         age = 0;
@@ -124,30 +120,39 @@ class Egg extends Thing {
 
     }
 
-    Displayable getAsset(){
+    Displayable getAsset()
+    {
 
-        if (anim == null) {
+        if (anim == null)
+        {
             anim = new Animator(Assets.getSheet(asset));
             anim.play();
             anim.repeat(true);
-        } else {
+        }
+        else
+        {
             anim.sheet = Assets.getSheet(asset);
         }
         return anim;
     }
 
-    void update(World map) {
-        if (!anim.play && Rand.RandInt(0, 100) < 20*(PetGame.gameSpeed/1000f)) {
+    void update(World map)
+    {
+        if (!anim.play && Rand.RandInt(0, 100) < 20 * (PetGame.gameSpeed / 1000f))
+        {
             anim.play = true;
         }
         age += PetGame.gameSpeed;
-        if (age > hatchAge) {
+        if (age > hatchAge)
+        {
             // hatch
             map.removeThing(this);
             map.add(new Blob(), loc.x, loc.y);
         }
     }
-    String getDescription(){
+
+    String getDescription()
+    {
         return super.getDescription() + "An egg, age " + age + ".";
     }
 

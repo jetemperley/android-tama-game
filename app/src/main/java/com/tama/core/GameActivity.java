@@ -1,4 +1,4 @@
-package com.tama.apptest;
+package com.tama.core;
 
 import android.app.Activity;
 import android.app.NotificationChannel;
@@ -14,12 +14,9 @@ import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.os.Bundle;
-import android.support.v4.view.GestureDetectorCompat;
 import android.util.Log;
 import android.view.Display;
-import android.view.GestureDetector;
 import android.view.MotionEvent;
-import android.view.ScaleGestureDetector;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
@@ -31,11 +28,10 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Timer;
 
-public class GameActivity extends Activity{
+public class GameActivity extends Activity
+{
 
     ConstraintLayout lay;
     static Paint red, black, white;
@@ -56,7 +52,8 @@ public class GameActivity extends Activity{
 
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
 
         view = new CustomView(this);
@@ -66,7 +63,8 @@ public class GameActivity extends Activity{
         screenSize = new Rect();
         d.getRectSize(screenSize);
 
-        Log.i("sizes: " , screenSize.top + " " + screenSize.bottom + " " + screenSize.left + " " + screenSize.right);
+        Log.i("sizes: ",
+              screenSize.top + " " + screenSize.bottom + " " + screenSize.left + " " + screenSize.right);
 
         red = new Paint();
         red.setARGB(255, 255, 0, 0);
@@ -86,7 +84,8 @@ public class GameActivity extends Activity{
         controls = new GameGesture();
 
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+        {
             CharSequence name = channel_name;
             String description = channel_desc;
             int importance = NotificationManager.IMPORTANCE_DEFAULT;
@@ -112,7 +111,8 @@ public class GameActivity extends Activity{
         Log.d("Setup", "finished loading resources");
 
 
-        Log.d("display height ", " " + d.getHeight() +" " + view.getHeight() + " " + view.getTop());
+        Log.d("display height ",
+              " " + d.getHeight() + " " + view.getHeight() + " " + view.getTop());
         depthDisplay = new DepthDisplay();
         displayAdapter = new AndroidDisplay(16, d.getWidth(), d.getHeight(), 0);
 
@@ -120,38 +120,46 @@ public class GameActivity extends Activity{
         mat.setScale(3, 3);
         idmat = new Matrix();
         idmat.setScale(5, 5);
-        idmat.preTranslate(0, displayAdapter.topIn/5);
+        idmat.preTranslate(0, displayAdapter.topIn / 5);
 
-        new Thread(() -> {
+        new Thread(() ->
+                   {
 
-            LocalTime start;
-            LocalTime end = LocalTime.now();
+                       LocalTime start;
+                       LocalTime end = LocalTime.now();
 
-            while(true) {
-                start = end;
-                this.draw();
-                end = LocalTime.now();
-                frameTime = (int)ChronoUnit.MILLIS.between(start, end);
-                long ytime = PetGame.gameSpeed - frameTime;
-                // Log.d("Time", "" + ytime);
-                try {
-                    if (ytime > 0)
-                        Thread.currentThread().wait(ytime);
-                } catch (Exception e) {
-                }
-            }
-        }).start();
+                       while (true)
+                       {
+                           start = end;
+                           this.draw();
+                           end = LocalTime.now();
+                           frameTime = (int) ChronoUnit.MILLIS.between(start, end);
+                           long ytime = PetGame.gameSpeed - frameTime;
+                           // Log.d("Time", "" + ytime);
+                           try
+                           {
+                               if (ytime > 0)
+                               {
+                                   Thread.currentThread().wait(ytime);
+                               }
+                           } catch (Exception e)
+                           {
+                           }
+                       }
+                   }).start();
 
     }
 
 
-
-    public void draw() {
+    public void draw()
+    {
         controls.update();
-        if (view.surface.getSurface().isValid()) {
+        if (view.surface.getSurface().isValid())
+        {
             canvas = view.surface.lockCanvas();
 
-            if (canvas != null) {
+            if (canvas != null)
+            {
                 canvas.setMatrix(mat);
                 depthDisplay.display = displayAdapter;
                 displayAdapter.canvas = canvas;
@@ -171,60 +179,71 @@ public class GameActivity extends Activity{
     }
 
     @Override
-    public void onStop(){
+    public void onStop()
+    {
         super.onStop();
         Context context = getApplicationContext();
 
 
-        try {
+        try
+        {
             FileOutputStream fos = context.openFileOutput(dataFile, Context.MODE_PRIVATE);
             ObjectOutputStream oos = new ObjectOutputStream(fos);
             oos.writeObject(game);
             oos.close();
             Log.d("GameActivity", "serialization complete");
-        } catch (IOException e){
+        } catch (IOException e)
+        {
             Log.d("GameActivity", e.getMessage());
         }
 
     }
 
     @Override
-    public void onStart(){
+    public void onStart()
+    {
         super.onStart();
         Context context = getApplicationContext();
         File dir = context.getFilesDir();
         File[] content = dir.listFiles();
         File data = null;
-        for (File f : content){
-            if (f.getName().equals(dataFile)) {
+        for (File f : content)
+        {
+            if (f.getName().equals(dataFile))
+            {
                 data = f;
                 break;
             }
         }
-        if (data != null){
-            try{
+        if (data != null)
+        {
+            try
+            {
                 ObjectInputStream in =
                         new ObjectInputStream(
-                        new FileInputStream(data));
-                game = (PetGame)in.readObject();
+                                new FileInputStream(data));
+                game = (PetGame) in.readObject();
                 game.reLoadAllAssets();
                 in.close();
                 Log.d("GameActivity", "deserialization complete");
-            } catch (Exception e){
+            } catch (Exception e)
+            {
                 game = new PetGame();
                 Log.d("GameActivity", "deserialization failed");
             }
-        } else {
+        }
+        else
+        {
             game = new PetGame();
         }
     }
 
 
-
-    float[] convertScreenToGame(float x, float y){
+    float[] convertScreenToGame(float x, float y)
+    {
         float[] f2 = new float[9];
         mat.getValues(f2);
-        float[] f = {(x - f2[2])/16, (y - f2[5]- displayAdapter.topIn)/16};
+        float[] f = {(x - f2[2]) / 16, (y - f2[5] - displayAdapter.topIn) / 16};
 
         Matrix inv = new Matrix();
         mat.invert(inv);
@@ -234,7 +253,8 @@ public class GameActivity extends Activity{
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent e){
+    public boolean onTouchEvent(MotionEvent e)
+    {
 
         controls.onTouchEvent(e);
         return true;// super.onTouchEvent(e);
@@ -242,136 +262,156 @@ public class GameActivity extends Activity{
     }
 
 
-
-    public class CustomView extends SurfaceView {
+    public class CustomView extends SurfaceView
+    {
 
         SurfaceHolder surface;
 
-        CustomView(Context context) {
+        CustomView(Context context)
+        {
             super(context);
             surface = getHolder();
         }
 
     }
 
-    class GameGesture extends Gesture {
+    class GameGesture extends Gesture
+    {
 
-        void singleTapConfirmed(float x, float y){
+        void singleTapConfirmed(float x, float y)
+        {
             float[] f = convertScreenToGame(x, y);
             game.select(f[0], f[1]);
             game.poke(f[0], f[1]);
         }
 
-        void longPressConfirmed(float x, float y){
+        void longPressConfirmed(float x, float y)
+        {
             float[] f = convertScreenToGame(x, y);
 
         }
 
-        void doubleTapConfirmed(MotionEvent e){
+        void doubleTapConfirmed(MotionEvent e)
+        {
             float[] f = convertScreenToGame(e.getX(), e.getY());
             game.pickup(f[0], f[1]);
         }
 
-        void doubleTapRelease(float x, float y){
+        void doubleTapRelease(float x, float y)
+        {
             float[] f = convertScreenToGame(x, y);
             game.drop(f[0], f[1]);
         }
 
-        void dragStart(MotionEvent e){
+        void dragStart(MotionEvent e)
+        {
 
         }
 
-        void drag(float x, float y){
+        void drag(float x, float y)
+        {
             float[] f = convertScreenToGame(x, y);
             game.setHeldPosition(f[0], f[1]);
         }
 
-        void dragEnd(float x, float y){
+        void dragEnd(float x, float y)
+        {
             float[] f = convertScreenToGame(x, y);
             game.drop(f[0], f[1]);
         }
 
-        void scale(Vec2<Float> p1, Vec2<Float> p2, Vec2<Float> n1, Vec2<Float> n2){
+        void scale(Vec2<Float> p1, Vec2<Float> p2, Vec2<Float> n1, Vec2<Float> n2)
+        {
             // find the centres of the touch pairs
-            Vec2<Float> pmid = new Vec2((p1.x + p2.x)/2, (p1.y + p2.y)/2);
-            Vec2<Float> nmid = new Vec2((n1.x + n2.x)/2, (n1.y + n2.y)/2);
+            Vec2<Float> pmid = new Vec2((p1.x + p2.x) / 2, (p1.y + p2.y) / 2);
+            Vec2<Float> nmid = new Vec2((n1.x + n2.x) / 2, (n1.y + n2.y) / 2);
 
             // translations
             float xmd = nmid.x - pmid.x;
             float ymd = nmid.y - pmid.y;
 
             // scales
-            float px = p2.x -p1.x;
+            float px = p2.x - p1.x;
             float py = p2.y - p1.y;
-            float psize = (float)Math.sqrt((px*px) + (py*py));
+            float psize = (float) Math.sqrt((px * px) + (py * py));
 
-            float nx = n2.x -n1.x;
+            float nx = n2.x - n1.x;
             float ny = n2.y - n1.y;
-            float nsize = (float)Math.sqrt((nx*nx) + (ny*ny));
+            float nsize = (float) Math.sqrt((nx * nx) + (ny * ny));
 
-            float scale = nsize/psize;
+            float scale = nsize / psize;
 
             // apply changes
             mat.postTranslate(-nmid.x, -nmid.y);
             mat.postScale(scale, scale);
             mat.postTranslate(nmid.x, nmid.y);
-            mat.postTranslate(nmid.x-pmid.x, nmid.y - pmid.y);
+            mat.postTranslate(nmid.x - pmid.x, nmid.y - pmid.y);
 
         }
 
-        void scroll(Vec2<Float> prev, Vec2<Float> next){
+        void scroll(Vec2<Float> prev, Vec2<Float> next)
+        {
 
             mat.postTranslate(next.x - prev.x, next.y - prev.y);
         }
     }
 
 
-
 }
 
 
+class Rand
+{
 
-class Rand{
-
-    static int RandInt(int min, int max){
-        return (int)(Math.random()*(max-min) + min);
+    static int RandInt(int min, int max)
+    {
+        return (int) (Math.random() * (max - min) + min);
     }
 
 }
 
-class Vec2<T> implements java.io.Serializable{
+class Vec2<T> implements java.io.Serializable
+{
     T x, y;
-    Vec2(T x, T y){
+
+    Vec2(T x, T y)
+    {
         this.x = x;
         this.y = y;
     }
 
-    void set(T x, T y){
+    void set(T x, T y)
+    {
         this.x = x;
         this.y = y;
     }
 
-    void set(Vec2<T> a){
+    void set(Vec2<T> a)
+    {
         x = a.x;
         y = a.y;
 
     }
 
-    static float distSq(Vec2<Float> a, Vec2<Float> b){
+    static float distSq(Vec2<Float> a, Vec2<Float> b)
+    {
         float x = a.x - b.x;
         float y = a.y - b.y;
 
-        return x*x + y*y;
+        return x * x + y * y;
     }
 }
 
-class A{
+class A
+{
 
-    static boolean inRange(Object[][] arr, int x, int y) {
-        return !(x < 0 || y < 0 || x > arr.length -1 || y > arr[x].length -1);
+    static boolean inRange(Object[][] arr, int x, int y)
+    {
+        return !(x < 0 || y < 0 || x > arr.length - 1 || y > arr[x].length - 1);
     }
 
-    static boolean inRange(Object[] arr, int idx){
-        return !(idx < 0 || idx > arr.length-1);
+    static boolean inRange(Object[] arr, int idx)
+    {
+        return !(idx < 0 || idx > arr.length - 1);
     }
 }
