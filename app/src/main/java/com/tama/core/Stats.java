@@ -1,5 +1,7 @@
 package com.tama.core;
 
+import com.tama.thing.Pet;
+
 public class Stats
 {
     final static int
@@ -12,7 +14,7 @@ public class Stats
             weight = 6;
     Stat[] stats;
 
-    Stats()
+    public Stats()
     {
         stats = new Stat[7];
         for (int i = 0; i < stats.length; i++)
@@ -27,7 +29,7 @@ public class Stats
 
     }
 
-    void updateStats(Pet p)
+    public void updateStats(Pet p)
     {
         stats[hunger].add(-PetGame.gameSpeed);
         if (stats[energy].getProp() < 1)

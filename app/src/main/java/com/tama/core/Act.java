@@ -2,6 +2,11 @@ package com.tama.core;
 
 import android.util.Log;
 
+import com.tama.thing.Pet;
+import com.tama.thing.Poop;
+import com.tama.util.Path;
+import com.tama.util.Vec2;
+
 import java.util.ArrayList;
 
 interface Act

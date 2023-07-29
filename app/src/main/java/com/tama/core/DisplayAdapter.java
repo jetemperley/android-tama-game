@@ -5,6 +5,8 @@ import android.graphics.Matrix;
 import android.util.Log;
 
 import com.tama.apptest.R;
+import com.tama.thing.Pet;
+import com.tama.thing.Thing;
 
 public interface DisplayAdapter
 {

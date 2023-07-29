@@ -11,9 +11,9 @@ import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
-class Assets
+public class Assets
 {
-    final static String
+    public final static String
             ic_launcher_background = "ic_launcher_background.xml",
             sheet_16_blob = "sheet_16_blob",
             sheet_16_bush = "sheet_16_bush",
@@ -62,8 +62,8 @@ class Assets
             static_zzz = "static_zzz",
             static_pullbush = "static_pullbush";
 
-    static Map<Integer, StaticSprite> sprites;
-    static Map<Integer, SpriteSheet> sheets;
+    public static Map<Integer, StaticSprite> sprites;
+    public static Map<Integer, SpriteSheet> sheets;
 
     static void init(Resources r)
     {
@@ -121,7 +121,7 @@ class Assets
         return sheet;
     }
 
-    static Displayable getStatPic(String stat)
+    public static Displayable getStatPic(String stat)
     {
 
         switch (stat)
@@ -149,7 +149,7 @@ class Assets
         return null;
     }
 
-    static StaticSprite getSprite(String name)
+    public static StaticSprite getSprite(String name)
     {
         try
         {
@@ -162,7 +162,7 @@ class Assets
         return sprites.get(R.drawable.static_poop);
     }
 
-    static SpriteSheet getSheet(String name)
+    public static SpriteSheet getSheet(String name)
     {
         try
         {

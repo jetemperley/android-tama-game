@@ -1,5 +1,7 @@
 package com.tama.core;
 
+import com.tama.thing.Thing;
+
 import java.util.Comparator;
 import java.util.PriorityQueue;
 

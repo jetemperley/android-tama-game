@@ -20,6 +20,8 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import com.tama.util.Vec2;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -41,6 +43,10 @@ public class GameActivity extends Activity
     final String CHANNEL_ID = "01", channel_name = "ch1", channel_desc = "test channel";
     Canvas canvas;
     Matrix mat, idmat;
+
+    /**
+     * The time (ms) which the last frame took
+     */
     static int frameTime = 0;
 
     GameGesture controls;
@@ -51,8 +57,7 @@ public class GameActivity extends Activity
     final static String dataFile = "gameData.ser";
 
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState)
+    @Override protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
 
@@ -64,7 +69,8 @@ public class GameActivity extends Activity
         d.getRectSize(screenSize);
 
         Log.i("sizes: ",
-              screenSize.top + " " + screenSize.bottom + " " + screenSize.left + " " + screenSize.right);
+              screenSize.top + " " + screenSize.bottom + " " + screenSize.left + " " +
+                      screenSize.right);
 
         red = new Paint();
         red.setARGB(255, 255, 0, 0);
@@ -97,11 +103,10 @@ public class GameActivity extends Activity
             notificationManager.createNotificationChannel(channel);
         }
 
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
-                .setContentTitle("My notification")
-                .setContentText("Hello World!")
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                .setAutoCancel(true);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this,
+                                                                            CHANNEL_ID).setContentTitle(
+                "My notification").setContentText("Hello World!").setPriority(NotificationCompat.PRIORITY_DEFAULT).setAutoCancel(
+                true);
         int ID = 0;
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
         // notificationManager.notify(ID, builder.build());
@@ -135,7 +140,7 @@ public class GameActivity extends Activity
                            end = LocalTime.now();
                            frameTime = (int) ChronoUnit.MILLIS.between(start, end);
                            long ytime = PetGame.gameSpeed - frameTime;
-                           // Log.d("Time", "" + ytime);
+
                            try
                            {
                                if (ytime > 0)
@@ -178,8 +183,7 @@ public class GameActivity extends Activity
         }
     }
 
-    @Override
-    public void onStop()
+    @Override public void onStop()
     {
         super.onStop();
         Context context = getApplicationContext();
@@ -199,8 +203,7 @@ public class GameActivity extends Activity
 
     }
 
-    @Override
-    public void onStart()
+    @Override public void onStart()
     {
         super.onStart();
         Context context = getApplicationContext();
@@ -219,9 +222,7 @@ public class GameActivity extends Activity
         {
             try
             {
-                ObjectInputStream in =
-                        new ObjectInputStream(
-                                new FileInputStream(data));
+                ObjectInputStream in = new ObjectInputStream(new FileInputStream(data));
                 game = (PetGame) in.readObject();
                 game.reLoadAllAssets();
                 in.close();
@@ -252,8 +253,7 @@ public class GameActivity extends Activity
 
     }
 
-    @Override
-    public boolean onTouchEvent(MotionEvent e)
+    @Override public boolean onTouchEvent(MotionEvent e)
     {
 
         controls.onTouchEvent(e);
@@ -360,58 +360,3 @@ public class GameActivity extends Activity
 }
 
 
-class Rand
-{
-
-    static int RandInt(int min, int max)
-    {
-        return (int) (Math.random() * (max - min) + min);
-    }
-
-}
-
-class Vec2<T> implements java.io.Serializable
-{
-    T x, y;
-
-    Vec2(T x, T y)
-    {
-        this.x = x;
-        this.y = y;
-    }
-
-    void set(T x, T y)
-    {
-        this.x = x;
-        this.y = y;
-    }
-
-    void set(Vec2<T> a)
-    {
-        x = a.x;
-        y = a.y;
-
-    }
-
-    static float distSq(Vec2<Float> a, Vec2<Float> b)
-    {
-        float x = a.x - b.x;
-        float y = a.y - b.y;
-
-        return x * x + y * y;
-    }
-}
-
-class A
-{
-
-    static boolean inRange(Object[][] arr, int x, int y)
-    {
-        return !(x < 0 || y < 0 || x > arr.length - 1 || y > arr[x].length - 1);
-    }
-
-    static boolean inRange(Object[] arr, int idx)
-    {
-        return !(idx < 0 || idx > arr.length - 1);
-    }
-}

@@ -1,4 +1,4 @@
-package com.tama.core;
+package com.tama.thing;
 
 /**
  * Defines the directions a thing can move in, and the relative x,y change for that move;

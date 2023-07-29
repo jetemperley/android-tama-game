@@ -1,5 +1,8 @@
 package com.tama.core;
 
+import com.tama.thing.Thing;
+import com.tama.util.Vec2;
+
 public class PetGame implements java.io.Serializable
 {
 
@@ -7,9 +10,14 @@ public class PetGame implements java.io.Serializable
     private Thing held, selected;
     private Vec2<Float> heldPos;
 
-    long gameTime = 0;
-    static long time = 0;
-    final static long gameSpeed = 25;
+    /**
+     * The amount of ms this game has been running for
+     */
+    public static long time = 0;
+    /**
+     * The time that this game should aim to run at (ms)
+     */
+    public final static long gameSpeed = 25;
 
     PetGame()
     {
@@ -24,8 +32,7 @@ public class PetGame implements java.io.Serializable
     void update()
     {
         map.update();
-        gameTime += gameSpeed;
-        time = gameTime;
+        time += gameSpeed;
 
     }
 

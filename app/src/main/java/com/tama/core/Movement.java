@@ -1,5 +1,7 @@
 package com.tama.core;
 
+import com.tama.util.Vec2;
+
 public interface Movement
 {
 

@@ -3,6 +3,8 @@ package com.tama.core;
 import android.util.Log;
 import android.view.MotionEvent;
 
+import com.tama.util.Vec2;
+
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 

@@ -3,16 +3,15 @@ package com.tama.core;
 public class WorldObject implements java.io.Serializable
 {
 
-    transient Displayable sprite;
-    String asset;
+    public transient Displayable sprite;
+    protected String asset;
     public int x, y;
     public int xoff, yoff;
     // flat indicates if the sprite is displayed as a ground base layer
-    boolean flat = false;
+    public boolean flat = false;
 
-    WorldObject(Displayable img)
+    public WorldObject(Displayable img)
     {
-
         sprite = img;
         x = 0;
         y = 0;
@@ -21,15 +20,10 @@ public class WorldObject implements java.io.Serializable
     }
 
 
-    void setPos(int x, int y)
+    public void setPos(int x, int y)
     {
         this.x = x;
         this.y = y;
-    }
-
-    void loadAsset()
-    {
-
     }
 
 }

@@ -1,9 +1,11 @@
-package com.tama.core;
+package com.tama.util;
+
+import com.tama.core.World;
 
 import java.util.Comparator;
 import java.util.PriorityQueue;
 
-class Path
+public class Path
 {
     Vec2[] step;
     PriorityQueue<Node> que;
@@ -11,7 +13,7 @@ class Path
     World m;
     int dist = 0;
 
-    Path(int nextTo)
+    public Path(int nextTo)
     {
         Vec2[] v = {new Vec2(0, 1), new Vec2(0, -1), new Vec2(1, 0), new Vec2(-1, 0)};
         step = v;
@@ -23,7 +25,7 @@ class Path
         step = steps;
     }
 
-    Vec2[] findPath(World m, int ax, int ay, int bx, int by)
+    public Vec2[] findPath(World m, int ax, int ay, int bx, int by)
     {
 
         this.m = m;

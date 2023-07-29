@@ -1,5 +1,13 @@
 package com.tama.core;
 
+import com.tama.thing.Bush;
+import com.tama.thing.DynTile;
+import com.tama.thing.Grass;
+import com.tama.thing.Sand;
+import com.tama.thing.Tile;
+import com.tama.thing.Tree;
+import com.tama.thing.Walker;
+
 public class WorldFactory
 {
 

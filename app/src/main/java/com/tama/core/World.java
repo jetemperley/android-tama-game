@@ -2,6 +2,13 @@ package com.tama.core;
 
 import android.util.Log;
 
+import com.tama.thing.DynTile;
+import com.tama.thing.Grass;
+import com.tama.thing.Thing;
+import com.tama.thing.Tile;
+import com.tama.thing.TileType;
+import com.tama.util.A;
+
 public class World implements java.io.Serializable
 {
 
@@ -108,7 +115,7 @@ public class World implements java.io.Serializable
     // param: px, py is the thing stepping, x,y is the spot to check
     // return: if the thing can be on tile x, y
     // TODO refactor this
-    boolean canStepOnto(int px, int py, int x, int y)
+    public boolean canStepOnto(int px, int py, int x, int y)
     {
         // Log.d("Map", "" + px + " " + py);
         Thing t = tiles[px][py].getThing();
@@ -167,7 +174,7 @@ public class World implements java.io.Serializable
     }
 
     // bug source
-    void setTile(int x, int y, TileType type)
+    public void setTile(int x, int y, TileType type)
     {
 
         if (A.inRange(tiles, x, y))

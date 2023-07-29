@@ -1,187 +1,14 @@
-package com.tama.core;
+package com.tama.thing;
 
 import com.tama.apptest.R;
+import com.tama.core.Assets;
+import com.tama.core.DisplayAdapter;
+import com.tama.core.Displayable;
+import com.tama.core.SpriteSheet;
+import com.tama.core.World;
+import com.tama.core.WorldObject;
 
-public abstract class Tile implements java.io.Serializable
-{
-
-    WorldObject loc;
-    boolean visible;
-    private Thing thing;
-
-    Tile()
-    {
-        loc = new WorldObject(null);
-        visible = true;
-        loc.sprite = getAssets();
-        loc.flat = true;
-    }
-
-    Displayable getAssets()
-    {
-        return Assets.sheets.get(R.drawable.sheet_16_terrain).getSprite(0, 0);
-    }
-
-    void reLoadAsset()
-    {
-        loc.sprite = getAssets();
-        if (thing != null)
-        {
-            thing.loadAsset();
-        }
-    }
-
-    void display(DisplayAdapter d)
-    {
-        if (visible)
-        {
-            d.displayWorld(loc);
-        }
-        if (thing != null)
-        {
-            thing.display(d);
-        }
-
-    }
-
-
-    void update(World m)
-    {
-        if (thing != null)
-        {
-            thing.update(m);
-        }
-
-    }
-
-    void updateDetails(World m)
-    {
-
-
-    }
-
-    public void setVisible(boolean visible)
-    {
-        this.visible = visible;
-    }
-
-    public TileType type()
-    {
-        return TileType.ground;
-    }
-
-    boolean isEmpty()
-    {
-        return thing == null;
-    }
-
-    void setThing(Thing t)
-    {
-        thing = t;
-        if (t != null)
-        {
-            t.loc.setPos(loc.x, loc.y);
-        }
-    }
-
-    Thing takeThing()
-    {
-        if (thing == null)
-        {
-            return null;
-        }
-        Thing t = thing.pickup();
-        thing = null;
-        return t;
-    }
-
-    Thing getThing()
-    {
-        return thing;
-    }
-
-    void setPos(int x, int y)
-    {
-        loc.setPos(x, y);
-    }
-
-}
-
-class Grass extends Tile
-{
-
-    Displayable getAssets()
-    {
-        return Assets.sheets.get(R.drawable.sheet_16_terrainsimp).getSprite(0, 0);
-    }
-
-    public TileType type()
-    {
-        return TileType.grass;
-    }
-
-}
-
-class Sand extends Tile
-{
-
-    Displayable getAssets()
-    {
-        return Assets.sheets.get(R.drawable.sheet_16_terrainsimp).getSprite(0, 2);
-    }
-
-}
-
-class LongGrass extends Tile
-{
-
-    WorldObject sprite2;
-    WorldObject sprite3;
-
-    LongGrass()
-    {
-
-        super();
-        loc.flat = false;
-        loc.yoff = 1;
-        sprite2 = new WorldObject(loc.sprite);
-        sprite2.yoff = -30;
-        sprite2.flat = false;
-        sprite3 = new WorldObject(loc.sprite);
-        sprite3.yoff = -60;
-        sprite3.flat = false;
-    }
-
-    Displayable getAssets()
-    {
-        Displayable d = Assets.sprites.get(R.drawable.static_longgrass);
-        if (sprite2 != null)
-        {
-            sprite2.sprite = d;
-            sprite3.sprite = d;
-        }
-        return d;
-    }
-
-    void setPos(int x, int y)
-    {
-        loc.setPos(x, y);
-        sprite2.setPos(x, y);
-        sprite3.setPos(x, y);
-    }
-
-    @Override
-    void display(DisplayAdapter d)
-    {
-
-        super.display(d);
-        d.displayWorld(sprite2);
-        d.displayWorld(sprite3);
-    }
-
-}
-
-class DynTile extends Tile
+public class DynTile extends Tile
 {
     // considers the surrounding tiles to create a dynamic tile graphic
     static SpriteSheet sheet;
@@ -189,7 +16,7 @@ class DynTile extends Tile
 
 
     // img is 4 px sq 4*3 sprite sheet of possible configurations
-    DynTile()
+    public DynTile()
     {
         super();
         if (sheet == null)
@@ -228,7 +55,7 @@ class DynTile extends Tile
         return TileType.water;
     }
 
-    void display(DisplayAdapter d)
+    public void display(DisplayAdapter d)
     {
         for (int a = 0; a < parts.length; a++)
         {
@@ -242,7 +69,7 @@ class DynTile extends Tile
         }
     }
 
-    void setPos(int x, int y)
+    public void setPos(int x, int y)
     {
         loc.setPos(x, y);
         for (int a = 0; a < parts.length; a++)
@@ -254,8 +81,7 @@ class DynTile extends Tile
         }
     }
 
-    @Override
-    void updateDetails(World m)
+    @Override public void updateDetails(World m)
     {
         setTL(m);
         setTR(m);
@@ -389,10 +215,4 @@ class DynTile extends Tile
         }
     }
 
-}
-
-enum TileType
-{
-
-    water, ground, grass, sand
 }
