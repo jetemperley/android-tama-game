@@ -9,6 +9,10 @@ import com.tama.core.Displayable;
 import com.tama.core.Stats;
 import com.tama.core.Type;
 import com.tama.core.World;
+import com.tama.util.Vec2;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class Pet extends Thing
 {
@@ -20,9 +24,15 @@ public abstract class Pet extends Thing
     String name;
 
     // Movement moves;
-    CommandQueue commandQueue;
+    public CommandQueue commandQueue;
     // this pet animator is the same object as Displayable.sprite;
     public Animator anim;
+
+    public static Vec2<Integer>[] steps = new Vec2[]{
+            new Vec2(0, 1),
+            new Vec2(0, -1),
+            new Vec2(1, 0),
+            new Vec2(-1, 0)};
 
     public int speed = 3;
 
@@ -53,11 +63,11 @@ public abstract class Pet extends Thing
         return anim;
     }
 
-    public void update(World map)
+    public void update(World world)
     {
         stats.updateStats(this);
-        commandQueue.getUpdate().invoke(this, map);
-        state.update(commandQueue);
+        commandQueue.getUpdate().invoke(this, world);
+        state.update(world, this);
     }
 
     public boolean consume(Thing t)
@@ -84,8 +94,23 @@ public abstract class Pet extends Thing
     public boolean canMoveOnto(Tile tile)
     {
         if (tile == null)
+        {
             return false;
+        }
         return tile.isEmpty();
+    }
+
+    public List<Vec2<Integer>> getPossibleMoves(World world, int x, int y)
+    {
+        List<Vec2<Integer>> out = new ArrayList<>();
+        for (Vec2<Integer> step : steps)
+        {
+            if (world.isEmpty(loc.x + step.x, loc.y + step.y))
+            {
+                out.add(step);
+            }
+        }
+        return out;
     }
 
 }

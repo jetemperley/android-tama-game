@@ -22,6 +22,11 @@ public class DepthDisplay implements DisplayAdapter
         draws.add(t);
     }
 
+    @Override public void displayWorld(Displayable d, float x, float y)
+    {
+
+    }
+
     public void displayUI(Thing t)
     {
 

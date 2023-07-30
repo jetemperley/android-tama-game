@@ -1,5 +1,7 @@
 package com.tama.core;
 
+import com.tama.util.Vec2;
+
 public class WorldObject implements java.io.Serializable
 {
 
@@ -25,5 +27,11 @@ public class WorldObject implements java.io.Serializable
         this.x = x;
         this.y = y;
     }
+
+    public Vec2<Float> getWorldPos()
+    {
+        return new Vec2<Float>(x + xoff / 100f, y + yoff / 100f);
+    }
+
 
 }

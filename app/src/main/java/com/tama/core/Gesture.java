@@ -143,25 +143,25 @@ class Gesture
     {
 
         LocalTime downTime;
-        Vec2<Float> loc;
+        Vec2<Float> initialPos;
 
         Down()
         {
-            loc = new Vec2(0, 0);
+            initialPos = new Vec2(0, 0);
         }
 
         void start(MotionEvent e)
         {
             downTime = LocalTime.now();
-            loc.set(e.getX(), e.getY());
+            initialPos.set(e.getX(), e.getY());
         }
 
         void update()
         {
             if (ChronoUnit.MILLIS.between(downTime, LocalTime.now()) > clickTime)
             {
-                longPressConfirmed(loc.x, loc.y);
-                stateidx = wait;
+                longPressConfirmed(initialPos.x, initialPos.y);
+                // stateidx = wait;
             }
         }
 
@@ -172,7 +172,7 @@ class Gesture
             {
 
                 case MotionEvent.ACTION_MOVE:
-                    if (Vec2.distSq(loc, new Vec2(e.getX(), e.getY())) > sensetivity)
+                    if (Vec2.distSq(initialPos, new Vec2(e.getX(), e.getY())) > sensetivity)
                     {
                         state[scroll].start(e);
                         return scroll;

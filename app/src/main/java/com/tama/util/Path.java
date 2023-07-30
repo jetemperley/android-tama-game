@@ -1,23 +1,28 @@
 package com.tama.util;
 
 import com.tama.core.World;
+import com.tama.thing.Pet;
 
 import java.util.Comparator;
 import java.util.PriorityQueue;
 
 public class Path
 {
-    Vec2[] step;
+    final Vec2[] step;
     PriorityQueue<Node> que;
     Node[][] visited;
     World m;
     int dist = 0;
 
-    public Path(int nextTo)
+    /**
+     * @param aimDist The distance from the target to aim for. Eg 1 means the pathing will stop when
+     *                a path to any space 1 square away is found
+     */
+    public Path(int aimDist)
     {
-        Vec2[] v = {new Vec2(0, 1), new Vec2(0, -1), new Vec2(1, 0), new Vec2(-1, 0)};
-        step = v;
-        dist = nextTo;
+
+        step = Pet.steps;
+        dist = aimDist;
     }
 
     Path(Vec2[] steps)
@@ -54,10 +59,8 @@ public class Path
 
             for (Vec2<Integer> v : step)
             {
-                if (m.canStepOnto(ax,
-                                  ay,
-                                  tx + v.x,
-                                  ty + v.y) && visited[tx + v.x][ty + v.y] == null)
+                if (m.canStepOnto(ax, ay, tx + v.x, ty + v.y) &&
+                        visited[tx + v.x][ty + v.y] == null)
                 {
                     n = new Node(tx + v.x,
                                  ty + v.y,
@@ -87,9 +90,8 @@ public class Path
 
             for (Vec2<Integer> v : step)
             {
-                if (A.inRange(visited,
-                              tx + v.x,
-                              ty + v.y) && visited[tx + v.x][ty + v.y] != null && visited[tx + v.x][ty + v.y].dist < n.dist)
+                if (A.inRange(visited, tx + v.x, ty + v.y) && visited[tx + v.x][ty + v.y] != null &&
+                        visited[tx + v.x][ty + v.y].dist < n.dist)
                 {
                     n = visited[tx + v.x][ty + v.y];
                     break;

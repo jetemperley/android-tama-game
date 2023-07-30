@@ -6,7 +6,6 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.Build;
@@ -19,8 +18,6 @@ import android.view.Display;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-
-import com.tama.util.Vec2;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -40,9 +37,9 @@ public class GameActivity extends Activity
     CustomView view;
     Timer timer;
     Rect screenSize;
-    final String CHANNEL_ID = "01", channel_name = "ch1", channel_desc = "test channel";
+    final String CHANNEL_ID = "01", channel_name = "ch1", channel_desc =
+            "test channel";
     Canvas canvas;
-    Matrix mat, idmat;
 
     /**
      * The time (ms) which the last frame took
@@ -50,12 +47,11 @@ public class GameActivity extends Activity
     static int frameTime = 0;
 
     GameGesture controls;
-    Display d;
+    Display display;
     AndroidDisplay displayAdapter;
     DepthDisplay depthDisplay;
     PetGame game;
     final static String dataFile = "gameData.ser";
-
 
     @Override protected void onCreate(Bundle savedInstanceState)
     {
@@ -64,13 +60,14 @@ public class GameActivity extends Activity
         view = new CustomView(this);
         setContentView(view);
 
-        d = getWindowManager().getDefaultDisplay();
+        display = getWindowManager().getDefaultDisplay();
         screenSize = new Rect();
-        d.getRectSize(screenSize);
+
+        display.getRectSize(screenSize);
 
         Log.i("sizes: ",
-              screenSize.top + " " + screenSize.bottom + " " + screenSize.left + " " +
-                      screenSize.right);
+              screenSize.top + " " + screenSize.bottom + " " + screenSize.left +
+                      " " + screenSize.right);
 
         red = new Paint();
         red.setARGB(255, 255, 0, 0);
@@ -87,45 +84,50 @@ public class GameActivity extends Activity
         white.setTextSize(30);
 
         // gesture setup
-        controls = new GameGesture();
-
+        controls = new GameGesture(this);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
         {
             CharSequence name = channel_name;
             String description = channel_desc;
             int importance = NotificationManager.IMPORTANCE_DEFAULT;
-            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+            NotificationChannel channel =
+                    new NotificationChannel(CHANNEL_ID, name, importance);
             channel.setDescription(description);
             // Register the channel with the system; you can't change the importance
             // or other notification behaviors after this
-            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            NotificationManager notificationManager =
+                    getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(channel);
         }
 
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this,
-                                                                            CHANNEL_ID).setContentTitle(
-                "My notification").setContentText("Hello World!").setPriority(NotificationCompat.PRIORITY_DEFAULT).setAutoCancel(
-                true);
+        NotificationCompat.Builder builder =
+                new NotificationCompat.Builder(this,
+                                               CHANNEL_ID).setContentTitle(
+                        "My notification").setContentText("Hello World!").setPriority(
+                        NotificationCompat.PRIORITY_DEFAULT).setAutoCancel(true);
         int ID = 0;
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+        NotificationManagerCompat notificationManager =
+                NotificationManagerCompat.from(this);
         // notificationManager.notify(ID, builder.build());
 
         Log.d("Setup", "staring setup");
         Assets.init(getResources());
         Log.d("Setup", "finished loading resources");
 
-
         Log.d("display height ",
-              " " + d.getHeight() + " " + view.getHeight() + " " + view.getTop());
+              " " + display.getHeight() + " " + view.getHeight() + " " +
+                      view.getTop());
         depthDisplay = new DepthDisplay();
-        displayAdapter = new AndroidDisplay(16, d.getWidth(), d.getHeight(), 0);
 
-        mat = new Matrix();
-        mat.setScale(3, 3);
-        idmat = new Matrix();
-        idmat.setScale(5, 5);
-        idmat.preTranslate(0, displayAdapter.topIn / 5);
+        Rect out = new Rect();
+        this.getWindow().getDecorView().getWindowVisibleDisplayFrame(out);
+        Log.d("Game Activity decorview", out.top + " " + out.bottom + " ");
+
+        display.getRectSize(out);
+        Log.d("Game Activity display", out.top + " " + out.bottom + " ");
+
+        displayAdapter = new AndroidDisplay(16);
 
         new Thread(() ->
                    {
@@ -138,7 +140,8 @@ public class GameActivity extends Activity
                            start = end;
                            this.draw();
                            end = LocalTime.now();
-                           frameTime = (int) ChronoUnit.MILLIS.between(start, end);
+                           frameTime =
+                                   (int) ChronoUnit.MILLIS.between(start, end);
                            long ytime = PetGame.gameSpeed - frameTime;
 
                            try
@@ -152,25 +155,26 @@ public class GameActivity extends Activity
                            }
                        }
                    }).start();
-
     }
-
 
     public void draw()
     {
+        // update controls
         controls.update();
+
+        // update the view bounds
+        this.getWindow().getDecorView().getWindowVisibleDisplayFrame(
+                displayAdapter.view);
+
         if (view.surface.getSurface().isValid())
         {
             canvas = view.surface.lockCanvas();
 
             if (canvas != null)
             {
-                canvas.setMatrix(mat);
+                canvas.setMatrix(displayAdapter.mat);
                 depthDisplay.display = displayAdapter;
                 displayAdapter.canvas = canvas;
-                // size = canvas.getClipBounds();
-                // Log.d("canvas clip ", " "  +size.top + " " + size.bottom + " " + size.left + " " + size.right);
-                displayAdapter.topIn = d.getHeight() - canvas.getHeight();
                 canvas.drawColor(Color.BLACK);
                 game.update();
                 game.drawEnv(depthDisplay);
@@ -188,10 +192,10 @@ public class GameActivity extends Activity
         super.onStop();
         Context context = getApplicationContext();
 
-
         try
         {
-            FileOutputStream fos = context.openFileOutput(dataFile, Context.MODE_PRIVATE);
+            FileOutputStream fos =
+                    context.openFileOutput(dataFile, Context.MODE_PRIVATE);
             ObjectOutputStream oos = new ObjectOutputStream(fos);
             oos.writeObject(game);
             oos.close();
@@ -200,7 +204,6 @@ public class GameActivity extends Activity
         {
             Log.d("GameActivity", e.getMessage());
         }
-
     }
 
     @Override public void onStart()
@@ -222,7 +225,8 @@ public class GameActivity extends Activity
         {
             try
             {
-                ObjectInputStream in = new ObjectInputStream(new FileInputStream(data));
+                ObjectInputStream in =
+                        new ObjectInputStream(new FileInputStream(data));
                 game = (PetGame) in.readObject();
                 game.reLoadAllAssets();
                 in.close();
@@ -239,28 +243,12 @@ public class GameActivity extends Activity
         }
     }
 
-
-    float[] convertScreenToGame(float x, float y)
-    {
-        float[] f2 = new float[9];
-        mat.getValues(f2);
-        float[] f = {(x - f2[2]) / 16, (y - f2[5] - displayAdapter.topIn) / 16};
-
-        Matrix inv = new Matrix();
-        mat.invert(inv);
-        inv.mapVectors(f);
-        return f;
-
-    }
-
     @Override public boolean onTouchEvent(MotionEvent e)
     {
 
         controls.onTouchEvent(e);
         return true;// super.onTouchEvent(e);
-
     }
-
 
     public class CustomView extends SurfaceView
     {
@@ -272,91 +260,7 @@ public class GameActivity extends Activity
             super(context);
             surface = getHolder();
         }
-
     }
-
-    class GameGesture extends Gesture
-    {
-
-        void singleTapConfirmed(float x, float y)
-        {
-            float[] f = convertScreenToGame(x, y);
-            game.select(f[0], f[1]);
-            game.poke(f[0], f[1]);
-        }
-
-        void longPressConfirmed(float x, float y)
-        {
-            float[] f = convertScreenToGame(x, y);
-
-        }
-
-        void doubleTapConfirmed(MotionEvent e)
-        {
-            float[] f = convertScreenToGame(e.getX(), e.getY());
-            game.pickup(f[0], f[1]);
-        }
-
-        void doubleTapRelease(float x, float y)
-        {
-            float[] f = convertScreenToGame(x, y);
-            game.drop(f[0], f[1]);
-        }
-
-        void dragStart(MotionEvent e)
-        {
-
-        }
-
-        void drag(float x, float y)
-        {
-            float[] f = convertScreenToGame(x, y);
-            game.setHeldPosition(f[0], f[1]);
-        }
-
-        void dragEnd(float x, float y)
-        {
-            float[] f = convertScreenToGame(x, y);
-            game.drop(f[0], f[1]);
-        }
-
-        void scale(Vec2<Float> p1, Vec2<Float> p2, Vec2<Float> n1, Vec2<Float> n2)
-        {
-            // find the centres of the touch pairs
-            Vec2<Float> pmid = new Vec2((p1.x + p2.x) / 2, (p1.y + p2.y) / 2);
-            Vec2<Float> nmid = new Vec2((n1.x + n2.x) / 2, (n1.y + n2.y) / 2);
-
-            // translations
-            float xmd = nmid.x - pmid.x;
-            float ymd = nmid.y - pmid.y;
-
-            // scales
-            float px = p2.x - p1.x;
-            float py = p2.y - p1.y;
-            float psize = (float) Math.sqrt((px * px) + (py * py));
-
-            float nx = n2.x - n1.x;
-            float ny = n2.y - n1.y;
-            float nsize = (float) Math.sqrt((nx * nx) + (ny * ny));
-
-            float scale = nsize / psize;
-
-            // apply changes
-            mat.postTranslate(-nmid.x, -nmid.y);
-            mat.postScale(scale, scale);
-            mat.postTranslate(nmid.x, nmid.y);
-            mat.postTranslate(nmid.x - pmid.x, nmid.y - pmid.y);
-
-        }
-
-        void scroll(Vec2<Float> prev, Vec2<Float> next)
-        {
-
-            mat.postTranslate(next.x - prev.x, next.y - prev.y);
-        }
-    }
-
-
 }
 
 

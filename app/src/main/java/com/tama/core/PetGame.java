@@ -8,7 +8,7 @@ public class PetGame implements java.io.Serializable
 
     private World map;
     private Thing held, selected;
-    private Vec2<Float> heldPos;
+    private Vec2<Float> heldPos, heldOffset;
 
     /**
      * The amount of ms this game has been running for
@@ -21,41 +21,35 @@ public class PetGame implements java.io.Serializable
 
     PetGame()
     {
-
         map = WorldFactory.makeWorld();
         held = null;
-
-
         heldPos = new Vec2<>(0f, 0f);
+        heldOffset = new Vec2<>(0f, 0f);
     }
 
     void update()
     {
         map.update();
         time += gameSpeed;
-
     }
 
     void drawEnv(DisplayAdapter d)
     {
-
         map.display(d);
-
     }
 
     void drawUI(DisplayAdapter d)
     {
-
         if (selected != null)
         {
             d.displayUI(selected);
         }
-
         if (held != null)
         {
-            d.displayManual(held.loc.sprite, heldPos.x, heldPos.y);
+            d.displayWorld(held.loc.sprite,
+                           heldPos.x - heldOffset.x,
+                           heldPos.y - heldOffset.y);
         }
-
     }
 
     void reLoadAllAssets()
@@ -69,22 +63,17 @@ public class PetGame implements java.io.Serializable
 
     void setHeldPosition(float x, float y)
     {
-
-        heldPos.x = x * 16;
-        heldPos.y = y * 16;
-
+        heldPos.set(x, y);
     }
 
     void setHeld(int x, int y)
     {
         held = map.takeThing(x, y);
-
     }
 
     void setSelected(int x, int y)
     {
         selected = map.getThing(x, y);
-
     }
 
     void setSelectedAsHeld()
@@ -110,8 +99,10 @@ public class PetGame implements java.io.Serializable
         if (t != null)
         {
             held = map.takeThing(t.loc.x, t.loc.y);
-            // held.pickedUp();
-            setHeldPosition(x, y);
+            heldPos.set(x, y);
+            Vec2<Float> pos = held.loc.getWorldPos();
+            heldOffset.x = x - pos.x;
+            heldOffset.y = y - pos.y;
         }
     }
 
