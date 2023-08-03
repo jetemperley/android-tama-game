@@ -44,9 +44,10 @@ class Egg extends Thing
 
     public void update(World map)
     {
+        anim.update();
         if (!anim.play && Rand.RandInt(0, 100) < 20 * (PetGame.gameSpeed / 1000f))
         {
-            anim.play = true;
+            anim.play();
         }
         age += PetGame.gameSpeed;
         if (age > hatchAge)
@@ -61,6 +62,5 @@ class Egg extends Thing
     {
         return super.getDescription() + "An egg, age " + age + ".";
     }
-
 
 }

@@ -142,6 +142,7 @@ public class GameActivity extends Activity
                            end = LocalTime.now();
                            frameTime =
                                    (int) ChronoUnit.MILLIS.between(start, end);
+                           Log.d("GameActivity", frameTime + "");
                            long ytime = PetGame.gameSpeed - frameTime;
 
                            try
@@ -172,7 +173,7 @@ public class GameActivity extends Activity
 
             if (canvas != null)
             {
-                canvas.setMatrix(displayAdapter.mat);
+                canvas.setMatrix(displayAdapter.worldMat);
                 depthDisplay.display = displayAdapter;
                 displayAdapter.canvas = canvas;
                 canvas.drawColor(Color.BLACK);

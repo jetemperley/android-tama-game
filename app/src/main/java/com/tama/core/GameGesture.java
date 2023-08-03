@@ -83,16 +83,16 @@ class GameGesture extends Gesture
         float scale = nsize / psize;
 
         // apply changes
-        gameActivity.displayAdapter.mat.postTranslate(-nmid.x, -nmid.y);
-        gameActivity.displayAdapter.mat.postScale(scale, scale);
-        gameActivity.displayAdapter.mat.postTranslate(nmid.x, nmid.y);
-        gameActivity.displayAdapter.mat.postTranslate(nmid.x - pmid.x, nmid.y - pmid.y);
+        gameActivity.displayAdapter.worldMat.postTranslate(-nmid.x, -nmid.y);
+        gameActivity.displayAdapter.worldMat.postScale(scale, scale);
+        gameActivity.displayAdapter.worldMat.postTranslate(nmid.x, nmid.y);
+        gameActivity.displayAdapter.worldMat.postTranslate(nmid.x - pmid.x, nmid.y - pmid.y);
 
     }
 
     void scroll(Vec2<Float> prev, Vec2<Float> next)
     {
 
-        gameActivity.displayAdapter.mat.postTranslate(next.x - prev.x, next.y - prev.y);
+        gameActivity.displayAdapter.worldMat.postTranslate(next.x - prev.x, next.y - prev.y);
     }
 }

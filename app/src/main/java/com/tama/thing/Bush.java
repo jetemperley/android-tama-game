@@ -3,6 +3,7 @@ package com.tama.thing;
 import com.tama.core.Animator;
 import com.tama.core.Assets;
 import com.tama.core.Displayable;
+import com.tama.core.World;
 
 public class Bush extends Thing
 {
@@ -49,5 +50,10 @@ public class Bush extends Thing
     public Thing pickup()
     {
         return new PulledBush();
+    }
+
+    @Override public void update(World map)
+    {
+        anim.update();
     }
 }

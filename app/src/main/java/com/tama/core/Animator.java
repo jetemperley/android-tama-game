@@ -25,6 +25,16 @@ public class Animator implements Displayable, java.io.Serializable
 
     public Bitmap getSprite()
     {
+        return getSlide(animTime, animDur, animID);
+    }
+
+    public void play()
+    {
+        play = true;
+    }
+
+    public void update()
+    {
         if (play)
         {
             animTime += 25;
@@ -37,12 +47,6 @@ public class Animator implements Displayable, java.io.Serializable
                 animTime %= animDur;
             }
         }
-        return getSlide(animTime, animDur, animID);
-    }
-
-    public void play()
-    {
-        play = true;
     }
 
 

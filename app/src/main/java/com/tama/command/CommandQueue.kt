@@ -1,5 +1,8 @@
 package com.tama.command
 
+import com.tama.core.Assets
+import com.tama.core.DisplayAdapter
+import com.tama.core.Displayable
 import com.tama.thing.Pet
 import com.tama.core.World
 import java.util.*
@@ -52,5 +55,14 @@ class CommandQueue : Command()
     fun add(command: Command)
     {
         queue.add(command);
+    }
+
+    fun draw(d: DisplayAdapter, pet: Displayable)
+    {
+        d.displayAbsolute(pet, 0f, 0f)
+        for (i in 0..(queue.size-1))
+        {
+            d.displayAbsolute(Assets.getSprite(Assets.static_heart), (i + 1) * 16f, 0f)
+        }
     }
 }

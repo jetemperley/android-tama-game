@@ -12,6 +12,7 @@ internal class CommandStep(var dir: Direction) : Command()
         val tile = world.getTile(pet.loc.x + dir.x, pet.loc.y + dir.y)
         if (pet.canMoveOnto(tile))
         {
+            pet.setMovement(Pet.Movement.walk);
             world.removeThing(pet)
             world.add(pet, pet.loc.x + dir.x, pet.loc.y + dir.y)
             pet.loc.xoff = -dir.x * 100;
@@ -36,7 +37,10 @@ internal class CommandStep(var dir: Direction) : Command()
                 pet.loc.yoff += dir.y;
             }
             else              ->
+            {
+                pet.setMovement(Pet.Movement.stand);
                 state = CommandState.complete;
+            }
         }
     }
 }

@@ -1,12 +1,13 @@
 package com.tama.core;
 
+import com.tama.thing.Pet;
 import com.tama.thing.Thing;
 import com.tama.util.Vec2;
 
 public class PetGame implements java.io.Serializable
 {
 
-    private World map;
+    private World world;
     private Thing held, selected;
     private Vec2<Float> heldPos, heldOffset;
 
@@ -21,7 +22,7 @@ public class PetGame implements java.io.Serializable
 
     PetGame()
     {
-        map = WorldFactory.makeWorld();
+        world = WorldFactory.makeWorld();
         held = null;
         heldPos = new Vec2<>(0f, 0f);
         heldOffset = new Vec2<>(0f, 0f);
@@ -29,20 +30,25 @@ public class PetGame implements java.io.Serializable
 
     void update()
     {
-        map.update();
+        world.update();
         time += gameSpeed;
     }
 
     void drawEnv(DisplayAdapter d)
     {
-        map.display(d);
+        world.display(d);
     }
 
     void drawUI(DisplayAdapter d)
     {
         if (selected != null)
         {
-            d.displayUI(selected);
+            if (selected instanceof Pet)
+            {
+                d.uiMode();
+                ((Pet)selected).commandQueue.draw(d, selected.loc.sprite);
+                d.worldMode();
+            }
         }
         if (held != null)
         {
@@ -54,7 +60,7 @@ public class PetGame implements java.io.Serializable
 
     void reLoadAllAssets()
     {
-        map.reLoadAllAssets();
+        world.reLoadAllAssets();
         if (held != null)
         {
             held.loadAsset();
@@ -68,12 +74,12 @@ public class PetGame implements java.io.Serializable
 
     void setHeld(int x, int y)
     {
-        held = map.takeThing(x, y);
+        held = world.takeThing(x, y);
     }
 
     void setSelected(int x, int y)
     {
-        selected = map.getThing(x, y);
+        selected = world.getThing(x, y);
     }
 
     void setSelectedAsHeld()
@@ -95,10 +101,10 @@ public class PetGame implements java.io.Serializable
             heldPos.set(x, y);
             return;
         }
-        Thing t = map.checkCollision(x, y);
+        Thing t = world.checkCollision(x, y);
         if (t != null)
         {
-            held = map.takeThing(t.loc.x, t.loc.y);
+            held = world.takeThing(t.loc.x, t.loc.y);
             heldPos.set(x, y);
             Vec2<Float> pos = held.loc.getWorldPos();
             heldOffset.x = x - pos.x;
@@ -108,25 +114,26 @@ public class PetGame implements java.io.Serializable
 
     void drop(float x, float y)
     {
-        if (map.getThing((int) x, (int) y) == null)
+        if (world.getThing((int) x, (int) y) == null)
         {
-            map.add(held, (int) x, (int) y);
+            world.add(held, (int) x, (int) y);
             held = null;
         }
     }
 
     void select(float x, float y)
     {
-        Thing t = map.checkCollision(x, y);
+        Thing t = world.checkCollision(x, y);
         selected = t;
     }
 
     void poke(float x, float y)
     {
-        Thing t = map.checkCollision(x, y);
+        Thing t = world.checkCollision(x, y);
         if (t != null)
         {
             t.poke();
         }
     }
+
 }

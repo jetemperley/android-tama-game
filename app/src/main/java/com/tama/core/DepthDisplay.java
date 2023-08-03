@@ -32,7 +32,17 @@ public class DepthDisplay implements DisplayAdapter
 
     }
 
-    public void displayManual(Displayable d, float x, float y)
+    public void displayAbsolute(Displayable d, float x, float y)
+    {
+
+    }
+
+    @Override public void uiMode()
+    {
+
+    }
+
+    @Override public void worldMode()
     {
 
     }

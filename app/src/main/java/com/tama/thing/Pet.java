@@ -1,11 +1,14 @@
 package com.tama.thing;
 
+import android.util.Log;
+
 import com.tama.command.CommandQueue;
 import com.tama.command.State;
 import com.tama.command.Wander;
 import com.tama.core.Animator;
 import com.tama.core.Assets;
 import com.tama.core.Displayable;
+import com.tama.core.PetGame;
 import com.tama.core.Stats;
 import com.tama.core.Type;
 import com.tama.core.World;
@@ -19,6 +22,7 @@ public abstract class Pet extends Thing
 
     static final int down = 0, right = 1, up = 2, left = 3;
     public Stats stats;
+    private long time = 0;
 
     State state;
     String name;
@@ -65,9 +69,13 @@ public abstract class Pet extends Thing
 
     public void update(World world)
     {
+        if (time == PetGame.time)
+            Log.d("PET", "doubled up");
         stats.updateStats(this);
         commandQueue.getUpdate().invoke(this, world);
+        anim.update();
         state.update(world, this);
+        time = PetGame.time;
     }
 
     public boolean consume(Thing t)
@@ -111,6 +119,22 @@ public abstract class Pet extends Thing
             }
         }
         return out;
+    }
+
+    public enum Movement
+    {
+        stand, walk
+    }
+    public void setMovement(Movement movement)
+    {
+        if (movement == Movement.stand)
+        {
+            anim.animID = 4 + (anim.animID%4);
+        }
+        else
+        {
+            anim.animID = anim.animID%4;
+        }
     }
 
 }

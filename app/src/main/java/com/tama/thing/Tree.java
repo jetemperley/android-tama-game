@@ -52,6 +52,7 @@ public class Tree extends Thing implements java.io.Serializable
         //            growth = 0;
         //        }
         // Log.d("Tree", "" + growth);
+        anim.update();
     }
 
     public void poke()
