@@ -11,21 +11,21 @@
         android:theme="@style/AppTheme">
 
         <activity
-            android:name="com.tama.apptest.GameActivity"
-            android:parentActivityName="com.tama.apptest.MainActivity">
+            android:name="com.tama.core.GameActivity"
+            android:parentActivityName="com.tama.core.MainActivity">
         </activity>
 
         <!-- meta data for linking the back button to previous activity -->
         <activity
-            android:name="com.tama.apptest.DisplayMessageActivity"
-            android:parentActivityName="com.tama.apptest.MainActivity">
+            android:name="com.tama.core.DisplayMessageActivity"
+            android:parentActivityName="com.tama.core.MainActivity">
 
             <!-- meta data used in older android versions -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.tama.apptest.MainActivity" />
+                android:value="com.tama.core.MainActivity" />
         </activity>
-        <activity android:name="com.tama.apptest.MainActivity">
+        <activity android:name="com.tama.core.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
