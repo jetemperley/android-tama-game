@@ -1,20 +1,17 @@
-package com.tama.core;
+package com.tama.util;
 
-import android.util.Log;
 import android.view.MotionEvent;
-
-import com.tama.util.Vec2;
 
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 
-class Gesture
+public class Gesture
 {
 
     private GState[] state;
     private int stateidx = 0;
 
-    int error = -1, wait = 0, down = 1, drag = 2,
+    int error = -1, wait = 0, down = 1, doubleTapDrag = 2,
             scale = 3, singleTap = 4, scroll = 5,
             doubleTap = 6;
 
@@ -23,8 +20,10 @@ class Gesture
     // locations of the pointers
     private Vec2<Float> prev1, prev2, new1, new2;
 
+    private int singleTapConfirmDelay = 100;
+    private int dragConfirmSensitivity = 2000;
 
-    Gesture()
+    public Gesture()
     {
         prev1 = new Vec2(0, 0);
         prev2 = new Vec2(0, 0);
@@ -34,82 +33,81 @@ class Gesture
         state = new GState[7];
         state[0] = new Wait();
         state[1] = new Down();
-        state[2] = new Drag();
+        state[2] = new DoubleTapDrag();
         state[3] = new Scale();
         state[4] = new SingleTap();
         state[5] = new Scroll();
         state[6] = new DoubleTap();
-
     }
 
-    void update()
+    public void update()
     {
-        // Log.d("Game Gesture", "update");
+        // Log.log("Game Gesture", "update");
         state[stateidx].update();
     }
 
     public boolean onTouchEvent(MotionEvent e)
     {
 
-        // Log.d("Game Gesture", "event " + e.getAction());
+        // Log.log("Game Gesture", "event " + e.getAction());
         stateidx = state[stateidx].onMotion(e);
-        // Log.d("Game Gesture", "state " + stateidx);
+        // Log.log("Game Gesture", "state " + stateidx);
 
         return true;
-
     }
 
-    void singleTapConfirmed(float x, float y)
+    public void singleTapConfirmed(float x, float y)
     {
-        Log.d("Game Gensture", "single tap confirm");
+        Log.log(this, "single tap confirm");
     }
 
-    void longPressConfirmed(float x, float y)
+    public void singleDown(float x, float y)
     {
-        Log.d("Game Gensture", "long press confirm");
+        Log.log(this, "long press confirm");
     }
 
-    void doubleTapConfirmed(MotionEvent e)
+    public void longPressConfirmed(float x, float y)
     {
-        Log.d("Game Gensture", "double tap confirm");
+        Log.log(this, "long press confirm");
     }
 
-    void doubleTapRelease(float x, float y)
+    public void doubleTapConfirmed(MotionEvent e)
     {
-        Log.d("Game Gensture", "double tap release");
+        Log.log(this, "double tap confirm");
     }
 
-    void dragStart(MotionEvent e)
+    public void doubleTapRelease(float x, float y)
     {
-        Log.d("Game Gensture", "drag start");
+        Log.log(this, "double tap release");
     }
 
-    void drag(float x, float y)
+    public void doubleTapDragStart(MotionEvent e)
     {
-        Log.d("Game Gensture", "drag confirm");
+        Log.log(this, "drag start");
     }
 
-    void dragEnd(float x, float y)
+    public void doubleTapDrag(float x, float y)
     {
-        Log.d("Game Gensture", "drag end");
+        Log.log(this, "drag confirm");
     }
 
-    void scale(Vec2<Float> p1, Vec2<Float> p2, Vec2<Float> n1, Vec2<Float> n2)
+    public void doubleTapDragEnd(float x, float y)
     {
-        Log.d("Game Gensture", "scale confirm");
+        Log.log(this, "drag end");
     }
 
-    void scroll(Vec2<Float> prev, Vec2<Float> next)
+    public void scale(Vec2<Float> p1, Vec2<Float> p2, Vec2<Float> n1, Vec2<Float> n2)
     {
-        Log.d("Game Gensture", "scroll confirm");
-
+        Log.log(this, "scale confirm");
     }
 
+    public void scroll(Vec2<Float> prev, Vec2<Float> next)
+    {
+        Log.log(this, "scroll confirm");
+    }
 
     abstract class GState
     {
-
-        final int clickTime = 250, sensetivity = 5000;
 
         abstract void start(MotionEvent e);
 
@@ -132,6 +130,7 @@ class Gesture
         {
             if (e.getAction() == MotionEvent.ACTION_DOWN)
             {
+                singleDown(e.getX(), e.getY());
                 state[down].start(e);
                 return down;
             }
@@ -158,7 +157,8 @@ class Gesture
 
         void update()
         {
-            if (ChronoUnit.MILLIS.between(downTime, LocalTime.now()) > clickTime)
+            if (ChronoUnit.MILLIS.between(downTime, LocalTime.now()) >
+                    singleTapConfirmDelay)
             {
                 longPressConfirmed(initialPos.x, initialPos.y);
                 // stateidx = wait;
@@ -172,7 +172,8 @@ class Gesture
             {
 
                 case MotionEvent.ACTION_MOVE:
-                    if (Vec2.distSq(initialPos, new Vec2(e.getX(), e.getY())) > sensetivity)
+                    if (Vec2.distSq(initialPos, new Vec2(e.getX(), e.getY())) >
+                            dragConfirmSensitivity)
                     {
                         state[scroll].start(e);
                         return scroll;
@@ -180,18 +181,17 @@ class Gesture
                     return down;
 
                 case MotionEvent.ACTION_UP:
-                    if (ChronoUnit.MILLIS.between(downTime, LocalTime.now()) < clickTime)
+                    if (ChronoUnit.MILLIS.between(downTime, LocalTime.now()) <
+                            singleTapConfirmDelay)
                     {
                         state[singleTap].start(e);
                         return singleTap;
                     }
                     return wait;
 
-
                 case MotionEvent.ACTION_POINTER_2_DOWN:
                     state[scale].start(e);
                     return scale;
-
             }
             return down;
         }
@@ -214,17 +214,15 @@ class Gesture
 
             upTime = LocalTime.now();
             loc.set(e.getX(), e.getY());
-
         }
 
         void update()
         {
-            if (ChronoUnit.MILLIS.between(upTime, LocalTime.now()) > clickTime)
+            if (ChronoUnit.MILLIS.between(upTime, LocalTime.now()) > singleTapConfirmDelay)
             {
                 singleTapConfirmed(loc.x, loc.y);
                 stateidx = wait;
             }
-
         }
 
         int onMotion(MotionEvent e)
@@ -234,24 +232,24 @@ class Gesture
             {
 
                 case MotionEvent.ACTION_DOWN:
-                    if (ChronoUnit.MILLIS.between(upTime, LocalTime.now()) < clickTime)
+                    if (ChronoUnit.MILLIS.between(upTime, LocalTime.now()) <
+                            singleTapConfirmDelay)
                     {
                         state[doubleTap].start(e);
                         return doubleTap;
                     }
                     return down;
-
             }
             return wait;
         }
     }
 
-    class Drag extends GState
+    class DoubleTapDrag extends GState
     {
 
         void start(MotionEvent e)
         {
-            dragStart(e);
+            doubleTapDragStart(e);
         }
 
         int onMotion(MotionEvent e)
@@ -261,19 +259,16 @@ class Gesture
             {
 
                 case MotionEvent.ACTION_MOVE:
-                    drag(e.getX(), e.getY());
-                    return drag;
+                    doubleTapDrag(e.getX(), e.getY());
+                    return doubleTapDrag;
 
                 case MotionEvent.ACTION_UP:
-                    dragEnd(e.getX(), e.getY());
+                    doubleTapDragEnd(e.getX(), e.getY());
                     return wait;
-
-
             }
-            return drag;
+            return doubleTapDrag;
         }
     }
-
 
     class DoubleTap extends GState
     {
@@ -298,10 +293,11 @@ class Gesture
             {
 
                 case MotionEvent.ACTION_MOVE:
-                    if (Vec2.distSq(loc, new Vec2(e.getX(), e.getY())) > sensetivity)
+                    if (Vec2.distSq(loc, new Vec2(e.getX(), e.getY())) >
+                            dragConfirmSensitivity)
                     {
-                        state[drag].start(e);
-                        return drag;
+                        state[doubleTapDrag].start(e);
+                        return doubleTapDrag;
                     }
                     return doubleTap;
 
@@ -310,10 +306,9 @@ class Gesture
                     return wait;
 
                 // pretty sure this is not meant to be here
-//                case 261:
-//                    state[doubleTap].start(e);
-//                    return doubleTap;
-
+                //                case 261:
+                //                    state[doubleTap].start(e);
+                //                    return doubleTap;
 
             }
             return doubleTap;
@@ -324,7 +319,6 @@ class Gesture
     {
 
         Vec2<Float> prev, next;
-
 
         Scroll()
         {
@@ -388,8 +382,6 @@ class Gesture
                 prev2.set(next2);
                 next2.set(e.getX(idx), e.getY(idx));
             }
-
-
         }
 
         int onMotion(MotionEvent e)
@@ -412,10 +404,8 @@ class Gesture
                     point2ID = -1;
                     state[scroll].start(e);
                     return scroll;
-
             }
             return wait;
         }
     }
-
 }

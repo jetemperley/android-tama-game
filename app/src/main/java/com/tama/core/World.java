@@ -35,8 +35,6 @@ public class World implements java.io.Serializable
                 setTile(x, y, new Grass());
             }
         }
-
-
     }
 
     public void update()
@@ -49,7 +47,6 @@ public class World implements java.io.Serializable
                 tiles[x][y].update(this);
             }
         }
-
     }
 
     public void display(DisplayAdapter d)
@@ -61,11 +58,11 @@ public class World implements java.io.Serializable
                 tiles[x][y].display(d);
             }
         }
-
     }
 
     /**
-     * Adds a thing at position x,y in the array and updates that things position
+     * Adds a thing at position x,y in the array and updates that things
+     * position
      *
      * @param t The thing to add
      * @param x The x array pos
@@ -111,22 +108,6 @@ public class World implements java.io.Serializable
         }
     }
 
-
-    // param: px, py is the thing stepping, x,y is the spot to check
-    // return: if the thing can be on tile x, y
-    // TODO refactor this
-    public boolean canStepOnto(int px, int py, int x, int y)
-    {
-        // Log.d("Map", "" + px + " " + py);
-        Thing t = tiles[px][py].getThing();
-        if (isEmpty(x, y) && ((tiles[x][y].type() == TileType.ground == t.canWalk()) ||
-                (tiles[x][y].type() == TileType.water == t.canSwim())))
-        {
-            return true;
-        }
-        return false;
-    }
-
     public boolean isEmpty(int x, int y)
     {
         if (A.inRange(tiles, x, y))
@@ -136,6 +117,14 @@ public class World implements java.io.Serializable
         return false;
     }
 
+    /**
+     * Pulls the thing out of the world at world array at index x, y, and triggering a
+     * response in the thing.
+     *
+     * @param x
+     * @param y
+     * @return
+     */
     public Thing takeThing(int x, int y)
     {
         if (A.inRange(tiles, x, y))
@@ -144,7 +133,6 @@ public class World implements java.io.Serializable
         }
         return null;
     }
-
 
     // swaps t with the target xy, or returns t
     public Thing swap(Thing t, int x, int y)
@@ -158,14 +146,14 @@ public class World implements java.io.Serializable
         return t;
     }
 
-
     void updateDyn(int x, int y)
     {
         for (int i = -1; i < 2; i++)
         {
             for (int j = -1; j < 2; j++)
             {
-                if (A.inRange(tiles, x + i, y + j) && tiles[x + i][y + j] != null)
+                if (A.inRange(tiles, x + i, y + j) &&
+                        tiles[x + i][y + j] != null)
                 {
                     tiles[x + i][y + j].updateDetails(this);
                 }
@@ -194,7 +182,6 @@ public class World implements java.io.Serializable
             }
             updateDyn(x, y);
         }
-
     }
 
     /**
@@ -253,7 +240,6 @@ public class World implements java.io.Serializable
         t.setPos(x, y);
         updateDyn(x, y);
         return true;
-
     }
 
     public Thing checkCollision(float x, float y)
@@ -274,7 +260,6 @@ public class World implements java.io.Serializable
             }
         }
         return null;
-
     }
 
     /**
@@ -288,7 +273,8 @@ public class World implements java.io.Serializable
     public boolean addOrClosest(Thing t, int x, int y)
     {
         int dist = 0;
-        int maxDist = tiles.length > tiles[0].length ? tiles.length : tiles[0].length;
+        int maxDist =
+                tiles.length > tiles[0].length ? tiles.length : tiles[0].length;
         while (dist < maxDist)
         {
             if (addAnywhereOnBorder(t, x, y, dist))
@@ -301,7 +287,8 @@ public class World implements java.io.Serializable
     }
 
     /**
-     * Adds a thing anywhere on the border of a square with centre x, y and radius
+     * Adds a thing anywhere on the border of a square with centre x, y and
+     * radius
      *
      * @param t      The thing to add
      * @param x      x coord of centre
@@ -326,6 +313,12 @@ public class World implements java.io.Serializable
             }
         }
         return false;
+    }
+
+    public Thing pickupThing(int x, int y)
+    {
+        Thing thing = takeThing(x, y);
+        return thing.pickup();
     }
 }
 

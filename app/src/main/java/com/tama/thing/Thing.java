@@ -7,10 +7,12 @@ import com.tama.core.Type;
 import com.tama.core.World;
 import com.tama.core.WorldObject;
 
+import org.jetbrains.annotations.NotNull;
+
 public abstract class Thing implements java.io.Serializable
 {
-
-    public WorldObject loc;
+    @NotNull
+    final public WorldObject loc;
     protected String asset = Assets.static_poop;
 
     public Thing()

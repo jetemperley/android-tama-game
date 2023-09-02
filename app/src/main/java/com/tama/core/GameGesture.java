@@ -1,8 +1,9 @@
 package com.tama.core;
 
-import android.util.Log;
+import com.tama.util.Log;
 import android.view.MotionEvent;
 
+import com.tama.util.Gesture;
 import com.tama.util.Vec2;
 
 class GameGesture extends Gesture
@@ -12,56 +13,73 @@ class GameGesture extends Gesture
 
     public GameGesture(GameActivity gameActivity)
     {
+        super();
         this.gameActivity = gameActivity;
     }
 
-    void singleTapConfirmed(float x, float y)
+    @Override
+    public void singleTapConfirmed(float x, float y)
     {
 
-
         float[] f = gameActivity.displayAdapter.convertScreenToWorld(x, y);
-        Log.d("Game Gesture", "tapped " + f[0] + " " + f[1]);
+        Log.log(this, "tapped " + f[0] + " " + f[1]);
         gameActivity.game.select(f[0], f[1]);
         gameActivity.game.poke(f[0], f[1]);
     }
 
-    void longPressConfirmed(float x, float y)
+    @Override
+    public void singleDown(float x, float y)
     {
-        float[] f = gameActivity.displayAdapter.convertScreenToWorld(x, y);
-        gameActivity.game.pickup(x, y);
 
     }
 
-    void doubleTapConfirmed(MotionEvent e)
+    @Override
+    public void longPressConfirmed(float x, float y)
     {
-        float[] f = gameActivity.displayAdapter.convertScreenToWorld(e.getX(), e.getY());
-        gameActivity.game.pickup(f[0], f[1]);
+        // float[] f = gameActivity.displayAdapter.convertScreenToWorld(x, y);
+        // gameActivity.game.pickup(x, y);
     }
 
-    void doubleTapRelease(float x, float y)
+    @Override
+    public void doubleTapConfirmed(MotionEvent e)
+    {
+        super.doubleTapConfirmed(e);
+        float[] f = gameActivity.displayAdapter.convertScreenToWorld(
+                e.getX(),
+                e.getY());
+        //gameActivity.game.pickup(f[0], f[1]);
+        gameActivity.game.doubleSelect(f[0], f[1]);
+    }
+
+    @Override
+    public void doubleTapRelease(float x, float y)
     {
         float[] f = gameActivity.displayAdapter.convertScreenToWorld(x, y);
         gameActivity.game.drop(f[0], f[1]);
     }
 
-    void dragStart(MotionEvent e)
+    @Override
+    public void doubleTapDragStart(MotionEvent e)
     {
-
+        super.doubleTapDragStart(e);
     }
 
-    void drag(float x, float y)
+    @Override
+    public void doubleTapDrag(float x, float y)
     {
         float[] f = gameActivity.displayAdapter.convertScreenToWorld(x, y);
         gameActivity.game.setHeldPosition(f[0], f[1]);
     }
 
-    void dragEnd(float x, float y)
+    @Override
+    public void doubleTapDragEnd(float x, float y)
     {
         float[] f = gameActivity.displayAdapter.convertScreenToWorld(x, y);
         gameActivity.game.drop(f[0], f[1]);
     }
 
-    void scale(Vec2<Float> p1, Vec2<Float> p2, Vec2<Float> n1, Vec2<Float> n2)
+    @Override
+    public void scale(Vec2<Float> p1, Vec2<Float> p2, Vec2<Float> n1, Vec2<Float> n2)
     {
         // find the centres of the touch pairs
         Vec2<Float> pmid = new Vec2((p1.x + p2.x) / 2, (p1.y + p2.y) / 2);
@@ -86,13 +104,17 @@ class GameGesture extends Gesture
         gameActivity.displayAdapter.worldMat.postTranslate(-nmid.x, -nmid.y);
         gameActivity.displayAdapter.worldMat.postScale(scale, scale);
         gameActivity.displayAdapter.worldMat.postTranslate(nmid.x, nmid.y);
-        gameActivity.displayAdapter.worldMat.postTranslate(nmid.x - pmid.x, nmid.y - pmid.y);
-
+        gameActivity.displayAdapter.worldMat.postTranslate(
+                nmid.x - pmid.x,
+                nmid.y - pmid.y);
     }
 
-    void scroll(Vec2<Float> prev, Vec2<Float> next)
+    @Override
+    public void scroll(Vec2<Float> prev, Vec2<Float> next)
     {
 
-        gameActivity.displayAdapter.worldMat.postTranslate(next.x - prev.x, next.y - prev.y);
+        gameActivity.displayAdapter.worldMat.postTranslate(
+                next.x - prev.x,
+                next.y - prev.y);
     }
 }

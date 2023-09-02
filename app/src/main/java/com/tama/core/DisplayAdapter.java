@@ -10,6 +10,9 @@ import com.tama.thing.Pet;
 import com.tama.thing.Thing;
 import com.tama.util.Vec2;
 
+import java.util.Comparator;
+import java.util.PriorityQueue;
+
 public interface DisplayAdapter
 {
     /**
@@ -40,9 +43,9 @@ public interface DisplayAdapter
      */
     void displayAbsolute(Displayable d, float x, float y);
 
-    void uiMode();
+    void setIdMat();
 
-    void worldMode();
+    void setWorldMat();
 }
 
 class AndroidDisplay implements DisplayAdapter
@@ -195,12 +198,12 @@ class AndroidDisplay implements DisplayAdapter
         canvas.drawBitmap(d.getSprite(), x, y, GameActivity.black);
     }
 
-    @Override public void uiMode()
+    @Override public void setIdMat()
     {
         canvas.setMatrix(uiMat);
     }
 
-    @Override public void worldMode()
+    @Override public void setWorldMat()
     {
         canvas.setMatrix(worldMat);
     }
@@ -236,3 +239,88 @@ class AndroidDisplay implements DisplayAdapter
         return new Vec2<Float>(worldPos.x * 16, worldPos.y * 16);
     }
 }
+
+
+class DepthDisplay implements DisplayAdapter
+{
+
+    DisplayAdapter display;
+    PriorityQueue<WorldObject> draws;
+    boolean check = true;
+
+    DepthDisplay()
+    {
+        draws = new PriorityQueue<>(200, new DepthComp());
+    }
+
+    public void displayWorld(WorldObject t)
+    {
+        draws.add(t);
+    }
+
+    @Override public void displayWorld(Displayable d, float x, float y)
+    {
+
+    }
+
+    public void displayUI(Thing t)
+    {
+
+    }
+
+    public void displayAbsolute(Displayable d, float x, float y)
+    {
+
+    }
+
+    @Override public void setIdMat()
+    {
+
+    }
+
+    @Override public void setWorldMat()
+    {
+
+    }
+
+    void drawQ()
+    {
+        if (display != null)
+        {
+            WorldObject b;
+            while (!draws.isEmpty())
+            {
+                b = draws.poll();
+                display.displayWorld(b);
+            }
+        }
+        check = false;
+    }
+
+    void clearQ()
+    {
+        draws.clear();
+    }
+
+    class DepthComp implements Comparator<WorldObject>
+    {
+        public int compare(WorldObject a, WorldObject b)
+        {
+            if (b.flat && a.flat)
+            {
+                return 0;
+            }
+            if (a.flat)
+            {
+                return -1;
+            }
+            if (b.flat)
+            {
+                return 1;
+            }
+            return (a.y + a.yoff / 100f) > (b.y + b.yoff / 100f) ? 1 : -1;
+        }
+    }
+
+}
+

@@ -95,7 +95,7 @@ public abstract class Tile implements java.io.Serializable
         {
             return null;
         }
-        Thing t = thing.pickup();
+        Thing t = thing;
         thing = null;
         return t;
     }

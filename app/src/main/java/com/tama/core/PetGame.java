@@ -1,7 +1,10 @@
 package com.tama.core;
 
+import com.tama.command.CommandFactory;
+import com.tama.command.CommandQueue;
 import com.tama.thing.Pet;
 import com.tama.thing.Thing;
+import com.tama.util.Log;
 import com.tama.util.Vec2;
 
 public class PetGame implements java.io.Serializable
@@ -43,18 +46,21 @@ public class PetGame implements java.io.Serializable
     {
         if (selected != null)
         {
+            d.displayWorld(
+                    Assets.getSprite(Assets.static_inv),
+                    selected.loc.getWorldPos().x,
+                    selected.loc.getWorldPos().y);
             if (selected instanceof Pet)
             {
-                d.uiMode();
-                ((Pet)selected).commandQueue.draw(d, selected.loc.sprite);
-                d.worldMode();
+                ((Pet)selected).currentCommand.draw(d);
             }
         }
         if (held != null)
         {
-            d.displayWorld(held.loc.sprite,
-                           heldPos.x - heldOffset.x,
-                           heldPos.y - heldOffset.y);
+            d.displayWorld(
+                    held.loc.sprite,
+                    heldPos.x - heldOffset.x,
+                    heldPos.y - heldOffset.y);
         }
     }
 
@@ -72,9 +78,14 @@ public class PetGame implements java.io.Serializable
         heldPos.set(x, y);
     }
 
-    void setHeld(int x, int y)
+    void setHeld(float ax, float ay)
     {
-        held = world.takeThing(x, y);
+        setHeld(world.checkCollision(ax, ay));
+    }
+
+    void setHeld(Thing thing)
+    {
+        held = thing;
     }
 
     void setSelected(int x, int y)
@@ -104,7 +115,7 @@ public class PetGame implements java.io.Serializable
         Thing t = world.checkCollision(x, y);
         if (t != null)
         {
-            held = world.takeThing(t.loc.x, t.loc.y);
+            held = world.pickupThing(t.loc.x, t.loc.y);
             heldPos.set(x, y);
             Vec2<Float> pos = held.loc.getWorldPos();
             heldOffset.x = x - pos.x;
@@ -114,19 +125,29 @@ public class PetGame implements java.io.Serializable
 
     void drop(float x, float y)
     {
-        if (world.getThing((int) x, (int) y) == null)
-        {
-            world.add(held, (int) x, (int) y);
-            held = null;
-        }
+        world.addOrClosest(held, (int) x, (int) y);
+        held = null;
     }
 
     void select(float x, float y)
     {
         Thing t = world.checkCollision(x, y);
-        selected = t;
+        if (selected == t)
+        {
+            selected = null;
+        }
+        else
+        {
+            selected = t;
+        }
     }
 
+    /**
+     * poke the world position x y
+     *
+     * @param x coord relative to array position
+     * @param y coord relative to array position
+     */
     void poke(float x, float y)
     {
         Thing t = world.checkCollision(x, y);
@@ -136,4 +157,39 @@ public class PetGame implements java.io.Serializable
         }
     }
 
+    /**
+     * Triggers the held object to target position x, y
+     *
+     * @param ax coord relative to array position
+     * @param ay coord relative to array position
+     */
+    public void doubleSelect(float ax, float ay)
+    {
+        if (selected == null)
+        {
+            setHeld(ax, ay);
+            return;
+        }
+        if (!(selected instanceof Pet))
+        {
+            return;
+        }
+        Pet pet = (Pet) selected;
+        Thing thing = world.checkCollision(ax, ay);
+        if (thing == pet)
+        {
+            pickup(ax, ay);
+            Log.log(this, "double tapped the selected pet");
+            return;
+        }
+        if (thing == null)
+        {
+            CommandQueue walk = CommandFactory.Companion.commandPathTo(
+                            (int) ax,
+                            (int) ay);
+            pet.currentCommand.replace(walk);
+            return;
+        }
+        // pet.queue.add(pet.getActionForTarget(thing));
+    }
 }

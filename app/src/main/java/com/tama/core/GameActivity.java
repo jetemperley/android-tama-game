@@ -142,7 +142,7 @@ public class GameActivity extends Activity
                            end = LocalTime.now();
                            frameTime =
                                    (int) ChronoUnit.MILLIS.between(start, end);
-                           Log.d("GameActivity", frameTime + "");
+                           // Log.d("GameActivity", frameTime + "");
                            long ytime = PetGame.gameSpeed - frameTime;
 
                            try
@@ -203,7 +203,7 @@ public class GameActivity extends Activity
             Log.d("GameActivity", "serialization complete");
         } catch (IOException e)
         {
-            Log.d("GameActivity", e.getMessage());
+            Log.d("GameActivity", "failed serialization " + e.getMessage());
         }
     }
 

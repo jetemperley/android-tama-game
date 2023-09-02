@@ -2,9 +2,12 @@ package com.tama.thing;
 
 import android.util.Log;
 
+import com.tama.command.Command;
 import com.tama.command.CommandQueue;
+import com.tama.command.CommandReplacer;
 import com.tama.command.State;
 import com.tama.command.Wander;
+import com.tama.command.Eat;
 import com.tama.core.Animator;
 import com.tama.core.Assets;
 import com.tama.core.Displayable;
@@ -27,11 +30,12 @@ public abstract class Pet extends Thing
     State state;
     String name;
 
-    // Movement moves;
-    public CommandQueue commandQueue;
     // this pet animator is the same object as Displayable.sprite;
+    final public CommandReplacer currentCommand;
+
     public Animator anim;
 
+    // Movement moves;
     public static Vec2<Integer>[] steps = new Vec2[]{
             new Vec2(0, 1),
             new Vec2(0, -1),
@@ -46,8 +50,7 @@ public abstract class Pet extends Thing
         state = new Wander();
         name = "";
         stats = new Stats();
-        commandQueue = new CommandQueue();
-
+        currentCommand = new CommandReplacer();
         asset = Assets.sheet_16_blob;
         loadAsset();
     }
@@ -72,7 +75,10 @@ public abstract class Pet extends Thing
         if (time == PetGame.time)
             Log.d("PET", "doubled up");
         stats.updateStats(this);
-        commandQueue.getUpdate().invoke(this, world);
+        if (currentCommand != null)
+        {
+            currentCommand.getUpdate().invoke(this, world);
+        }
         anim.update();
         state.update(world, this);
         time = PetGame.time;
@@ -125,7 +131,7 @@ public abstract class Pet extends Thing
     {
         stand, walk
     }
-    public void setMovement(Movement movement)
+    public void setMovementPose(Movement movement)
     {
         if (movement == Movement.stand)
         {
@@ -137,5 +143,20 @@ public abstract class Pet extends Thing
         }
     }
 
+    public Command getActionForTarget(Thing thing)
+    {
+        if (thing instanceof Food)
+        {
+            return new Eat(thing);
+        }
+        return null;
+    }
+
+    @Override
+    public Thing pickup()
+    {
+        // currentCommand.hardCancel();
+        return this;
+    }
 }
 

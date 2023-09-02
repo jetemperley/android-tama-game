@@ -25,17 +25,21 @@ public class Path
         dist = aimDist;
     }
 
-    Path(Vec2[] steps)
+    /**
+     * find path from position (ax, ay) to (bx, by) in the specified world
+     * @param world
+     * @param ax
+     * @param ay
+     * @param bx
+     * @param by
+     * @return
+     */
+    public Vec2<Integer>[] findPath(World world, Pet pet, int ax, int ay, int bx, int by)
     {
-        step = steps;
-    }
 
-    public Vec2[] findPath(World m, int ax, int ay, int bx, int by)
-    {
-
-        this.m = m;
+        this.m = world;
         que = new PriorityQueue<Node>(20, new VComp());
-        visited = new Node[m.width()][m.height()];
+        visited = new Node[world.width()][world.height()];
         Node n = new Node(ax, ay, 0, Math.abs(bx - ax) + Math.abs(by - ay));
         que.add(n);
         visited[ax][ay] = n;
@@ -59,7 +63,7 @@ public class Path
 
             for (Vec2<Integer> v : step)
             {
-                if (m.canStepOnto(ax, ay, tx + v.x, ty + v.y) &&
+                if (pet.canMoveOnto(world.getTile(tx + v.x, ty + v.y)) &&
                         visited[tx + v.x][ty + v.y] == null)
                 {
                     n = new Node(tx + v.x,
