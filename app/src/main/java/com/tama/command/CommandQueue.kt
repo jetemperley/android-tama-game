@@ -5,13 +5,15 @@ import com.tama.core.Assets
 import com.tama.core.DisplayAdapter
 import com.tama.thing.Pet
 import com.tama.core.World
+import com.tama.core.WorldObject
 import com.tama.thing.Direction
 import com.tama.util.Path
 import com.tama.util.Vec2
 import java.util.*
 
 /**
- * A self managing list commands that a pet will execute one at a time, regardless of command failures
+ * A self managing list commands that a pet will execute one at a time,
+ * regardless of command failures unless failAllOnFail is set to true
  */
 class CommandQueue constructor() : Command()
 {
@@ -21,7 +23,7 @@ class CommandQueue constructor() : Command()
             { queue, world, pet ->
                 Log.d(this.javaClass.canonicalName, "default initiliser");
             };
-    var ultimateTarget: Vec2<Int>? = null;
+    var ultimateTarget: WorldObject? = null;
 
     constructor(initializer: (CommandQueue, World, Pet) -> Unit) : this()
     {
@@ -38,10 +40,9 @@ class CommandQueue constructor() : Command()
 
     override fun start(pet: Pet, world: World)
     {
-        super.start(pet, world)
+        super.start(pet, world);
         Log.d(this.javaClass.canonicalName, "starting queue");
-        initialiser(this, world, pet)
-        update = ::doing
+        initialiser(this, world, pet);
     }
 
     override fun doing(pet: Pet, world: World): Unit
@@ -85,15 +86,18 @@ class CommandQueue constructor() : Command()
 
     override fun draw(d: DisplayAdapter)
     {
-
-        d.displayAbsolute(actor?.loc?.sprite, 0f, 0f)
-        for (i: Int in queue.indices)
-        {
-            d.displayAbsolute(Assets.getSprite(Assets.static_heart),
-                              (i + 1) * 16f,
-                              0f);
-
-        }
+        if (actor == null || ultimateTarget == null)
+            return;
+        val start: Vec2<Float> = actor!!.loc.worldPos;
+        start.x += 1;
+        start.y += 1;
+        val end: Vec2<Float> = ultimateTarget!!.worldPos;
+        end.x += 1;
+        end.y += 1;
+        d.drawLine((start.x * 16 - 8),
+                   (start.y * 16 - 8),
+                   (end.x * 16 - 8),
+                   (end.y * 16 - 8));
     }
 
     override fun isReplaceable(): Boolean

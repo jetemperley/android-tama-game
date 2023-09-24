@@ -2,7 +2,9 @@ package com.tama.core;
 
 import com.tama.thing.Pet;
 
-public class Stats
+import java.io.Serializable;
+
+public class Stats implements Serializable
 {
     final static int
             health = 0,
@@ -40,7 +42,7 @@ public class Stats
 
     }
 
-    class Stat
+    class Stat implements Serializable
     {
         private float val, max;
         private Stat under, over, mirrorDown, mirrorUp;

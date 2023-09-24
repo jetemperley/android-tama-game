@@ -1,7 +1,9 @@
 package com.tama.core;
 
+import com.tama.apptest.R;
 import com.tama.thing.Bush;
 import com.tama.thing.DynTile;
+import com.tama.thing.Food;
 import com.tama.thing.Grass;
 import com.tama.thing.Sand;
 import com.tama.thing.Tile;
@@ -52,6 +54,7 @@ public class WorldFactory
             }
         }
         w.addOrClosest(new Walker(), 0, 0);
+        w.addOrClosest(new Food(R.drawable.static_meat), 1, 1);
 
         return w;
     }

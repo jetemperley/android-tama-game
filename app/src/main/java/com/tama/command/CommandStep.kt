@@ -1,6 +1,7 @@
 package com.tama.command
 
 import android.util.Log
+import com.tama.core.DisplayAdapter
 import com.tama.thing.Direction
 import com.tama.thing.Pet
 import com.tama.core.World
@@ -54,5 +55,10 @@ public class CommandStep(var dir: Direction) : Command()
         super.hardCancel()
         actor?.loc?.xoff = 0;
         actor?.loc?.yoff = 0;
+    }
+
+    override fun draw(d: DisplayAdapter)
+    {
+
     }
 }

@@ -57,6 +57,11 @@ public class DynTile extends Tile
 
     public void display(DisplayAdapter d)
     {
+        if (thing != null)
+        {
+            thing.display(d);
+        }
+
         for (int a = 0; a < parts.length; a++)
         {
             for (int b = 0; b < parts[a].length; b++)

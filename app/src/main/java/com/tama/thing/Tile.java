@@ -12,7 +12,7 @@ public abstract class Tile implements java.io.Serializable
 
     WorldObject loc;
     boolean visible;
-    private Thing thing;
+    protected Thing thing;
 
     Tile()
     {
@@ -80,22 +80,22 @@ public abstract class Tile implements java.io.Serializable
         return thing == null;
     }
 
-    public void setThing(Thing t)
+    public void setThing(Thing thing)
     {
-        thing = t;
-        if (t != null)
+        this.thing = thing;
+        if (thing != null)
         {
-            t.loc.setPos(loc.x, loc.y);
+            thing.loc.setPos(loc.x, loc.y);
         }
     }
 
-    public Thing takeThing()
+    public Thing removeThing()
     {
         if (thing == null)
         {
             return null;
         }
-        Thing t = thing;
+        Thing t = thing.pickup();
         thing = null;
         return t;
     }

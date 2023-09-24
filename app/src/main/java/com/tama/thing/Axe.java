@@ -32,7 +32,7 @@ public class Axe extends Thing
             case tree:
 
                 Tree tree = (Tree) t;
-                m.takeThing(ax, ay);
+                m.removeThing(ax, ay);
                 if (tree.lvl == 2)
                 {
                     m.add(new Wood(), tree.loc.x, tree.loc.y);

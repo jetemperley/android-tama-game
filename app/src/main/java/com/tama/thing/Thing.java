@@ -9,16 +9,21 @@ import com.tama.core.WorldObject;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public abstract class Thing implements java.io.Serializable
 {
     @NotNull
     final public WorldObject loc;
     protected String asset = Assets.static_poop;
+    public final List<Thing> secondaryThings;
 
     public Thing()
     {
-        loc = new WorldObject(null);
+        loc = new WorldObject(Assets.getSprite(asset));
         loc.sprite = getAsset();
+        secondaryThings = new ArrayList<>(1);
     }
 
     public void display(DisplayAdapter d)

@@ -20,9 +20,7 @@ class Hammer extends Thing
 
     Thing apply(World m, int ax, int ay)
     {
-
-        Thing t = m.takeThing(ax, ay);
-
+        m.removeThing(ax, ay);
         return this;
     }
 }

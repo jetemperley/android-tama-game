@@ -21,10 +21,11 @@ public class PetGame implements java.io.Serializable
     /**
      * The time that this game should aim to run at (ms)
      */
-    public final static long gameSpeed = 25;
+    public final static int gameSpeed = 25;
 
     PetGame()
     {
+        Log.log(this, "starting game");
         world = WorldFactory.makeWorld();
         held = null;
         heldPos = new Vec2<>(0f, 0f);
@@ -80,7 +81,9 @@ public class PetGame implements java.io.Serializable
 
     void setHeld(float ax, float ay)
     {
-        setHeld(world.checkCollision(ax, ay));
+        Thing thing = world.checkCollision(ax, ay);
+        thing = world.pickupThing(thing.loc.x, thing.loc.y);
+        setHeld(thing);
     }
 
     void setHeld(Thing thing)
@@ -170,10 +173,12 @@ public class PetGame implements java.io.Serializable
             setHeld(ax, ay);
             return;
         }
+
         if (!(selected instanceof Pet))
         {
             return;
         }
+
         Pet pet = (Pet) selected;
         Thing thing = world.checkCollision(ax, ay);
         if (thing == pet)
@@ -190,6 +195,6 @@ public class PetGame implements java.io.Serializable
             pet.currentCommand.replace(walk);
             return;
         }
-        // pet.queue.add(pet.getActionForTarget(thing));
+        pet.setActionTarget(thing);
     }
 }

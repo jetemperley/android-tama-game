@@ -1,13 +1,14 @@
 package com.tama.command
 
-import com.tama.thing.Pet;
-import com.tama.core.World;
-import com.tama.core.DisplayAdapter;
+import com.tama.core.DisplayAdapter
+import com.tama.core.World
+import com.tama.thing.Pet
+import java.io.Serializable
 
 /**
  * An abtraction for any single action that a pet can execute
  */
-abstract class Command
+abstract class Command : Serializable
 {
     public var update: (pet: Pet, world: World) -> Unit = ::start
     public var state = CommandState.ready
@@ -17,6 +18,7 @@ abstract class Command
     {
         actor = pet;
         state = CommandState.doing;
+        update = ::doing;
     }
 
     protected abstract fun doing(pet: Pet, world: World);
@@ -31,7 +33,5 @@ abstract class Command
         state = CommandState.failed;
     }
 
-    open fun draw(d: DisplayAdapter)
-    {
-    }
+    abstract fun draw(d: DisplayAdapter);
 }

@@ -1,12 +1,13 @@
 package com.tama.command
 
+import com.tama.core.DisplayAdapter
 import com.tama.core.World
 import com.tama.thing.Pet
 
 class CommandReplacer : Command()
 {
-    var currentCommand: Command? = null;
-    var replaceWith: Command? = null;
+    private var currentCommand: Command? = null;
+    private var replaceWith: Command? = null;
 
     override fun start(pet: Pet, world: World)
     {
@@ -24,6 +25,17 @@ class CommandReplacer : Command()
                 currentCommand = replaceWith;
 
             }
+        }
+
+        if (currentCommand == null)
+        {
+            return;
+        }
+
+        if (currentCommand!!.state == CommandState.complete
+            || currentCommand!!.state == CommandState.failed)
+        {
+            currentCommand = null;
         }
 
         currentCommand?.update?.invoke(pet, world)
@@ -52,6 +64,11 @@ class CommandReplacer : Command()
         super.hardCancel()
         currentCommand?.hardCancel();
         replaceWith = null;
+    }
+
+    override fun draw(d: DisplayAdapter)
+    {
+        currentCommand?.draw(d);
     }
 
 }

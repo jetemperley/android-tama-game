@@ -9,17 +9,18 @@ import com.tama.core.World;
 import com.tama.thing.Pet;
 import com.tama.thing.Thing;
 
-class Food extends Thing implements java.io.Serializable
+public class Food extends Thing implements java.io.Serializable
 {
     int id;
     int sust;
     String name;
 
 
-    Food(int ID)
+    public Food(int ID)
     {
         super();
         id = ID;
+        loc.sprite=Assets.getSprite(Assets.static_meat);
 
         switch (id)
         {

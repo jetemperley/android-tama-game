@@ -13,11 +13,12 @@ import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Display;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+
+import com.tama.util.Log;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -40,11 +41,7 @@ public class GameActivity extends Activity
     final String CHANNEL_ID = "01", channel_name = "ch1", channel_desc =
             "test channel";
     Canvas canvas;
-
-    /**
-     * The time (ms) which the last frame took
-     */
-    static int frameTime = 0;
+    GameLoop gameLoop;
 
     GameGesture controls;
     Display display;
@@ -53,7 +50,8 @@ public class GameActivity extends Activity
     PetGame game;
     final static String dataFile = "gameData.ser";
 
-    @Override protected void onCreate(Bundle savedInstanceState)
+    @Override
+    protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
 
@@ -64,10 +62,6 @@ public class GameActivity extends Activity
         screenSize = new Rect();
 
         display.getRectSize(screenSize);
-
-        Log.i("sizes: ",
-              screenSize.top + " " + screenSize.bottom + " " + screenSize.left +
-                      " " + screenSize.right);
 
         red = new Paint();
         red.setARGB(255, 255, 0, 0);
@@ -102,8 +96,9 @@ public class GameActivity extends Activity
         }
 
         NotificationCompat.Builder builder =
-                new NotificationCompat.Builder(this,
-                                               CHANNEL_ID).setContentTitle(
+                new NotificationCompat.Builder(
+                        this,
+                        CHANNEL_ID).setContentTitle(
                         "My notification").setContentText("Hello World!").setPriority(
                         NotificationCompat.PRIORITY_DEFAULT).setAutoCancel(true);
         int ID = 0;
@@ -111,51 +106,19 @@ public class GameActivity extends Activity
                 NotificationManagerCompat.from(this);
         // notificationManager.notify(ID, builder.build());
 
-        Log.d("Setup", "staring setup");
+        Log.log(this, "staring setup");
         Assets.init(getResources());
-        Log.d("Setup", "finished loading resources");
-
-        Log.d("display height ",
-              " " + display.getHeight() + " " + view.getHeight() + " " +
-                      view.getTop());
+        Log.log(this, "finished loading resources");
         depthDisplay = new DepthDisplay();
-
         Rect out = new Rect();
         this.getWindow().getDecorView().getWindowVisibleDisplayFrame(out);
-        Log.d("Game Activity decorview", out.top + " " + out.bottom + " ");
 
         display.getRectSize(out);
-        Log.d("Game Activity display", out.top + " " + out.bottom + " ");
 
         displayAdapter = new AndroidDisplay(16);
 
-        new Thread(() ->
-                   {
-
-                       LocalTime start;
-                       LocalTime end = LocalTime.now();
-
-                       while (true)
-                       {
-                           start = end;
-                           this.draw();
-                           end = LocalTime.now();
-                           frameTime =
-                                   (int) ChronoUnit.MILLIS.between(start, end);
-                           // Log.d("GameActivity", frameTime + "");
-                           long ytime = PetGame.gameSpeed - frameTime;
-
-                           try
-                           {
-                               if (ytime > 0)
-                               {
-                                   Thread.currentThread().wait(ytime);
-                               }
-                           } catch (Exception e)
-                           {
-                           }
-                       }
-                   }).start();
+        gameLoop = new GameLoop(this);
+        gameLoop.start();
     }
 
     public void draw()
@@ -182,14 +145,25 @@ public class GameActivity extends Activity
                 depthDisplay.drawQ();
                 depthDisplay.clearQ();
                 game.drawUI(displayAdapter);
-
-                view.surface.unlockCanvasAndPost(canvas);
+                if (view.surface.getSurface().isValid())
+                {
+                    view.surface.unlockCanvasAndPost(canvas);
+                }
             }
         }
     }
 
-    @Override public void onStop()
+    @Override
+    public void onStop()
     {
+        gameLoop.play = false;
+        try
+        {
+            gameLoop.join();
+        } catch (InterruptedException e)
+        {
+            Log.log(this, "could not join gameloop");
+        }
         super.onStop();
         Context context = getApplicationContext();
 
@@ -200,14 +174,15 @@ public class GameActivity extends Activity
             ObjectOutputStream oos = new ObjectOutputStream(fos);
             oos.writeObject(game);
             oos.close();
-            Log.d("GameActivity", "serialization complete");
+            Log.log(this, "serialization complete");
         } catch (IOException e)
         {
-            Log.d("GameActivity", "failed serialization " + e.getMessage());
+            Log.log(this, "serialization failed" + e.getMessage());
         }
     }
 
-    @Override public void onStart()
+    @Override
+    public void onStart()
     {
         super.onStart();
         Context context = getApplicationContext();
@@ -231,11 +206,11 @@ public class GameActivity extends Activity
                 game = (PetGame) in.readObject();
                 game.reLoadAllAssets();
                 in.close();
-                Log.d("GameActivity", "deserialization complete");
+                Log.log(this, "deserialization complete");
             } catch (Exception e)
             {
                 game = new PetGame();
-                Log.d("GameActivity", "deserialization failed");
+                Log.log(this, "deserialization failed, " + e.getMessage());
             }
         }
         else
@@ -244,7 +219,8 @@ public class GameActivity extends Activity
         }
     }
 
-    @Override public boolean onTouchEvent(MotionEvent e)
+    @Override
+    public boolean onTouchEvent(MotionEvent e)
     {
 
         controls.onTouchEvent(e);
@@ -260,6 +236,48 @@ public class GameActivity extends Activity
         {
             super(context);
             surface = getHolder();
+        }
+    }
+}
+
+class GameLoop extends Thread
+{
+    /**
+     * The time (ms) which the last frame took
+     */
+    public int frameTime = 0;
+    GameActivity activity;
+    public boolean play = true;
+
+    GameLoop(GameActivity activity)
+    {
+        this.activity = activity;
+    }
+
+    public void run()
+    {
+        LocalTime start;
+        LocalTime end = LocalTime.now();
+
+        while (play)
+        {
+            start = end;
+            activity.draw();
+            end = LocalTime.now();
+            frameTime =
+                    (int) ChronoUnit.MILLIS.between(start, end);
+            // Log.log(this, frameTime + "");
+            long ytime = PetGame.gameSpeed - frameTime;
+
+            try
+            {
+                if (ytime > 0)
+                {
+                    Thread.currentThread().wait(ytime);
+                }
+            } catch (Exception e)
+            {
+            }
         }
     }
 }

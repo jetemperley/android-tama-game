@@ -23,7 +23,7 @@ class Shovel extends Thing
     Thing apply(World m, int ax, int ay)
     {
 
-        Thing t = m.takeThing(ax, ay);
+        Thing t = m.removeThing(ax, ay);
         TileType tt = m.getTile(ax, ay).type();
         Log.d("shovel", "apply" + tt);
         if (tt == TileType.water)

@@ -92,20 +92,39 @@ public class World implements java.io.Serializable
         }
     }
 
-    public void removeThing(Thing t)
+    /**
+     * Pulls the thing out of the world at world array based on the things
+     * internal position, and triggers any necessary response in the thing
+     *
+     * @param thing
+     * @return
+     */
+
+    public Thing removeThing(Thing thing)
     {
-        if (tiles[t.loc.x][t.loc.y].getThing() == t)
+        if (tiles[thing.loc.x][thing.loc.y].getThing() == thing)
         {
-            tiles[t.loc.x][t.loc.y].takeThing();
+            return tiles[thing.loc.x][thing.loc.y].removeThing();
         }
+        return null;
     }
 
-    public void removeThing(int x, int y)
+    /**
+     * Pulls the thing out of the world at world array at index x, y, and
+     * triggering a response in the thing.
+     *
+     * @param x
+     * @param y
+     * @return
+     */
+
+    public Thing removeThing(int x, int y)
     {
         if (A.inRange(tiles, x, y))
         {
-            tiles[x][y].takeThing();
+            return tiles[x][y].removeThing();
         }
+        return null;
     }
 
     public boolean isEmpty(int x, int y)
@@ -117,29 +136,12 @@ public class World implements java.io.Serializable
         return false;
     }
 
-    /**
-     * Pulls the thing out of the world at world array at index x, y, and triggering a
-     * response in the thing.
-     *
-     * @param x
-     * @param y
-     * @return
-     */
-    public Thing takeThing(int x, int y)
-    {
-        if (A.inRange(tiles, x, y))
-        {
-            return tiles[x][y].takeThing();
-        }
-        return null;
-    }
-
     // swaps t with the target xy, or returns t
     public Thing swap(Thing t, int x, int y)
     {
         if (fits(t, x, y))
         {
-            Thing temp = tiles[x][y].takeThing();
+            Thing temp = tiles[x][y].removeThing();
             add(t, x, y);
             return temp;
         }
@@ -234,7 +236,7 @@ public class World implements java.io.Serializable
 
         if (tiles[x][y] != null)
         {
-            t.setThing(tiles[x][y].takeThing());
+            t.setThing(tiles[x][y].removeThing());
         }
         tiles[x][y] = t;
         t.setPos(x, y);
@@ -317,7 +319,7 @@ public class World implements java.io.Serializable
 
     public Thing pickupThing(int x, int y)
     {
-        Thing thing = takeThing(x, y);
+        Thing thing = removeThing(x, y);
         return thing.pickup();
     }
 }

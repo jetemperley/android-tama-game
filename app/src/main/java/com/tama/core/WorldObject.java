@@ -28,6 +28,10 @@ public class WorldObject implements java.io.Serializable
         this.y = y;
     }
 
+    /**
+     * Gets the array location of the object
+     * @return
+     */
     public Vec2<Float> getWorldPos()
     {
         return new Vec2<Float>(x + xoff / 100f, y + yoff / 100f);

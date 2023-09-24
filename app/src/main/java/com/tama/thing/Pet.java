@@ -3,6 +3,7 @@ package com.tama.thing;
 import android.util.Log;
 
 import com.tama.command.Command;
+import com.tama.command.CommandFactory;
 import com.tama.command.CommandQueue;
 import com.tama.command.CommandReplacer;
 import com.tama.command.State;
@@ -157,6 +158,14 @@ public abstract class Pet extends Thing
     {
         // currentCommand.hardCancel();
         return this;
+    }
+
+    public void setActionTarget(Thing thing)
+    {
+        if (thing.type() == Type.food)
+        {
+            currentCommand.replace(CommandFactory.Companion.commandEat(thing));
+        }
     }
 }
 
