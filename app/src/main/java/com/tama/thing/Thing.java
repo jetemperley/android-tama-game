@@ -1,5 +1,6 @@
 package com.tama.thing;
 
+import com.tama.component.Component;
 import com.tama.core.Assets;
 import com.tama.core.DisplayAdapter;
 import com.tama.core.Displayable;
@@ -17,18 +18,24 @@ public abstract class Thing implements java.io.Serializable
     @NotNull
     final public WorldObject loc;
     protected String asset = Assets.static_poop;
-    public final List<Thing> secondaryThings;
+    public final List<Thing> children;
+    public final List<Component> components;
 
     public Thing()
     {
         loc = new WorldObject(Assets.getSprite(asset));
         loc.sprite = getAsset();
-        secondaryThings = new ArrayList<>(1);
+        children = new ArrayList<>();
+        components = new ArrayList<>();
     }
 
     public void display(DisplayAdapter d)
     {
         d.displayWorld(loc);
+        for (Thing thing : children)
+        {
+            thing.display(d);
+        }
     }
 
     Displayable getAsset()
@@ -43,7 +50,14 @@ public abstract class Thing implements java.io.Serializable
 
     public void update(World map)
     {
-
+        for (Thing thing : children)
+        {
+            thing.update(map);
+        }
+        for (Component component : components)
+        {
+            component.update();
+        }
     }
 
 
@@ -96,6 +110,36 @@ public abstract class Thing implements java.io.Serializable
     {
         return this;
     }
+
+    public <T extends Component> T getComponent(Class<T> clazz)
+    {
+        for (Component component : components)
+        {
+            if (component.getClass().isInstance(clazz))
+            {
+                return (T)component;
+            }
+        }
+        return null;
+    }
+
+    public <T extends Component> void removeComponent(Class<T> clazz)
+    {
+        for (int i = 0; i < components.size(); i++)
+        {
+            if (components.get(i).getClass().isInstance(clazz))
+            {
+                components.remove(i);
+                return;
+            }
+        }
+    }
+
+    public void addComponent(Component component)
+    {
+        components.add(component);
+    }
+
 }
 
 

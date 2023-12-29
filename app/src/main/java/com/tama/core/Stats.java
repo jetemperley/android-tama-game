@@ -4,6 +4,7 @@ import com.tama.thing.Pet;
 
 import java.io.Serializable;
 
+// TODO factor this into component
 public class Stats implements Serializable
 {
     final static int

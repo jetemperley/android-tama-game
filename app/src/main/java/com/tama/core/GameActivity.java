@@ -160,7 +160,8 @@ public class GameActivity extends Activity
         try
         {
             gameLoop.join();
-        } catch (InterruptedException e)
+        }
+        catch (InterruptedException e)
         {
             Log.log(this, "could not join gameloop");
         }
@@ -207,7 +208,8 @@ public class GameActivity extends Activity
                 game.reLoadAllAssets();
                 in.close();
                 Log.log(this, "deserialization complete");
-            } catch (Exception e)
+            }
+            catch (Exception e)
             {
                 game = new PetGame();
                 Log.log(this, "deserialization failed, " + e.getMessage());

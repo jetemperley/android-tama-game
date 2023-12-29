@@ -4,11 +4,11 @@ import android.util.Log;
 
 import com.tama.command.Command;
 import com.tama.command.CommandFactory;
-import com.tama.command.CommandQueue;
 import com.tama.command.CommandReplacer;
 import com.tama.command.State;
 import com.tama.command.Wander;
-import com.tama.command.Eat;
+import com.tama.command.CommandEat;
+import com.tama.component.Health;
 import com.tama.core.Animator;
 import com.tama.core.Assets;
 import com.tama.core.Displayable;
@@ -43,7 +43,7 @@ public abstract class Pet extends Thing
             new Vec2(1, 0),
             new Vec2(-1, 0)};
 
-    public int speed = 3;
+    public int speed = 1;
 
     Pet()
     {
@@ -54,6 +54,7 @@ public abstract class Pet extends Thing
         currentCommand = new CommandReplacer();
         asset = Assets.sheet_16_blob;
         loadAsset();
+        components.add(new Health(this));
     }
 
     Displayable getAsset()
@@ -148,7 +149,7 @@ public abstract class Pet extends Thing
     {
         if (thing instanceof Food)
         {
-            return new Eat(thing);
+            return new CommandEat(thing);
         }
         return null;
     }
@@ -164,8 +165,14 @@ public abstract class Pet extends Thing
     {
         if (thing.type() == Type.food)
         {
-            currentCommand.replace(CommandFactory.Companion.commandEat(thing));
+            currentCommand.replace(CommandFactory.Companion.commandWalkAndAdjacentAction(thing, new CommandEat(thing)));
         }
+        else
+        {
+
+        }
+
     }
+
 }
 

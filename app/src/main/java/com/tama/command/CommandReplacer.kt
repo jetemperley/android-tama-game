@@ -1,5 +1,6 @@
 package com.tama.command
 
+import android.util.Log
 import com.tama.core.DisplayAdapter
 import com.tama.core.World
 import com.tama.thing.Pet
@@ -35,6 +36,7 @@ class CommandReplacer : Command()
         if (currentCommand!!.state == CommandState.complete
             || currentCommand!!.state == CommandState.failed)
         {
+            Log.d(this.javaClass.canonicalName, "complete or failed");
             currentCommand = null;
         }
 

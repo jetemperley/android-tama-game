@@ -82,6 +82,10 @@ public class PetGame implements java.io.Serializable
     void setHeld(float ax, float ay)
     {
         Thing thing = world.checkCollision(ax, ay);
+        if (thing == null)
+        {
+            return;
+        }
         thing = world.pickupThing(thing.loc.x, thing.loc.y);
         setHeld(thing);
     }

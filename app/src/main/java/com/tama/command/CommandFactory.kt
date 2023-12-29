@@ -25,16 +25,26 @@ class CommandFactory
             return command;
         }
 
-        fun commandEat(thing: Thing): CommandQueue
+        fun commandWalkAndAdjacentAction(target: Thing,
+                                         command: Command): CommandQueue
         {
-            val command = CommandQueue();
-            command.failAllOnFail(true);
-            val walk = CommandQueue(pathInitializer(thing.loc.x, thing.loc.y, 1))
+            val commandQueue = CommandQueue();
+            commandQueue.failAllOnFail(true);
+            val walk =
+                    CommandQueue(pathInitializer(target.loc, 1))
             walk.failAllOnFail(true);
-            command.add(walk);
-            command.add(Eat(thing));
-            command.ultimateTarget = thing.loc;
-            return command;
+            commandQueue.add(walk);
+            commandQueue.add(command);
+            commandQueue.ultimateTarget = target.loc;
+            return commandQueue;
+        }
+
+        private fun pathInitializer(target: WorldObject,
+                                    dist: Int): (CommandQueue, World, Pet) -> Unit
+        {
+            return { queue: CommandQueue, world: World, pet: Pet ->
+                pathInitializer(target.x, target.y, dist)(queue, world, pet);
+            }
         }
 
         private fun pathInitializer(xTarget: Int,

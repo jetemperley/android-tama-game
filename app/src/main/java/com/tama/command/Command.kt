@@ -1,5 +1,6 @@
 package com.tama.command
 
+import android.util.Log
 import com.tama.core.DisplayAdapter
 import com.tama.core.World
 import com.tama.thing.Pet
@@ -10,8 +11,8 @@ import java.io.Serializable
  */
 abstract class Command : Serializable
 {
-    public var update: (pet: Pet, world: World) -> Unit = ::start
-    public var state = CommandState.ready
+    public var update: (pet: Pet, world: World) -> Unit = ::start;
+    public var state = CommandState.ready;
     var actor: Pet? = null;
 
     protected open fun start(pet: Pet, world: World)
@@ -19,6 +20,7 @@ abstract class Command : Serializable
         actor = pet;
         state = CommandState.doing;
         update = ::doing;
+        
     }
 
     protected abstract fun doing(pet: Pet, world: World);
@@ -31,7 +33,24 @@ abstract class Command : Serializable
     open fun hardCancel()
     {
         state = CommandState.failed;
+        update = ::noop;
+        Log.d(javaClass.canonicalName, "canceled");
     }
 
     abstract fun draw(d: DisplayAdapter);
+
+    fun fail()
+    {
+        state = CommandState.failed;
+        update = ::noop
+        Log.d(javaClass.canonicalName, "failed");
+    }
+
+    fun complete()
+    {
+        state = CommandState.complete
+        update = ::noop
+    }
+
+    final fun noop(pet: Pet, world: World){}
 }

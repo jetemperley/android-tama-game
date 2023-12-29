@@ -322,6 +322,13 @@ public class World implements java.io.Serializable
         Thing thing = removeThing(x, y);
         return thing.pickup();
     }
+
+    public static boolean isAdjacent(WorldObject a, WorldObject b)
+    {
+        int aDiff = Math.abs(a.x - b.x);
+        int bDiff = Math.abs(a.y - b.y);
+        return aDiff == 1 ^ bDiff == 1;
+    }
 }
 
 

@@ -16,18 +16,17 @@ public class CommandStep(var dir: Direction) : Command()
         Log.d(javaClass.canonicalName, "stepping " + dir.x + " " + dir.y);
         pet.setDir(dir)
         val tile = world.getTile(pet.loc.x + dir.x, pet.loc.y + dir.y)
-        if (pet.canMoveOnto(tile))
+        if (!pet.canMoveOnto(tile))
         {
-            pet.setMovementPose(Pet.Movement.walk);
-            world.removeThing(pet)
-            world.add(pet, pet.loc.x + dir.x, pet.loc.y + dir.y)
-            pet.loc.xoff = -dir.x * 100;
-            pet.loc.yoff = -dir.y * 100;
-            update = ::doing
-            return
+            fail()
+            return;
         }
-        Log.d(javaClass.canonicalName, "failed step");
-        state = CommandState.failed
+        pet.setMovementPose(Pet.Movement.walk);
+        world.removeThing(pet);
+        world.add(pet, pet.loc.x + dir.x, pet.loc.y + dir.y);
+        pet.loc.xoff = -dir.x * 100;
+        pet.loc.yoff = -dir.y * 100;
+
     }
 
     public override fun doing(pet: Pet, world: World)
@@ -45,7 +44,7 @@ public class CommandStep(var dir: Direction) : Command()
             else              ->
             {
                 pet.setMovementPose(Pet.Movement.stand);
-                state = CommandState.complete;
+                complete()
             }
         }
     }
