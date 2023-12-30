@@ -48,8 +48,8 @@ class LongGrass extends Tile
     {
 
         super.display(d);
-        d.displayWorld(sprite2);
-        d.displayWorld(sprite3);
+        d.display(sprite2);
+        d.display(sprite3);
     }
 
 }

@@ -274,6 +274,7 @@ public class Gesture
     {
 
         Vec2<Float> loc;
+        LocalTime downTime = null;
 
         DoubleTap()
         {
@@ -282,8 +283,8 @@ public class Gesture
 
         void start(MotionEvent e)
         {
+            downTime = LocalTime.now();
             loc.set(e.getX(), e.getY());
-            doubleTapConfirmed(e);
         }
 
         int onMotion(MotionEvent e)
@@ -296,12 +297,18 @@ public class Gesture
                     if (Vec2.distSq(loc, new Vec2(e.getX(), e.getY())) >
                             dragConfirmSensitivity)
                     {
+                        doubleTapDragStart(e);
                         state[doubleTapDrag].start(e);
                         return doubleTapDrag;
                     }
                     return doubleTap;
 
                 case MotionEvent.ACTION_UP:
+                    if (ChronoUnit.MILLIS.between(downTime, LocalTime.now()) <
+                        singleTapConfirmDelay)
+                    {
+                        doubleTapConfirmed(e);
+                    }
                     doubleTapRelease(e.getX(), e.getY());
                     return wait;
 

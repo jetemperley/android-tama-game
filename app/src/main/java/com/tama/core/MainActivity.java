@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity
         File[] content = dir.listFiles();
         for (File f : content)
         {
-            if (f.getName().equals(GameActivity.dataFile))
+            if (f.getName().equals(GameActivity.DATA_FILE_NAME))
             {
                 f.delete();
             }

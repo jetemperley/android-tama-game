@@ -31,7 +31,7 @@ public abstract class Thing implements java.io.Serializable
 
     public void display(DisplayAdapter d)
     {
-        d.displayWorld(loc);
+        d.display(loc);
         for (Thing thing : children)
         {
             thing.display(d);

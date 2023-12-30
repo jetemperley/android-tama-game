@@ -3,11 +3,11 @@ package com.tama.core;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Rect;
-import android.util.Log;
 
 import com.tama.apptest.R;
 import com.tama.thing.Pet;
 import com.tama.thing.Thing;
+import com.tama.util.Log;
 import com.tama.util.Vec2;
 
 import java.util.Comparator;
@@ -20,7 +20,7 @@ public interface DisplayAdapter
      *
      * @param t
      */
-    void displayWorld(WorldObject t);
+    void display(WorldObject t);
 
     /**
      * Dispay the sprite relative to the world array
@@ -29,7 +29,7 @@ public interface DisplayAdapter
      * @param ax array position x
      * @param ay array position y
      */
-    void displayWorld(Displayable d, float ax, float ay);
+    void display(Displayable d, float ax, float ay);
 
     void displayUI(Thing t);
 
@@ -43,9 +43,7 @@ public interface DisplayAdapter
      */
     void displayAbsolute(Displayable d, float x, float y);
 
-    void setIdMat();
-
-    void setWorldMat();
+    void setMatrix(Matrix mat);
 
     void drawLine(float x1, float y1, float x2, float y2);
 }
@@ -71,20 +69,20 @@ class AndroidDisplay implements DisplayAdapter
         uiMat.setScale(3, 3);
     }
 
-    public void displayWorld(WorldObject t)
+    public void display(WorldObject t)
     {
         if (t.sprite == null)
         {
-            Log.d(
-                    "Display Adapter ",
-                    t.getClass().getName() + " sprite was null");
+            Log.log(
+                t,
+                "sprite was null");
             return;
         }
         canvas.drawBitmap(
-                t.sprite.getSprite(),
-                t.x * cellSize + t.xoff * cellSize / 100f,
-                t.y * cellSize + t.yoff * cellSize / 100f,
-                GameActivity.black);
+            t.sprite.getSprite(),
+            t.x * cellSize + t.xoff * cellSize / 100f,
+            t.y * cellSize + t.yoff * cellSize / 100f,
+            GameActivity.black);
     }
 
     // this needs to be completed
@@ -94,12 +92,12 @@ class AndroidDisplay implements DisplayAdapter
         int uisize = cellSize * uiscale, uigap = 0;
 
         Vec2<Float> selectedScreenPos =
-                convertWorldToScreen(t.loc.getWorldPos());
+            convertWorldToScreen(t.loc.getWorldPos());
         canvas.drawBitmap(
-                Assets.getSprite(Assets.static_inv).getSprite(),
-                selectedScreenPos.x,
-                selectedScreenPos.y,
-                GameActivity.black);
+            Assets.getSprite(Assets.static_inv).getSprite(),
+            selectedScreenPos.x,
+            selectedScreenPos.y,
+            GameActivity.black);
 
         Matrix mat = new Matrix();
         mat.setScale(uiscale, uiscale);
@@ -108,11 +106,11 @@ class AndroidDisplay implements DisplayAdapter
         Matrix old = canvas.getMatrix();
         canvas.setMatrix(new Matrix());
         canvas.drawRect(
-                0,
-                0,
-                cellSize * uiscale * 4,
-                cellSize * 1.5f * uiscale,
-                GameActivity.black);
+            0,
+            0,
+            cellSize * uiscale * 4,
+            cellSize * 1.5f * uiscale,
+            GameActivity.black);
         canvas.drawBitmap(t.loc.sprite.getUISprite(), mat, GameActivity.black);
 
         String str = t.getDescription();
@@ -126,21 +124,21 @@ class AndroidDisplay implements DisplayAdapter
         {
 
             j = GameActivity.white.breakText(
-                    str,
-                    i,
-                    str.length(),
-                    true,
-                    uisize - uigap,
-                    null);
+                str,
+                i,
+                str.length(),
+                true,
+                uisize - uigap,
+                null);
             j = j + i;
             // Log.d(getClass().getName(), i + " to " + j);
             canvas.drawText(
-                    str,
-                    i,
-                    j,
-                    uigap,
-                    uisize + uigap + y,
-                    GameActivity.white);
+                str,
+                i,
+                j,
+                uigap,
+                uisize + uigap + y,
+                GameActivity.white);
             y += 40;
             i = j;
         }
@@ -152,33 +150,33 @@ class AndroidDisplay implements DisplayAdapter
 
             mat.preTranslate(cellSize, 0);
             canvas.drawBitmap(
-                    Assets.sprites.get(R.drawable.static_heart).getSprite(),
-                    mat,
-                    GameActivity.black);
+                Assets.sprites.get(R.drawable.static_heart).getSprite(),
+                mat,
+                GameActivity.black);
             mat.preTranslate(0, cellSize);
             drawBar(mat, p.stats.stats[Stats.health].getProp());
 
             mat.preTranslate(cellSize, -cellSize);
             canvas.drawBitmap(
-                    Assets.sprites.get(R.drawable.static_fork).getSprite(),
-                    mat,
-                    GameActivity.black);
+                Assets.sprites.get(R.drawable.static_fork).getSprite(),
+                mat,
+                GameActivity.black);
             mat.preTranslate(0, cellSize);
             drawBar(mat, p.stats.stats[Stats.hunger].getProp());
 
             mat.preTranslate(cellSize, -cellSize);
             canvas.drawBitmap(
-                    Assets.sprites.get(R.drawable.static_energy2).getSprite(),
-                    mat,
-                    GameActivity.black);
+                Assets.sprites.get(R.drawable.static_energy2).getSprite(),
+                mat,
+                GameActivity.black);
             mat.preTranslate(0, cellSize);
             drawBar(mat, p.stats.stats[Stats.energy].getProp());
 
             mat.preTranslate(cellSize, -cellSize);
             canvas.drawBitmap(
-                    Assets.sprites.get(R.drawable.static_zzz).getSprite(),
-                    mat,
-                    GameActivity.black);
+                Assets.sprites.get(R.drawable.static_zzz).getSprite(),
+                mat,
+                GameActivity.black);
             mat.preTranslate(0, cellSize);
             drawBar(mat, p.stats.stats[Stats.sleep].getProp());
         }
@@ -190,15 +188,15 @@ class AndroidDisplay implements DisplayAdapter
     {
 
         canvas.drawBitmap(
-                Assets.sprites.get(R.drawable.static_bar).getSprite(),
-                mat,
-                GameActivity.black);
+            Assets.sprites.get(R.drawable.static_bar).getSprite(),
+            mat,
+            GameActivity.black);
         mat.preTranslate(3, 3);
         float[] f = {
-                0,
-                0,
-                (int) (prop * 10),
-                2};
+            0,
+            0,
+            (int) (prop * 10),
+            2};
         mat.mapPoints(f);
         canvas.drawRect(f[0], f[1], f[2], f[3], GameActivity.white);
         mat.preTranslate(-3, -3);
@@ -210,24 +208,12 @@ class AndroidDisplay implements DisplayAdapter
     }
 
     @Override
-    public void setIdMat()
-    {
-        canvas.setMatrix(uiMat);
-    }
-
-    @Override
-    public void setWorldMat()
-    {
-        canvas.setMatrix(worldMat);
-    }
-
-    @Override
     public void drawLine(float x1, float y1, float x2, float y2)
     {
         canvas.drawLine(x1, y1, x2, y2, GameActivity.white);
     }
 
-    public void displayWorld(Displayable d, float x, float y)
+    public void display(Displayable d, float x, float y)
     {
         canvas.drawBitmap(d.getSprite(), x * 16, y * 16, GameActivity.black);
     }
@@ -244,8 +230,8 @@ class AndroidDisplay implements DisplayAdapter
         float[] f2 = new float[9];
         worldMat.getValues(f2);
         float[] f = {
-                (x - f2[2]) / 16,
-                (y - f2[5] - view.top) / 16};
+            (x - f2[2]) / 16,
+            (y - f2[5] - view.top) / 16};
 
         Matrix inv = new Matrix();
         worldMat.invert(inv);
@@ -256,6 +242,11 @@ class AndroidDisplay implements DisplayAdapter
     Vec2<Float> convertWorldToScreen(Vec2<Float> worldPos)
     {
         return new Vec2<Float>(worldPos.x * 16, worldPos.y * 16);
+    }
+
+    public void setMatrix(Matrix mat)
+    {
+        canvas.setMatrix(mat);
     }
 }
 
@@ -271,43 +262,31 @@ class DepthDisplay implements DisplayAdapter
         draws = new PriorityQueue<>(200, new DepthComp());
     }
 
-    public void displayWorld(WorldObject t)
+    public void display(WorldObject t)
     {
         draws.add(t);
     }
 
     @Override
-    public void displayWorld(Displayable d, float x, float y)
+    public void display(Displayable d, float x, float y)
     {
-
+        throw new RuntimeException("Operation not supported");
     }
 
     public void displayUI(Thing t)
     {
-
+        throw new RuntimeException("Operation not supported");
     }
 
     public void displayAbsolute(Displayable d, float x, float y)
     {
-
-    }
-
-    @Override
-    public void setIdMat()
-    {
-
-    }
-
-    @Override
-    public void setWorldMat()
-    {
-
+        throw new RuntimeException("Operation not supported");
     }
 
     @Override
     public void drawLine(float x1, float y1, float x2, float y2)
     {
-
+        throw new RuntimeException("Operation not supported");
     }
 
     void drawQ()
@@ -318,7 +297,7 @@ class DepthDisplay implements DisplayAdapter
             while (!draws.isEmpty())
             {
                 b = draws.poll();
-                display.displayWorld(b);
+                display.display(b);
             }
         }
         check = false;
@@ -347,6 +326,11 @@ class DepthDisplay implements DisplayAdapter
             }
             return (a.y + a.yoff / 100f) > (b.y + b.yoff / 100f) ? 1 : -1;
         }
+    }
+
+    public void setMatrix(Matrix mat)
+    {
+        display.setMatrix(mat);
     }
 }
 

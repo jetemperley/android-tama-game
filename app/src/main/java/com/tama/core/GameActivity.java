@@ -18,6 +18,8 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import com.tama.util.Gesture;
+import com.tama.util.GestureTargetPipe;
 import com.tama.util.Log;
 
 import java.io.File;
@@ -32,23 +34,26 @@ import java.util.Timer;
 
 public class GameActivity extends Activity
 {
+    final static String DATA_FILE_NAME = "gameDatapu.ser";
+    public static float TOP_OFFSET = 0;
 
     ConstraintLayout lay;
     static Paint red, black, white;
     CustomView view;
     Timer timer;
     Rect screenSize;
-    final String CHANNEL_ID = "01", channel_name = "ch1", channel_desc =
-            "test channel";
+    final String
+        CHANNEL_ID = "01",
+        channel_name = "ch1",
+        channel_desc = "test channel";
     Canvas canvas;
     GameLoop gameLoop;
 
-    GameGesture controls;
     Display display;
     AndroidDisplay displayAdapter;
-    DepthDisplay depthDisplay;
-    PetGame game;
-    final static String dataFile = "gameData.ser";
+
+    GameManager gameManager;
+    GestureTargetPipe gesture;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -57,6 +62,7 @@ public class GameActivity extends Activity
 
         view = new CustomView(this);
         setContentView(view);
+        TOP_OFFSET = view.getTop();
 
         display = getWindowManager().getDefaultDisplay();
         screenSize = new Rect();
@@ -76,9 +82,6 @@ public class GameActivity extends Activity
         white.setDither(false);
         white.setFilterBitmap(false);
         white.setTextSize(30);
-
-        // gesture setup
-        controls = new GameGesture(this);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
         {
@@ -109,7 +112,6 @@ public class GameActivity extends Activity
         Log.log(this, "staring setup");
         Assets.init(getResources());
         Log.log(this, "finished loading resources");
-        depthDisplay = new DepthDisplay();
         Rect out = new Rect();
         this.getWindow().getDecorView().getWindowVisibleDisplayFrame(out);
 
@@ -121,14 +123,12 @@ public class GameActivity extends Activity
         gameLoop.start();
     }
 
-    public void draw()
+    public void updateAndDraw()
     {
-        // update controls
-        controls.update();
-
         // update the view bounds
         this.getWindow().getDecorView().getWindowVisibleDisplayFrame(
                 displayAdapter.view);
+        TOP_OFFSET = displayAdapter.view.top;
 
         if (view.surface.getSurface().isValid())
         {
@@ -137,14 +137,9 @@ public class GameActivity extends Activity
             if (canvas != null)
             {
                 canvas.setMatrix(displayAdapter.worldMat);
-                depthDisplay.display = displayAdapter;
                 displayAdapter.canvas = canvas;
                 canvas.drawColor(Color.BLACK);
-                game.update();
-                game.drawEnv(depthDisplay);
-                depthDisplay.drawQ();
-                depthDisplay.clearQ();
-                game.drawUI(displayAdapter);
+                gameManager.updateAndDraw(displayAdapter);
                 if (view.surface.getSurface().isValid())
                 {
                     view.surface.unlockCanvasAndPost(canvas);
@@ -171,12 +166,13 @@ public class GameActivity extends Activity
         try
         {
             FileOutputStream fos =
-                    context.openFileOutput(dataFile, Context.MODE_PRIVATE);
+                    context.openFileOutput(DATA_FILE_NAME, Context.MODE_PRIVATE);
             ObjectOutputStream oos = new ObjectOutputStream(fos);
-            oos.writeObject(game);
+            oos.writeObject(gameManager.game);
             oos.close();
             Log.log(this, "serialization complete");
-        } catch (IOException e)
+        }
+        catch (IOException e)
         {
             Log.log(this, "serialization failed" + e.getMessage());
         }
@@ -186,19 +182,28 @@ public class GameActivity extends Activity
     public void onStart()
     {
         super.onStart();
+        gameManager = new GameManager();
+        gesture = new GestureTargetPipe(gameManager);
+        gameManager.game = loadGame();
+        gameManager.play();
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent e)
+    {
+        gameManager.gesture.onTouchEvent(e);
+        return true;
+    }
+
+    private PetGame loadGame()
+    {
+        PetGame game;
         Context context = getApplicationContext();
         File dir = context.getFilesDir();
         File[] content = dir.listFiles();
-        File data = null;
-        for (File f : content)
-        {
-            if (f.getName().equals(dataFile))
-            {
-                data = f;
-                break;
-            }
-        }
-        if (data != null)
+        File data = new File(dir.getPath() + "/" + DATA_FILE_NAME);
+        Log.log(this, "data path is " + data.getAbsolutePath());
+        if (data.exists())
         {
             try
             {
@@ -217,16 +222,10 @@ public class GameActivity extends Activity
         }
         else
         {
+            Log.log(this, "data file did not exist");
             game = new PetGame();
         }
-    }
-
-    @Override
-    public boolean onTouchEvent(MotionEvent e)
-    {
-
-        controls.onTouchEvent(e);
-        return true;// super.onTouchEvent(e);
+        return game;
     }
 
     public class CustomView extends SurfaceView
@@ -264,7 +263,7 @@ class GameLoop extends Thread
         while (play)
         {
             start = end;
-            activity.draw();
+            activity.updateAndDraw();
             end = LocalTime.now();
             frameTime =
                     (int) ChronoUnit.MILLIS.between(start, end);
