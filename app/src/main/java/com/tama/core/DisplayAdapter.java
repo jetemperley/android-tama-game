@@ -45,7 +45,15 @@ public interface DisplayAdapter
 
     void setMatrix(Matrix mat);
 
+    void translate(float x, float y);
+
+    void push();
+
+    void pop();
+
     void drawLine(float x1, float y1, float x2, float y2);
+
+    void drawRect(float x, float y, float width, float height);
 }
 
 class AndroidDisplay implements DisplayAdapter
@@ -55,7 +63,6 @@ class AndroidDisplay implements DisplayAdapter
     Canvas canvas;
     int cellSize;
     public Rect view = new Rect();
-    private int xoff, yoff;
 
     AndroidDisplay(int cellSize)
     {
@@ -213,15 +220,15 @@ class AndroidDisplay implements DisplayAdapter
         canvas.drawLine(x1, y1, x2, y2, GameActivity.white);
     }
 
+    @Override
+    public void drawRect(float x, float y, float width, float height)
+    {
+        canvas.drawRect(x, y, x + width, y + height, GameActivity.white);
+    }
+
     public void display(Displayable d, float x, float y)
     {
         canvas.drawBitmap(d.getSprite(), x * 16, y * 16, GameActivity.black);
-    }
-
-    void offset(int x, int y)
-    {
-        xoff += x;
-        yoff += y;
     }
 
     float[] convertScreenToWorld(float x, float y)
@@ -247,6 +254,24 @@ class AndroidDisplay implements DisplayAdapter
     public void setMatrix(Matrix mat)
     {
         canvas.setMatrix(mat);
+    }
+
+    @Override
+    public void translate(float dx, float dy)
+    {
+        canvas.translate(dx, dy);
+    }
+
+    @Override
+    public void push()
+    {
+        canvas.save();
+    }
+
+    @Override
+    public void pop()
+    {
+        canvas.restore();
     }
 }
 
@@ -287,6 +312,12 @@ class DepthDisplay implements DisplayAdapter
     public void drawLine(float x1, float y1, float x2, float y2)
     {
         throw new RuntimeException("Operation not supported");
+    }
+
+    @Override
+    public void drawRect(float x, float y, float width, float height)
+    {
+        
     }
 
     void drawQ()
@@ -331,6 +362,24 @@ class DepthDisplay implements DisplayAdapter
     public void setMatrix(Matrix mat)
     {
         display.setMatrix(mat);
+    }
+
+    @Override
+    public void translate(float x, float y)
+    {
+
+    }
+
+    @Override
+    public void push()
+    {
+
+    }
+
+    @Override
+    public void pop()
+    {
+
     }
 }
 

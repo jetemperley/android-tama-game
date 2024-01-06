@@ -1,18 +1,22 @@
 package com.tama.core;
 
-import com.tama.util.GestureTargetPipe;
 
 public class GameManager
 {
+    public static GameManager INST;
     public PetGame game = null;
     public PauseMenu pauseMenu = new PauseMenu();
-    public ScreenTarget target = new ScreenTarget(){};
+    public InputHandler target = new InputHandler(){};
+
+    public GameManager()
+    {
+        INST = this;
+    }
 
     public void updateAndDraw(DisplayAdapter display)
     {
-        gesture.update();
-        game.update();
-        game.draw(display);
+        target.update();
+        target.draw(display);
     }
 
     public void play()

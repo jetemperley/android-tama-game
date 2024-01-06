@@ -18,7 +18,7 @@ public class Axe extends Thing
         return true;
     }
 
-    Thing apply(World m, int ax, int ay)
+    public Thing apply(World m, int ax, int ay)
     {
 
         Thing t = m.getThing(ax, ay);

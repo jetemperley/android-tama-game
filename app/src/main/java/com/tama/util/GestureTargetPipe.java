@@ -32,9 +32,9 @@ public class GestureTargetPipe extends Gesture
     }
 
     @Override
-    public void doubleTapConfirmed(MotionEvent e)
+    public void doubleTapConfirmed(float x, float y)
     {
-        gameManager.target.doubleTapConfirmed(e);
+        gameManager.target.doubleTapConfirmed(x, y);
     }
 
     @Override
@@ -44,9 +44,9 @@ public class GestureTargetPipe extends Gesture
     }
 
     @Override
-    public void doubleTapDragStart(MotionEvent e)
+    public void doubleTapDragStart(float startX, float startY, float currentX, float currentY)
     {
-        gameManager.target.doubleTapDragStart(e);
+        gameManager.target.doubleTapDragStart(startX, startY, currentX, currentY);
     }
 
     @Override

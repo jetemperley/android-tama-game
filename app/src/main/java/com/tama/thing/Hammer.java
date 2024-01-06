@@ -18,7 +18,7 @@ class Hammer extends Thing
         return true;
     }
 
-    Thing apply(World m, int ax, int ay)
+    public Thing apply(World m, int ax, int ay)
     {
         m.removeThing(ax, ay);
         return this;

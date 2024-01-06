@@ -92,7 +92,7 @@ public abstract class Thing implements java.io.Serializable
         return Type.undefined;
     }
 
-    Thing apply(World m, int x, int y)
+    public Thing apply(World m, int x, int y)
     {
         return this;
     }

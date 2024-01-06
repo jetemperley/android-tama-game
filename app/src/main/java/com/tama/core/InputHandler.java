@@ -5,7 +5,7 @@ import android.view.MotionEvent;
 import com.tama.util.Log;
 import com.tama.util.Vec2;
 
-public abstract class ScreenTarget
+public abstract class InputHandler
 {
     public void update(){}
 
@@ -17,11 +17,11 @@ public abstract class ScreenTarget
 
     public void longPressConfirmed(float x, float y){}
 
-    public void doubleTapConfirmed(MotionEvent e){}
+    public void doubleTapConfirmed(float x, float y){}
 
     public void doubleTapRelease(float x, float y){}
 
-    public void doubleTapDragStart(MotionEvent e){}
+    public void doubleTapDragStart(float startX, float startY, float currentX, float currentY){}
 
     public void doubleTapDrag(float x, float y){}
 

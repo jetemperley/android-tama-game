@@ -41,7 +41,7 @@ public class GameActivity extends Activity
     static Paint red, black, white;
     CustomView view;
     Timer timer;
-    Rect screenSize;
+    static Rect screenSize;
     final String
         CHANNEL_ID = "01",
         channel_name = "ch1",
@@ -119,12 +119,17 @@ public class GameActivity extends Activity
 
         displayAdapter = new AndroidDisplay(16);
 
+        gameManager = new GameManager();
+        gesture = new GestureTargetPipe(gameManager);
+        gameManager.game = loadGame();
+        gameManager.play();
+
         gameLoop = new GameLoop(this);
-        gameLoop.start();
     }
 
     public void updateAndDraw()
     {
+        gesture.update();
         // update the view bounds
         this.getWindow().getDecorView().getWindowVisibleDisplayFrame(
                 displayAdapter.view);
@@ -182,16 +187,13 @@ public class GameActivity extends Activity
     public void onStart()
     {
         super.onStart();
-        gameManager = new GameManager();
-        gesture = new GestureTargetPipe(gameManager);
-        gameManager.game = loadGame();
-        gameManager.play();
+        gameLoop.start();
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent e)
     {
-        gameManager.gesture.onTouchEvent(e);
+        gesture.onTouchEvent(e);
         return true;
     }
 

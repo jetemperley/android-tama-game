@@ -91,7 +91,7 @@ public class Food extends Thing implements java.io.Serializable
         return true;
     }
 
-    Thing apply(World m, int ax, int ay)
+    public Thing apply(World m, int ax, int ay)
     {
 
         Thing t = m.getThing(ax, ay);

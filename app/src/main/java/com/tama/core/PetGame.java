@@ -1,16 +1,19 @@
 package com.tama.core;
 
 import android.graphics.Matrix;
-import android.view.MotionEvent;
 
 import com.tama.command.CommandFactory;
 import com.tama.command.CommandQueue;
 import com.tama.thing.Pet;
 import com.tama.thing.Thing;
 import com.tama.util.Log;
+import com.tama.util.MatrixUtil;
 import com.tama.util.Vec2;
 
-public class PetGame extends ScreenTarget implements java.io.Serializable
+import java.util.ArrayList;
+import java.util.List;
+
+public class PetGame extends InputHandler implements java.io.Serializable
 {
     private World world = WorldFactory.makeWorld();
     private Thing held = null;
@@ -20,15 +23,28 @@ public class PetGame extends ScreenTarget implements java.io.Serializable
 
     private DepthDisplay depthDisplay = new DepthDisplay();
     private Matrix worldMat = new Matrix();
+    private Matrix matrixUI = new Matrix();
+    List<Button> buttons = new ArrayList<>();
 
-    /**
-     * The amount of ms this game has been running for
-     */
+    /** The amount of ms this game has been running for. */
     public static long time = 0;
-    /**
-     * The time that this game should aim to run at (ms)
-     */
+
+    /** The time that this game should aim to run at (ms). */
     public final static int gameSpeed = 25;
+
+    public PetGame()
+    {
+        float scale = 6;
+        matrixUI.setScale(scale, scale);
+        buttons.add(new Button(0, 0, matrixUI)
+        {
+            @Override
+            public void onClick()
+            {
+                GameManager.INST.pause();
+            }
+        });
+    }
 
     public void update()
     {
@@ -43,16 +59,17 @@ public class PetGame extends ScreenTarget implements java.io.Serializable
         drawEnv(depthDisplay);
         depthDisplay.drawQ();
         depthDisplay.clearQ();
-        drawUI(display);
+
+        drawSelected(display);
+        drawMenus(display);
     }
 
     void drawEnv(DisplayAdapter d)
     {
-
-        world.display(d);
+        world.draw(d);
     }
 
-    void drawUI(DisplayAdapter d)
+    void drawSelected(DisplayAdapter d)
     {
         if (selected != null)
         {
@@ -74,12 +91,25 @@ public class PetGame extends ScreenTarget implements java.io.Serializable
         }
     }
 
+    void drawMenus(DisplayAdapter d)
+    {
+        d.setMatrix(matrixUI);
+        for (Button butt : buttons)
+        {
+            butt.draw(d);
+        }
+    }
+
     void reLoadAllAssets()
     {
         world.reLoadAllAssets();
         if (held != null)
         {
             held.loadAsset();
+        }
+        for (Button b : buttons)
+        {
+            b.loadAsset();
         }
     }
 
@@ -90,15 +120,23 @@ public class PetGame extends ScreenTarget implements java.io.Serializable
 
     void setHeld(float ax, float ay)
     {
+        Log.log(this, "checking in " + ax + " " + ay);
         Thing thing = world.checkCollision(ax, ay);
         if (thing == null)
         {
+            Log.log(this, "thing in set held was null");
             return;
         }
+        Log.log(this, thing.getClass().getCanonicalName() + " set as held");
         thing = world.pickupThing(thing.loc.x, thing.loc.y);
         setHeld(thing);
     }
 
+    /**
+     * UNSAFE, do your own checks
+     *
+     * @param thing
+     */
     void setHeld(Thing thing)
     {
         held = thing;
@@ -173,6 +211,16 @@ public class PetGame extends ScreenTarget implements java.io.Serializable
         }
     }
 
+    void use(float x, float y)
+    {
+        Thing t = world.checkCollision(x, y);
+        if (t == null)
+        {
+            return;
+        }
+        t.apply(world, t.loc.x, t.loc.y);
+    }
+
     /**
      * Triggers the held object to target position x, y
      *
@@ -181,12 +229,6 @@ public class PetGame extends ScreenTarget implements java.io.Serializable
      */
     public void doubleSelect(float ax, float ay)
     {
-        if (selected == null)
-        {
-            setHeld(ax, ay);
-            return;
-        }
-
         if (!(selected instanceof Pet))
         {
             return;
@@ -196,7 +238,7 @@ public class PetGame extends ScreenTarget implements java.io.Serializable
         Thing thing = world.checkCollision(ax, ay);
         if (thing == pet)
         {
-            pickup(ax, ay);
+            pet.poke();
             Log.log(this, "double tapped the selected pet");
             return;
         }
@@ -214,69 +256,69 @@ public class PetGame extends ScreenTarget implements java.io.Serializable
     @Override
     public void singleTapConfirmed(float x, float y)
     {
-        float[] f = convertScreenToWorld(x, y);
+        for (Button b : buttons)
+        {
+            Log.log(this, "checking button");
+            if (b.isInside(x, y))
+            {
+                Log.log(this, "clicked a button");
+                b.onClick();
+                return;
+            }
+        }
+        float[] f = MatrixUtil.convertScreenToWorldArray(worldMat, x, y);
         Log.log(this, "tapped " + f[0] + " " + f[1]);
         select(f[0], f[1]);
         poke(f[0], f[1]);
     }
 
-    float[] convertScreenToWorld(float x, float y)
-    {
-        float[] f2 = new float[9];
-        worldMat.getValues(f2);
-        float[] f = {
-            (x - f2[2]) / 16,
-            (y - f2[5] - GameActivity.TOP_OFFSET) / 16};
-
-        Matrix inv = new Matrix();
-        worldMat.invert(inv);
-        inv.mapVectors(f);
-        return f;
-    }
-
     @Override
     public void longPressConfirmed(float x, float y)
     {
-        // float[] f = gameActivity.displayAdapter.convertScreenToWorld(x, y);
-        // gameActivity.game.pickup(x, y);
+        float[] f = MatrixUtil.convertScreenToWorldArray(worldMat, x, y);
+        use(f[0], f[1]);
     }
 
     @Override
-    public void doubleTapConfirmed(MotionEvent e)
+    public void doubleTapConfirmed(float x, float y)
     {
-        super.doubleTapConfirmed(e);
-        float[] f = convertScreenToWorld(
-            e.getX(),
-            e.getY());
+        Log.log(this, "double tap confirmed");
+        super.doubleTapConfirmed(x, y);
+        float[] f = MatrixUtil.convertScreenToWorldArray(
+            worldMat,
+            x,
+            y);
         //gameActivity.game.pickup(f[0], f[1]);
         doubleSelect(f[0], f[1]);
     }
 
     @Override
-    public void doubleTapRelease(float x, float y)
+    public void doubleTapDragStart(float startX, float startY, float currentX, float currentY)
     {
-        float[] f = convertScreenToWorld(x, y);
-        drop(f[0], f[1]);
-    }
-
-    @Override
-    public void doubleTapDragStart(MotionEvent e)
-    {
-
+        float[] f =
+            MatrixUtil.convertScreenToWorldArray(worldMat, startX, startY);
+        setHeld(f[0], f[1]);
     }
 
     @Override
     public void doubleTapDrag(float x, float y)
     {
-        Log.log(this, "double tap drag");
-        float[] f = convertScreenToWorld(x, y);
+        // Log.log(this, "double tap drag");
+        float[] f = MatrixUtil.convertScreenToWorldArray(worldMat, x, y);
         setHeldPosition(f[0], f[1]);
+    }
+
+    @Override
+    public void doubleTapRelease(float x, float y)
+    {
+        float[] f = MatrixUtil.convertScreenToWorldArray(worldMat, x, y);
+        // drop(f[0], f[1]);
     }
 
     @Override
     public void doubleTapDragEnd(float x, float y)
     {
-        float[] f = convertScreenToWorld(x, y);
+        float[] f = MatrixUtil.convertScreenToWorldArray(worldMat, x, y);
         drop(f[0], f[1]);
     }
 

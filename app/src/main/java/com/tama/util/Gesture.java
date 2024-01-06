@@ -20,7 +20,7 @@ public class Gesture
     // locations of the pointers
     private Vec2<Float> prev1, prev2, new1, new2;
 
-    private int singleTapConfirmDelay = 100;
+    private int singleTapConfirmDelay = 200;
     private int dragConfirmSensitivity = 2000;
 
     public Gesture()
@@ -71,7 +71,7 @@ public class Gesture
         Log.log(this, "long press confirm");
     }
 
-    public void doubleTapConfirmed(MotionEvent e)
+    public void doubleTapConfirmed(float x, float y)
     {
         Log.log(this, "double tap confirm");
     }
@@ -81,7 +81,7 @@ public class Gesture
         Log.log(this, "double tap release");
     }
 
-    public void doubleTapDragStart(MotionEvent e)
+    public void doubleTapDragStart(float startX, float startY, float currentX, float currentY)
     {
         Log.log(this, "drag start");
     }
@@ -249,7 +249,6 @@ public class Gesture
 
         void start(MotionEvent e)
         {
-            doubleTapDragStart(e);
         }
 
         int onMotion(MotionEvent e)
@@ -297,7 +296,7 @@ public class Gesture
                     if (Vec2.distSq(loc, new Vec2(e.getX(), e.getY())) >
                             dragConfirmSensitivity)
                     {
-                        doubleTapDragStart(e);
+                        doubleTapDragStart(loc.x, loc.y, e.getX(), e.getY());
                         state[doubleTapDrag].start(e);
                         return doubleTapDrag;
                     }
@@ -307,7 +306,8 @@ public class Gesture
                     if (ChronoUnit.MILLIS.between(downTime, LocalTime.now()) <
                         singleTapConfirmDelay)
                     {
-                        doubleTapConfirmed(e);
+                        doubleTapConfirmed(e.getX(), e.getY());
+                        return wait;
                     }
                     doubleTapRelease(e.getX(), e.getY());
                     return wait;

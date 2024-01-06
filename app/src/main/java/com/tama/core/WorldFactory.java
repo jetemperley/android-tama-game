@@ -1,6 +1,7 @@
 package com.tama.core;
 
 import com.tama.apptest.R;
+import com.tama.thing.BackpackSlot;
 import com.tama.thing.Bush;
 import com.tama.thing.DynTile;
 import com.tama.thing.Food;
@@ -57,5 +58,20 @@ public class WorldFactory
         w.addOrClosest(new Food(R.drawable.static_meat), 1, 1);
 
         return w;
+    }
+
+    public World makeBackpack(int xSize, int ySize)
+    {
+        World world = new World(xSize);
+
+        for (int x = 0; x < xSize; x++)
+        {
+            for (int y = 0; y < ySize; y++)
+            {
+                world.setTile(x, y, new BackpackSlot());
+            }
+        }
+
+        return world;
     }
 }

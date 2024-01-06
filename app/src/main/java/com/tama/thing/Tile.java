@@ -46,9 +46,7 @@ public abstract class Tile implements java.io.Serializable
         {
             thing.display(d);
         }
-
     }
-
 
     public void update(World m)
     {
@@ -56,12 +54,10 @@ public abstract class Tile implements java.io.Serializable
         {
             thing.update(m);
         }
-
     }
 
     public void updateDetails(World m)
     {
-
 
     }
 
@@ -109,6 +105,5 @@ public abstract class Tile implements java.io.Serializable
     {
         loc.setPos(x, y);
     }
-
 }
 

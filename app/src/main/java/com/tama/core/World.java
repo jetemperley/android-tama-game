@@ -49,7 +49,7 @@ public class World implements java.io.Serializable
         }
     }
 
-    public void display(DisplayAdapter d)
+    public void draw(DisplayAdapter d)
     {
         for (int x = 0; x < celln; x++)
         {

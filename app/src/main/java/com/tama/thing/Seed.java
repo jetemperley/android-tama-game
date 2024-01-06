@@ -5,6 +5,7 @@ import com.tama.core.World;
 
 class Seed extends Thing
 {
+    private boolean planted = false;
 
     Seed()
     {
@@ -18,12 +19,12 @@ class Seed extends Thing
         return true;
     }
 
-    Thing apply(World m, int ax, int ay)
+    public Thing apply(World world, int ax, int ay)
     {
-        Thing t = m.removeThing(ax, ay);
-        if (t == null)
+        Thing t = world.getThing(ax, ay);
+        if (t == null || t == this)
         {
-            m.add(new Tree(0), ax, ay);
+            planted = true;
             return null;
         }
 
