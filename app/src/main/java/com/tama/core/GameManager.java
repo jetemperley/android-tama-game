@@ -1,12 +1,18 @@
 package com.tama.core;
 
+import com.tama.gesture.GestureEvent;
+import com.tama.gesture.GestureEventHandler;
 
-public class GameManager
+public class GameManager implements GestureEventHandler
 {
     public static GameManager INST;
     public PetGame game = null;
     public PauseMenu pauseMenu = new PauseMenu();
-    public InputHandler target = new InputHandler(){};
+    public InputHandler target = new InputHandler()
+    {
+        @Override
+        public void handleEvent(GestureEvent event) {}
+    };
 
     public GameManager()
     {
@@ -27,5 +33,11 @@ public class GameManager
     public void pause()
     {
         target = pauseMenu;
+    }
+
+    @Override
+    public void handleEvent(GestureEvent event)
+    {
+
     }
 }

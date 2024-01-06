@@ -3,6 +3,7 @@ package com.tama.core;
 import android.graphics.Matrix;
 import android.graphics.Rect;
 
+import com.tama.gesture.GestureEvent;
 import com.tama.util.Log;
 import com.tama.util.MatrixUtil;
 
@@ -59,5 +60,11 @@ public class PauseMenu extends InputHandler
                 return;
             }
         }
+    }
+
+    @Override
+    public void handleEvent(GestureEvent event)
+    {
+        event.callEvent(this);
     }
 }

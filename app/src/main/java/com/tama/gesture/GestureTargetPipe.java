@@ -1,12 +1,24 @@
-package com.tama.util;
-
-import android.view.MotionEvent;
+package com.tama.gesture;
 
 import com.tama.core.GameManager;
+import com.tama.util.Vec2;
 
 public class GestureTargetPipe extends Gesture
 {
     public GameManager gameManager;
+
+    private com.tama.gesture.SingleTap tap = new com.tama.gesture.SingleTap();
+    private com.tama.gesture.DoubleTap
+        doubleTap = new com.tama.gesture.DoubleTap();
+    private DoubleTapRelease doubleTapRelease = new DoubleTapRelease();
+    private DoubleTapDragStart doubleTapDragStart = new DoubleTapDragStart();
+    private com.tama.gesture.DoubleTapDrag
+        doubleTapDrag = new com.tama.gesture.DoubleTapDrag();
+    private DoubleTapDragEnd doubleTapDragEnd = new DoubleTapDragEnd();
+    private LongPress longPress = new LongPress();
+    private com.tama.gesture.Down down = new com.tama.gesture.Down();
+    private com.tama.gesture.Scale scale = new com.tama.gesture.Scale();
+    private com.tama.gesture.Scroll scroll = new com.tama.gesture.Scroll();
 
     public GestureTargetPipe(GameManager manager)
     {

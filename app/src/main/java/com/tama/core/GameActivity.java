@@ -18,8 +18,7 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
-import com.tama.util.Gesture;
-import com.tama.util.GestureTargetPipe;
+import com.tama.gesture.GestureTargetPipe;
 import com.tama.util.Log;
 
 import java.io.File;

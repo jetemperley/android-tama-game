@@ -4,6 +4,7 @@ import android.graphics.Matrix;
 
 import com.tama.command.CommandFactory;
 import com.tama.command.CommandQueue;
+import com.tama.gesture.GestureEvent;
 import com.tama.thing.Pet;
 import com.tama.thing.Thing;
 import com.tama.util.Log;
@@ -359,5 +360,11 @@ public class PetGame extends InputHandler implements java.io.Serializable
         worldMat.postTranslate(
             next.x - prev.x,
             next.y - prev.y);
+    }
+
+    @Override
+    public void handleEvent(GestureEvent event)
+    {
+        event.callEvent(this);
     }
 }

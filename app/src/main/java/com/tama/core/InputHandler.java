@@ -2,10 +2,11 @@ package com.tama.core;
 
 import android.view.MotionEvent;
 
+import com.tama.gesture.GestureEventHandler;
 import com.tama.util.Log;
 import com.tama.util.Vec2;
 
-public abstract class InputHandler
+public abstract class InputHandler extends GestureEventHandler
 {
     public void update(){}
 

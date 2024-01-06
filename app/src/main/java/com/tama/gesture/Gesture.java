@@ -1,6 +1,9 @@
-package com.tama.util;
+package com.tama.gesture;
 
 import android.view.MotionEvent;
+
+import com.tama.util.Log;
+import com.tama.util.Vec2;
 
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
