@@ -6,7 +6,7 @@ import com.tama.gesture.GestureEventHandler;
 import com.tama.util.Log;
 import com.tama.util.Vec2;
 
-public abstract class InputHandler extends GestureEventHandler
+public abstract class Interactive implements GestureEventHandler, Input, UpdateDraw
 {
     public void update(){}
 
@@ -24,7 +24,7 @@ public abstract class InputHandler extends GestureEventHandler
 
     public void doubleTapDragStart(float startX, float startY, float currentX, float currentY){}
 
-    public void doubleTapDrag(float x, float y){}
+    public void doubleTapDrag(float prevX, float prevY, float nextX, float nextY){}
 
     public void doubleTapDragEnd(float x, float y){}
 

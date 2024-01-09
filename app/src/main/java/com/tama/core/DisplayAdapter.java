@@ -223,7 +223,7 @@ class AndroidDisplay implements DisplayAdapter
     @Override
     public void drawRect(float x, float y, float width, float height)
     {
-        canvas.drawRect(x, y, x + width, y + height, GameActivity.white);
+        canvas.drawRect(x, y, x + width, y + height, GameActivity.red);
     }
 
     public void display(Displayable d, float x, float y)

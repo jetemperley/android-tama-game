@@ -1,6 +1,6 @@
 package com.tama.util;
 
-public class Vec2<T> implements java.io.Serializable
+public class Vec2<T extends Number> implements java.io.Serializable
 {
     public T x, y;
 
@@ -30,4 +30,5 @@ public class Vec2<T> implements java.io.Serializable
 
         return x * x + y * y;
     }
+
 }

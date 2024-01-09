@@ -60,7 +60,7 @@ public class WorldFactory
         return w;
     }
 
-    public World makeBackpack(int xSize, int ySize)
+    public static World makeBackpack(int xSize, int ySize)
     {
         World world = new World(xSize);
 

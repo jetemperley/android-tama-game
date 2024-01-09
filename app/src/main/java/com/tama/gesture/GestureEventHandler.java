@@ -2,5 +2,5 @@ package com.tama.gesture;
 
 public interface GestureEventHandler
 {
-    public void handleEvent(GestureEvent event);
+    public boolean handleEvent(GestureEvent event);
 }

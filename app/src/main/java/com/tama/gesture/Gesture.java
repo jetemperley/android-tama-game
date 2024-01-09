@@ -2,13 +2,14 @@ package com.tama.gesture;
 
 import android.view.MotionEvent;
 
+import com.tama.core.Input;
 import com.tama.util.Log;
 import com.tama.util.Vec2;
 
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 
-public class Gesture
+public class Gesture implements Input
 {
 
     private GState[] state;
@@ -21,17 +22,17 @@ public class Gesture
     // pointer ids, (primary pointer is always at index 0)
     private int id2 = -1;
     // locations of the pointers
-    private Vec2<Float> prev1, prev2, new1, new2;
+    // private Vec2<Float> prev1, prev2, new1, new2;
 
     private int singleTapConfirmDelay = 200;
     private int dragConfirmSensitivity = 2000;
 
     public Gesture()
     {
-        prev1 = new Vec2(0, 0);
-        prev2 = new Vec2(0, 0);
-        new1 = new Vec2(0, 0);
-        new2 = new Vec2(0, 0);
+//        prev1 = new Vec2(0, 0);
+//        prev2 = new Vec2(0, 0);
+//        new1 = new Vec2(0, 0);
+//        new2 = new Vec2(0, 0);
 
         state = new GState[7];
         state[0] = new Wait();
@@ -89,7 +90,7 @@ public class Gesture
         Log.log(this, "drag start");
     }
 
-    public void doubleTapDrag(float x, float y)
+    public void doubleTapDrag(float prevX, float prevY, float nextX, float nextY)
     {
         Log.log(this, "drag confirm");
     }
@@ -121,7 +122,7 @@ public class Gesture
         }
     }
 
-    class Wait extends GState
+    private class Wait extends GState
     {
 
         void start(MotionEvent e)
@@ -141,7 +142,7 @@ public class Gesture
         }
     }
 
-    class Down extends GState
+    private class Down extends GState
     {
 
         LocalTime downTime;
@@ -200,7 +201,7 @@ public class Gesture
         }
     }
 
-    class SingleTap extends GState
+    private class SingleTap extends GState
     {
 
         boolean still = false;
@@ -247,11 +248,13 @@ public class Gesture
         }
     }
 
-    class DoubleTapDrag extends GState
+    private class DoubleTapDrag extends GState
     {
+        Vec2<Float> previous = new Vec2<>(0f, 0f);
 
         void start(MotionEvent e)
         {
+            previous.set(e.getX(), e.getY());
         }
 
         int onMotion(MotionEvent e)
@@ -259,9 +262,9 @@ public class Gesture
 
             switch (e.getAction())
             {
-
                 case MotionEvent.ACTION_MOVE:
-                    doubleTapDrag(e.getX(), e.getY());
+                    doubleTapDrag(previous.x, previous.y, e.getX(), e.getY());
+                    previous.set(e.getX(), e.getY());
                     return doubleTapDrag;
 
                 case MotionEvent.ACTION_UP:
@@ -272,7 +275,7 @@ public class Gesture
         }
     }
 
-    class DoubleTap extends GState
+    private class DoubleTap extends GState
     {
 
         Vec2<Float> loc;
@@ -325,7 +328,7 @@ public class Gesture
         }
     }
 
-    class Scroll extends GState
+    private class Scroll extends GState
     {
 
         Vec2<Float> prev, next;
@@ -364,7 +367,7 @@ public class Gesture
         }
     }
 
-    class Scale extends GState
+    private class Scale extends GState
     {
 
         int point2ID = -1;

@@ -1,24 +1,23 @@
 package com.tama.gesture;
 
 import com.tama.core.GameManager;
+import com.tama.core.Input;
 import com.tama.util.Vec2;
 
 public class GestureTargetPipe extends Gesture
 {
     public GameManager gameManager;
 
-    private com.tama.gesture.SingleTap tap = new com.tama.gesture.SingleTap();
-    private com.tama.gesture.DoubleTap
-        doubleTap = new com.tama.gesture.DoubleTap();
-    private DoubleTapRelease doubleTapRelease = new DoubleTapRelease();
-    private DoubleTapDragStart doubleTapDragStart = new DoubleTapDragStart();
-    private com.tama.gesture.DoubleTapDrag
-        doubleTapDrag = new com.tama.gesture.DoubleTapDrag();
-    private DoubleTapDragEnd doubleTapDragEnd = new DoubleTapDragEnd();
-    private LongPress longPress = new LongPress();
-    private com.tama.gesture.Down down = new com.tama.gesture.Down();
-    private com.tama.gesture.Scale scale = new com.tama.gesture.Scale();
-    private com.tama.gesture.Scroll scroll = new com.tama.gesture.Scroll();
+    private final SingleTap singleTap = new SingleTap();
+    private final DoubleTap doubleTap = new DoubleTap();
+    private final DoubleTapRelease doubleTapRelease = new DoubleTapRelease();
+    private final DoubleTapDragStart doubleTapDragStart = new DoubleTapDragStart();
+    private final DoubleTapDrag doubleTapDrag = new DoubleTapDrag();
+    private final DoubleTapDragEnd doubleTapDragEnd = new DoubleTapDragEnd();
+    private final LongPress longPress = new LongPress();
+    private final Down down = new Down();
+    private final Scale scale = new Scale();
+    private final Scroll scroll = new Scroll();
 
     public GestureTargetPipe(GameManager manager)
     {
@@ -28,60 +27,76 @@ public class GestureTargetPipe extends Gesture
     @Override
     public void singleTapConfirmed(float x, float y)
     {
-        gameManager.target.singleTapConfirmed(x, y);
+        singleTap.set(x, y);
+        gameManager.target.handleEvent(singleTap);
     }
 
     @Override
     public void singleDown(float x, float y)
     {
-        gameManager.target.singleDown(x, y);
+        down.set(x, y);
+        gameManager.target.handleEvent(down);
     }
 
     @Override
     public void longPressConfirmed(float x, float y)
     {
-        gameManager.target.longPressConfirmed(x, y);
+        longPress.set(x, y);
+        gameManager.target.handleEvent(longPress);
     }
 
     @Override
     public void doubleTapConfirmed(float x, float y)
     {
-        gameManager.target.doubleTapConfirmed(x, y);
+        doubleTap.set(x, y);
+        gameManager.target.handleEvent(doubleTap);
     }
 
     @Override
     public void doubleTapRelease(float x, float y)
     {
-        gameManager.target.doubleTapRelease(x, y);
+        doubleTapRelease.set(x, y);
+        gameManager.target.handleEvent(doubleTapRelease);
     }
 
     @Override
     public void doubleTapDragStart(float startX, float startY, float currentX, float currentY)
     {
-        gameManager.target.doubleTapDragStart(startX, startY, currentX, currentY);
+        doubleTapDragStart.set(startX, startY);
+        doubleTapDragStart.set(
+            startX,
+            startY,
+            currentX,
+            currentY);
+        gameManager.target.handleEvent(doubleTapDragStart);
     }
 
     @Override
-    public void doubleTapDrag(float x, float y)
+    public void doubleTapDrag(float prevX, float prevY, float nextX, float nextY)
     {
-        gameManager.target.doubleTapDrag(x, y);
+        doubleTapDrag.set(prevX, prevY, nextX, nextY);
+        gameManager.target.handleEvent(doubleTapDrag);
     }
 
     @Override
     public void doubleTapDragEnd(float x, float y)
     {
-        gameManager.target.doubleTapDragEnd(x, y);
+        doubleTapDragEnd.set(x, y);
+        gameManager.target.handleEvent(doubleTapDragEnd);
     }
 
     @Override
     public void scale(Vec2<Float> p1, Vec2<Float> p2, Vec2<Float> n1, Vec2<Float> n2)
     {
-        gameManager.target.scale(p1, p2, n1, n2);
+        scale.set(p1, p2, n1, n2);
+        gameManager.target.handleEvent(scale);
     }
 
     @Override
     public void scroll(Vec2<Float> prev, Vec2<Float> next)
     {
-        gameManager.target.scroll(prev, next);
+        scroll.set(prev.x, prev.y);
+        scroll.set(prev, next);
+        gameManager.target.handleEvent(scroll);
     }
 }

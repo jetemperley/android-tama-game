@@ -20,7 +20,7 @@ class Shovel extends Thing
         return true;
     }
 
-    Thing apply(World m, int ax, int ay)
+    public Thing apply(World m, int ax, int ay)
     {
 
         Thing t = m.removeThing(ax, ay);

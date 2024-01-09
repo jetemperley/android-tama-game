@@ -10,7 +10,7 @@ import com.tama.util.MatrixUtil;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PauseMenu extends InputHandler
+public class PauseMenu extends Interactive
 {
     public List<Button> buttons;
 
@@ -63,8 +63,9 @@ public class PauseMenu extends InputHandler
     }
 
     @Override
-    public void handleEvent(GestureEvent event)
+    public boolean handleEvent(GestureEvent event)
     {
         event.callEvent(this);
+        return true;
     }
 }

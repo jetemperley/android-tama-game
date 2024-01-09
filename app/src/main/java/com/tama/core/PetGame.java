@@ -11,10 +11,7 @@ import com.tama.util.Log;
 import com.tama.util.MatrixUtil;
 import com.tama.util.Vec2;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class PetGame extends InputHandler implements java.io.Serializable
+public class PetGame extends Interactive implements java.io.Serializable
 {
     private World world = WorldFactory.makeWorld();
     private Thing held = null;
@@ -24,8 +21,9 @@ public class PetGame extends InputHandler implements java.io.Serializable
 
     private DepthDisplay depthDisplay = new DepthDisplay();
     private Matrix worldMat = new Matrix();
-    private Matrix matrixUI = new Matrix();
-    List<Button> buttons = new ArrayList<>();
+
+    private ButtonManager buttonManager = new ButtonManager();
+    private BackpackWorld backpack = new BackpackWorld(worldMat, 2);
 
     /** The amount of ms this game has been running for. */
     public static long time = 0;
@@ -35,21 +33,14 @@ public class PetGame extends InputHandler implements java.io.Serializable
 
     public PetGame()
     {
-        float scale = 6;
-        matrixUI.setScale(scale, scale);
-        buttons.add(new Button(0, 0, matrixUI)
-        {
-            @Override
-            public void onClick()
-            {
-                GameManager.INST.pause();
-            }
-        });
+        //buttonManager.add(new Button);
     }
 
     public void update()
     {
+        backpack.worldMat = worldMat;
         world.update();
+        backpack.update();
         time += gameSpeed;
     }
 
@@ -61,8 +52,10 @@ public class PetGame extends InputHandler implements java.io.Serializable
         depthDisplay.drawQ();
         depthDisplay.clearQ();
 
+        backpack.draw(display);
+
         drawSelected(display);
-        drawMenus(display);
+        buttonManager.drawMenus(display);
     }
 
     void drawEnv(DisplayAdapter d)
@@ -92,15 +85,6 @@ public class PetGame extends InputHandler implements java.io.Serializable
         }
     }
 
-    void drawMenus(DisplayAdapter d)
-    {
-        d.setMatrix(matrixUI);
-        for (Button butt : buttons)
-        {
-            butt.draw(d);
-        }
-    }
-
     void reLoadAllAssets()
     {
         world.reLoadAllAssets();
@@ -108,10 +92,7 @@ public class PetGame extends InputHandler implements java.io.Serializable
         {
             held.loadAsset();
         }
-        for (Button b : buttons)
-        {
-            b.loadAsset();
-        }
+        buttonManager.loadAssets();
     }
 
     void setHeldPosition(float x, float y)
@@ -257,16 +238,7 @@ public class PetGame extends InputHandler implements java.io.Serializable
     @Override
     public void singleTapConfirmed(float x, float y)
     {
-        for (Button b : buttons)
-        {
-            Log.log(this, "checking button");
-            if (b.isInside(x, y))
-            {
-                Log.log(this, "clicked a button");
-                b.onClick();
-                return;
-            }
-        }
+
         float[] f = MatrixUtil.convertScreenToWorldArray(worldMat, x, y);
         Log.log(this, "tapped " + f[0] + " " + f[1]);
         select(f[0], f[1]);
@@ -302,10 +274,9 @@ public class PetGame extends InputHandler implements java.io.Serializable
     }
 
     @Override
-    public void doubleTapDrag(float x, float y)
+    public void doubleTapDrag(float prevX, float prevY, float nextX, float nextY)
     {
-        // Log.log(this, "double tap drag");
-        float[] f = MatrixUtil.convertScreenToWorldArray(worldMat, x, y);
+        float[] f = MatrixUtil.convertScreenToWorldArray(worldMat, nextX, nextY);
         setHeldPosition(f[0], f[1]);
     }
 
@@ -363,8 +334,15 @@ public class PetGame extends InputHandler implements java.io.Serializable
     }
 
     @Override
-    public void handleEvent(GestureEvent event)
+    public boolean handleEvent(GestureEvent e)
     {
-        event.callEvent(this);
+        if (buttonManager.handleEvent(e))
+            return true;
+        if (backpack.handleEvent(e))
+            return true;
+        e.callEvent(this);
+        return true;
     }
+
+
 }

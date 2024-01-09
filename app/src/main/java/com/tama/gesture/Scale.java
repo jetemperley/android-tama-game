@@ -1,6 +1,6 @@
 package com.tama.gesture;
 
-import com.tama.core.InputHandler;
+import com.tama.core.Interactive;
 import com.tama.util.Vec2;
 
 public class Scale extends GestureEvent
@@ -19,8 +19,19 @@ public class Scale extends GestureEvent
     }
 
     @Override
-    public void callEvent(InputHandler handler)
+    public void callEvent(Interactive handler)
     {
         handler.scale(prev1, prev2, next1, next2);
+    }
+
+    public void set(Vec2<Float> prev1,
+                    Vec2<Float> prev2,
+                    Vec2<Float> next1,
+                    Vec2<Float> next2)
+    {
+        this.prev1 = prev1;
+        this.prev2 = prev2;
+        this.next1 = next1;
+        this.next2 = next2;
     }
 }
