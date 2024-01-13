@@ -23,17 +23,15 @@ import java.util.List;
 
 public abstract class Pet extends Thing
 {
-
-    static final int down = 0, right = 1, up = 2, left = 3;
     public Stats stats;
     private long time = 0;
 
     State state;
     String name;
 
-    // this pet animator is the same object as Displayable.sprite;
     final public CommandReplacer currentCommand;
 
+    // this pet animator is the same object as Displayable.sprite;
     public Animator anim;
 
     // Movement moves;
@@ -57,6 +55,7 @@ public abstract class Pet extends Thing
         components.add(new Health(this));
     }
 
+    @Override
     Displayable getAsset()
     {
         if (anim == null)
@@ -72,6 +71,7 @@ public abstract class Pet extends Thing
         return anim;
     }
 
+    @Override
     public void update(World world)
     {
         if (time == PetGame.time)
@@ -81,7 +81,7 @@ public abstract class Pet extends Thing
         {
             currentCommand.getUpdate().invoke(this, world);
         }
-        anim.update();
+        anim.update(this);
         state.update(world, this);
         time = PetGame.time;
     }
@@ -92,6 +92,7 @@ public abstract class Pet extends Thing
         return true;
     }
 
+    @Override
     public Type type()
     {
         return Type.pet;
@@ -99,9 +100,10 @@ public abstract class Pet extends Thing
 
     public void setDir(Direction dir)
     {
-        anim.animID = dir.ordinal();
+        anim.animId = dir.ordinal();
     }
 
+    @Override
     public String getDescription()
     {
         return super.getDescription() + "It's a Pet!";
@@ -133,15 +135,16 @@ public abstract class Pet extends Thing
     {
         stand, walk
     }
+
     public void setMovementPose(Movement movement)
     {
         if (movement == Movement.stand)
         {
-            anim.animID = 4 + (anim.animID%4);
+            anim.animId = 4 + (anim.animId %4);
         }
         else
         {
-            anim.animID = anim.animID%4;
+            anim.animId = anim.animId %4;
         }
     }
 
@@ -171,8 +174,6 @@ public abstract class Pet extends Thing
         {
 
         }
-
     }
-
 }
 

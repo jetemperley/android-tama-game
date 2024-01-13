@@ -24,7 +24,7 @@ public class Tree extends Thing implements java.io.Serializable
         {
             lvl = 0;
         }
-        anim.animID = lvl;
+        anim.animId = lvl;
 
     }
 
@@ -52,7 +52,7 @@ public class Tree extends Thing implements java.io.Serializable
         //            growth = 0;
         //        }
         // Log.d("Tree", "" + growth);
-        anim.update();
+        anim.update(this);
     }
 
     public void poke()

@@ -60,7 +60,9 @@ public class Assets
             static_waterdrop = "static_waterdrop",
             static_waterdrop2 = "static_waterdrop2",
             static_zzz = "static_zzz",
-            static_pullbush = "static_pullbush";
+            static_pullbush = "static_pullbush",
+            static_menu = "static_menu",
+            static_backpack = "static_backpack";
 
     public static Map<Integer, StaticSprite> sprites;
     public static Map<Integer, SpriteSheet> sheets;

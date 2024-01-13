@@ -44,7 +44,7 @@ class Egg extends Thing
 
     public void update(World map)
     {
-        anim.update();
+        anim.update(this);
         if (!anim.play && Rand.RandInt(0, 100) < 20 * (PetGame.gameSpeed / 1000f))
         {
             anim.play();

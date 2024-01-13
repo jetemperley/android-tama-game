@@ -1,6 +1,8 @@
 package com.tama.command
 
 import android.util.Log
+import com.tama.anim.KeyFrameAnim
+import com.tama.anim.KeyFrameAssets
 import com.tama.component.Health
 import com.tama.core.DisplayAdapter
 import com.tama.thing.Direction
@@ -14,10 +16,15 @@ public class CommandAttack : Command
     val target: Thing;
     val targetHealth: Health?;
 
+    var targetDirection: Direction?;
+    val anim: KeyFrameAnim;
+
     constructor(target: Thing)
     {
         this.target = target;
         targetHealth = target.getComponent(Health::class.java);
+        targetDirection = null;
+        anim = KeyFrameAssets.get(KeyFrameAssets.Name.AttackUni)
     }
 
     public override fun start(pet: Pet, world: World)
@@ -27,14 +34,12 @@ public class CommandAttack : Command
         {
             fail()
         }
-        // TODO start an animation taking into account duration/speed of action
+        targetDirection = Direction.from(pet.loc, target.loc)
         doing(pet, world)
     }
 
     public override fun doing(pet: Pet, world: World)
     {
-        // TODO while animation is running, wait
-        // TODO target.takeDamage
 
 
     }

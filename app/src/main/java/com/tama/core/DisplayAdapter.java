@@ -99,7 +99,7 @@ class AndroidDisplay implements DisplayAdapter
         int uisize = cellSize * uiscale, uigap = 0;
 
         Vec2<Float> selectedScreenPos =
-            convertWorldToScreen(t.loc.getWorldPos());
+            convertWorldToScreen(t.loc.getWorldArrPos());
         canvas.drawBitmap(
             Assets.getSprite(Assets.static_inv).getSprite(),
             selectedScreenPos.x,

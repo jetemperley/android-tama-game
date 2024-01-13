@@ -2,30 +2,33 @@ package com.tama.core;
 
 import android.graphics.Bitmap;
 
+import com.tama.thing.Thing;
+
+import java.util.Map;
+
 public class Animator implements Displayable, java.io.Serializable
 {
 
     public transient SpriteSheet sheet;
     public boolean play = false, repeat = false;
-    public int animID = 0;
+    public int animId = 0;
     private int animTime = 0;
     public int animDur = 1000;
 
     public Animator(SpriteSheet ss)
     {
-
         sheet = ss;
+
     }
 
     public Bitmap getUISprite()
     {
-
         return sheet.get(0, 0);
     }
 
     public Bitmap getSprite()
     {
-        return getSlide(animTime, animDur, animID);
+        return getSlide(animTime, animDur, animId);
     }
 
     public void play()
@@ -33,7 +36,7 @@ public class Animator implements Displayable, java.io.Serializable
         play = true;
     }
 
-    public void update()
+    public void update(Thing t)
     {
         if (play)
         {
@@ -64,7 +67,6 @@ public class Animator implements Displayable, java.io.Serializable
     {
         animTime = 0;
         play = false;
-
     }
 
     Bitmap getSlide(int time, int duration, int row)

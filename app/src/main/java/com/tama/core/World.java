@@ -1,13 +1,12 @@
 package com.tama.core;
 
-import android.util.Log;
-
 import com.tama.thing.DynTile;
 import com.tama.thing.Grass;
 import com.tama.thing.Thing;
 import com.tama.thing.Tile;
 import com.tama.thing.TileType;
 import com.tama.util.A;
+import com.tama.util.Log;
 
 public class World implements java.io.Serializable
 {
@@ -75,6 +74,7 @@ public class World implements java.io.Serializable
         {
             return false;
         }
+        Log.log(this, "setting obj pos to " + x + " " + y);
         tiles[x][y].setThing(t);
         t.loc.setPos(x, y);
         return true;
@@ -173,12 +173,10 @@ public class World implements java.io.Serializable
             switch (type)
             {
                 case water:
-                    Log.d("map", "set water");
                     setTile(x, y, new DynTile());
                     break;
 
                 case ground:
-                    Log.d("map", "set ground");
                     setTile(x, y, new Grass());
                     break;
             }

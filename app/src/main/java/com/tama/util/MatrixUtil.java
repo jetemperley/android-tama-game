@@ -8,6 +8,19 @@ public class MatrixUtil
 {
     static MatrixUtil util = new MatrixUtil();
 
+    public static void convertScreenToWorldArr(Matrix mat, float[] points)
+    {
+        float[] f2 = new float[9];
+        mat.getValues(f2);
+
+        points[0] = (f[0] - f2[2]) / 16;
+        points[1] = (f[1] - f2[5] - GameActivity.TOP_OFFSET) / 16;
+
+        temp.reset();
+        mat.invert(temp);
+        temp.mapVectors(f);
+    }
+
     public static float[] convertScreenToMatrix(Matrix mat, float x, float y)
     {
         float[] f2 = new float[9];
@@ -96,7 +109,6 @@ public class MatrixUtil
         mat.getValues(f);
         f[0] = scale;
         f[4] = scale;
-        //f[8] = scale;
         mat.setValues(f);
     }
 

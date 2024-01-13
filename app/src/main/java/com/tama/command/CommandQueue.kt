@@ -1,13 +1,10 @@
 package com.tama.command
 
 import android.util.Log
-import com.tama.core.Assets
 import com.tama.core.DisplayAdapter
 import com.tama.thing.Pet
 import com.tama.core.World
 import com.tama.core.WorldObject
-import com.tama.thing.Direction
-import com.tama.util.Path
 import com.tama.util.Vec2
 import java.util.*
 
@@ -88,10 +85,10 @@ class CommandQueue constructor() : Command()
     {
         if (actor == null || ultimateTarget == null)
             return;
-        val start: Vec2<Float> = actor!!.loc.worldPos;
+        val start: Vec2<Float> = actor!!.loc.worldArrPos;
         start.x += 1;
         start.y += 1;
-        val end: Vec2<Float> = ultimateTarget!!.worldPos;
+        val end: Vec2<Float> = ultimateTarget!!.worldArrPos;
         end.x += 1;
         end.y += 1;
         d.drawLine((start.x * 16 - 8),

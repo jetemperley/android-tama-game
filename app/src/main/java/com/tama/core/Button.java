@@ -9,13 +9,11 @@ import com.tama.util.Vec2;
 public abstract class Button
 {
     transient Displayable sprite;
-    private String asset = Assets.static_poop;
+    protected String asset = Assets.static_poop;
     Vec2<Float> pos;
-    private Matrix matrix;
 
-    public Button(float x, float y, Matrix mat)
+    public Button(float x, float y)
     {
-        matrix = mat;
         pos = new Vec2<Float>(x, y);
         loadAsset();
     }
@@ -34,21 +32,9 @@ public abstract class Button
         sprite = Assets.getSprite(asset);
     }
 
-    void onClick()
-    {
+    abstract void onClick();
 
-    }
-
-//    public boolean isInside(float x, float y)
-//    {
-//        y -= GameActivity.TOP_OFFSET;
-//        x = x/4;
-//        y = y/4;
-//        Log.log(this, "raw tap " + x + " " + y);
-//        return (x > pos.x && y > pos.y && x < pos.x + 16 && y < pos.y + 16);
-//    }
-
-    public boolean isInside(float x, float y)
+    public boolean isInside(float x, float y, Matrix matrix)
     {
         float[] loc = MatrixUtil.convertScreenToMatrix(matrix, x, y);
         return (

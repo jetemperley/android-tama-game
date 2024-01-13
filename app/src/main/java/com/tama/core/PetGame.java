@@ -14,7 +14,7 @@ import com.tama.util.Vec2;
 public class PetGame extends Interactive implements java.io.Serializable
 {
     private World world = WorldFactory.makeWorld();
-    private Thing held = null;
+    public Thing held = null;
     private Thing selected = null;
     private Vec2<Float> heldPos = new Vec2<>(0f, 0f);
     private Vec2<Float> heldOffset = new Vec2<>(0f, 0f);
@@ -23,7 +23,7 @@ public class PetGame extends Interactive implements java.io.Serializable
     private Matrix worldMat = new Matrix();
 
     private ButtonManager buttonManager = new ButtonManager();
-    private BackpackWorld backpack = new BackpackWorld(worldMat, 2);
+    private Container backpack = new Container(this, worldMat, 2);
 
     /** The amount of ms this game has been running for. */
     public static long time = 0;
@@ -31,9 +31,36 @@ public class PetGame extends Interactive implements java.io.Serializable
     /** The time that this game should aim to run at (ms). */
     public final static int gameSpeed = 25;
 
+    boolean showBackpack = true;
+
     public PetGame()
     {
-        //buttonManager.add(new Button);
+        buttonManager.add(new Button(0, 0)
+        {
+            {
+                asset = Assets.static_menu;
+                loadAsset();
+            }
+            @Override
+            void onClick()
+            {
+                GameManager.INST.pause();
+            }
+        });
+
+        buttonManager.add(new Button(16, 0)
+        {
+            {
+                asset = Assets.static_backpack;
+                loadAsset();
+            }
+
+            @Override
+            void onClick()
+            {
+                showBackpack = !showBackpack;
+            }
+        });
     }
 
     public void update()
@@ -52,7 +79,10 @@ public class PetGame extends Interactive implements java.io.Serializable
         depthDisplay.drawQ();
         depthDisplay.clearQ();
 
-        backpack.draw(display);
+        if (showBackpack)
+        {
+            backpack.draw(display);
+        }
 
         drawSelected(display);
         buttonManager.drawMenus(display);
@@ -69,8 +99,8 @@ public class PetGame extends Interactive implements java.io.Serializable
         {
             d.display(
                 Assets.getSprite(Assets.static_inv),
-                selected.loc.getWorldPos().x,
-                selected.loc.getWorldPos().y);
+                selected.loc.getWorldArrPos().x,
+                selected.loc.getWorldArrPos().y);
             if (selected instanceof Pet)
             {
                 ((Pet) selected).currentCommand.draw(d);
@@ -100,6 +130,11 @@ public class PetGame extends Interactive implements java.io.Serializable
         heldPos.set(x, y);
     }
 
+    /**
+     *
+     * @param ax array tap
+     * @param ay array tap
+     */
     void setHeld(float ax, float ay)
     {
         Log.log(this, "checking in " + ax + " " + ay);
@@ -111,34 +146,49 @@ public class PetGame extends Interactive implements java.io.Serializable
         }
         Log.log(this, thing.getClass().getCanonicalName() + " set as held");
         thing = world.pickupThing(thing.loc.x, thing.loc.y);
-        setHeld(thing);
+        setHeld(thing, ax, ay);
     }
 
     /**
-     * UNSAFE, do your own checks
      *
-     * @param thing
+     * @param thing The thing to hold.
+     * @param x array position of tap
+     * @param y array position of tap
      */
-    void setHeld(Thing thing)
+    public void setHeld(Thing thing, float x, float y)
     {
         held = thing;
+        heldPos.set(x, y);
+        Vec2<Float> pos = held.loc.getWorldArrPos();
+        Log.log(this, "params " + x + " " + y);
+        Log.log(this, "pos " + held.loc.x + " " + held.loc.y);
+        heldOffset.x = x - pos.x;
+        heldOffset.y = y - pos.y;
+    }
+
+    public float[] transferFromContainer(Thing t, Matrix containerMat)
+    {
+        Vec2<Float> worldPos = t.loc.getWorldBitPos();
+        Log.log(this, "object loc is " + worldPos.x + " " + worldPos.y);
+
+        float[] f = new float[] {worldPos.x, worldPos.y};
+        containerMat.mapPoints(f);
+        Log.log(this, "screen loc is " + f[0] + " " + f[1]);
+
+        Matrix inv = new Matrix();
+        worldMat.invert(inv);
+        inv.mapPoints(f);
+        Log.log(this, "world loc is " + f[0] + " " + f[1]);
+
+        t.loc.x = (int)f[0];
+        t.loc.y = (int)f[1];
+        setHeld(t, f[0], f[1]);
+        return f;
     }
 
     void setSelected(int x, int y)
     {
         selected = world.getThing(x, y);
-    }
-
-    void setSelectedAsHeld()
-    {
-        if (selected != null)
-        {
-            setHeld(selected.loc.x, selected.loc.y);
-        }
-        else
-        {
-            held = null;
-        }
     }
 
     void pickup(float x, float y)
@@ -153,7 +203,7 @@ public class PetGame extends Interactive implements java.io.Serializable
         {
             held = world.pickupThing(t.loc.x, t.loc.y);
             heldPos.set(x, y);
-            Vec2<Float> pos = held.loc.getWorldPos();
+            Vec2<Float> pos = held.loc.getWorldArrPos();
             heldOffset.x = x - pos.x;
             heldOffset.y = y - pos.y;
         }
@@ -161,6 +211,7 @@ public class PetGame extends Interactive implements java.io.Serializable
 
     void drop(float x, float y)
     {
+        Log.log(this, "dropping");
         world.addOrClosest(held, (int) x, (int) y);
         held = null;
     }
@@ -276,7 +327,8 @@ public class PetGame extends Interactive implements java.io.Serializable
     @Override
     public void doubleTapDrag(float prevX, float prevY, float nextX, float nextY)
     {
-        float[] f = MatrixUtil.convertScreenToWorldArray(worldMat, nextX, nextY);
+        float[] f =
+            MatrixUtil.convertScreenToWorldArray(worldMat, nextX, nextY);
         setHeldPosition(f[0], f[1]);
     }
 
@@ -337,12 +389,14 @@ public class PetGame extends Interactive implements java.io.Serializable
     public boolean handleEvent(GestureEvent e)
     {
         if (buttonManager.handleEvent(e))
+        {
             return true;
-        if (backpack.handleEvent(e))
+        }
+        if (showBackpack && backpack.handleEvent(e))
+        {
             return true;
+        }
         e.callEvent(this);
         return true;
     }
-
-
 }

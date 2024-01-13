@@ -27,8 +27,7 @@ class CommandEat(targetToEat: Thing) : Command()
         if (currentTime > totalTime)
         {
             pet.children.remove(toEat);
-            update = ::noop;
-            state = CommandState.complete;
+            complete();
         }
     }
 

@@ -242,46 +242,4 @@ public class GameActivity extends Activity
     }
 }
 
-class GameLoop extends Thread
-{
-    /**
-     * The time (ms) which the last frame took
-     */
-    public int frameTime = 0;
-    GameActivity activity;
-    public boolean play = true;
-
-    GameLoop(GameActivity activity)
-    {
-        this.activity = activity;
-    }
-
-    public void run()
-    {
-        LocalTime start;
-        LocalTime end = LocalTime.now();
-
-        while (play)
-        {
-            start = end;
-            activity.updateAndDraw();
-            end = LocalTime.now();
-            frameTime =
-                    (int) ChronoUnit.MILLIS.between(start, end);
-            // Log.log(this, frameTime + "");
-            long ytime = PetGame.gameSpeed - frameTime;
-
-            try
-            {
-                if (ytime > 0)
-                {
-                    Thread.currentThread().wait(ytime);
-                }
-            } catch (Exception e)
-            {
-            }
-        }
-    }
-}
-
 

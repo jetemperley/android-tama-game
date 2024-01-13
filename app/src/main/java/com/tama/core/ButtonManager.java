@@ -51,7 +51,7 @@ public class ButtonManager implements GestureEventHandler
             for (Button b : buttons)
             {
                 Log.log(this, "checking button");
-                if (b.isInside(e.x, e.y))
+                if (b.isInside(e.x, e.y, matrixUI))
                 {
                     Log.log(this, "clicked a button");
                     b.onClick();

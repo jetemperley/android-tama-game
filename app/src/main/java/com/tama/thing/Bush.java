@@ -27,7 +27,7 @@ public class Bush extends Thing
         {
             anim.sheet = Assets.getSheet(asset);
         }
-        anim.animID = 1;
+        anim.animId = 1;
         anim.animDur = 500;
         return anim;
     }
@@ -49,11 +49,13 @@ public class Bush extends Thing
 
     public Thing pickup()
     {
-        return new PulledBush();
+        Thing t = new PulledBush();
+        t.loc.setPos(loc.x, loc.y);
+        return t;
     }
 
     @Override public void update(World map)
     {
-        anim.update();
+        anim.update(this);
     }
 }
