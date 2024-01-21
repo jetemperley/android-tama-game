@@ -323,9 +323,10 @@ public class World implements java.io.Serializable
 
     public static boolean isAdjacent(WorldObject a, WorldObject b)
     {
-        int aDiff = Math.abs(a.x - b.x);
-        int bDiff = Math.abs(a.y - b.y);
-        return aDiff == 1 ^ bDiff == 1;
+        int xDiff = Math.abs(a.x - b.x);
+        int yDiff = Math.abs(a.y - b.y);
+        boolean bool = (xDiff == 1) ^ (yDiff == 1);
+        return bool;
     }
 }
 

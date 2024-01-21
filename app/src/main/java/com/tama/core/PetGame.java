@@ -28,9 +28,6 @@ public class PetGame extends Interactive implements java.io.Serializable
     /** The amount of ms this game has been running for. */
     public static long time = 0;
 
-    /** The time that this game should aim to run at (ms). */
-    public final static int gameSpeed = 25;
-
     boolean showBackpack = true;
 
     public PetGame()
@@ -68,7 +65,7 @@ public class PetGame extends Interactive implements java.io.Serializable
         backpack.worldMat = worldMat;
         world.update();
         backpack.update();
-        time += gameSpeed;
+        time += GameLoop.deltaTime;
     }
 
     public void draw(DisplayAdapter display)

@@ -3,6 +3,7 @@ package com.tama.thing;
 import com.tama.core.Animator;
 import com.tama.core.Assets;
 import com.tama.core.Displayable;
+import com.tama.core.GameLoop;
 import com.tama.core.PetGame;
 import com.tama.util.Rand;
 import com.tama.core.World;
@@ -11,7 +12,7 @@ class Egg extends Thing
 {
 
     Animator anim;
-    int age;
+    float age;
     int hatchAge;
 
     Egg()
@@ -45,11 +46,11 @@ class Egg extends Thing
     public void update(World map)
     {
         anim.update(this);
-        if (!anim.play && Rand.RandInt(0, 100) < 20 * (PetGame.gameSpeed / 1000f))
+        if (!anim.play && Rand.RandInt(0, 100) < 20 * GameLoop.deltaTime)
         {
             anim.play();
         }
-        age += PetGame.gameSpeed;
+        age += GameLoop.deltaTime;
         if (age > hatchAge)
         {
             // hatch

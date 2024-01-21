@@ -3,7 +3,9 @@ package com.tama.thing;
 import android.util.Log;
 
 import com.tama.command.Command;
+import com.tama.command.CommandAttack;
 import com.tama.command.CommandFactory;
+import com.tama.command.CommandQueue;
 import com.tama.command.CommandReplacer;
 import com.tama.command.State;
 import com.tama.command.Wander;
@@ -34,6 +36,11 @@ public abstract class Pet extends Thing
     // this pet animator is the same object as Displayable.sprite;
     public Animator anim;
 
+    public enum Movement
+    {
+        stand, walk
+    }
+
     // Movement moves;
     public static Vec2<Integer>[] steps = new Vec2[]{
             new Vec2(0, 1),
@@ -50,7 +57,7 @@ public abstract class Pet extends Thing
         name = "";
         stats = new Stats();
         currentCommand = new CommandReplacer();
-        asset = Assets.sheet_16_blob;
+        asset = Assets.Names.sheet_16_blob.name();
         loadAsset();
         components.add(new Health(this));
     }
@@ -100,7 +107,9 @@ public abstract class Pet extends Thing
 
     public void setDir(Direction dir)
     {
-        anim.animId = dir.ordinal();
+        int pose = anim.animId/4;
+
+        anim.animId = 4*pose + dir.ordinal();
     }
 
     @Override
@@ -129,11 +138,6 @@ public abstract class Pet extends Thing
             }
         }
         return out;
-    }
-
-    public enum Movement
-    {
-        stand, walk
     }
 
     public void setMovementPose(Movement movement)
@@ -172,7 +176,7 @@ public abstract class Pet extends Thing
         }
         else
         {
-
+            currentCommand.replace(CommandFactory.Companion.commandWalkAndAdjacentAction(thing, new CommandAttack(thing)));
         }
     }
 }

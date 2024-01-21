@@ -31,4 +31,21 @@ public class Vec2<T extends Number> implements java.io.Serializable
         return x * x + y * y;
     }
 
+    @Override
+    public String toString()
+    {
+        return "x=" + x + ", y=" + y;
+    }
+
+    @Override
+    public boolean equals(Object o)
+    {
+        if (o instanceof Vec2)
+        {
+            Vec2<?> other = (Vec2)o;
+            return other.x.equals(x) && other.y.equals(y);
+        }
+        return false;
+    }
+
 }

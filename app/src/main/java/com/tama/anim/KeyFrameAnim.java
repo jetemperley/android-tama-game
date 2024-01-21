@@ -1,5 +1,6 @@
 package com.tama.anim;
 
+import com.tama.util.Log;
 import com.tama.util.Vec2;
 
 import java.util.ArrayList;
@@ -15,10 +16,10 @@ public class KeyFrameAnim
      */
     private int recentFrame = 0;
 
-    public KeyFrameAnim(List<KeyFrame> keyFrames)
+    public KeyFrameAnim(List<KeyFrame> keyFrameList)
     {
 
-        for (KeyFrame frame : keyFrames)
+        for (KeyFrame frame : keyFrameList)
         {
             keyFrames.add(frame);
         }
@@ -44,9 +45,9 @@ public class KeyFrameAnim
             if (keyFrames.get(i).time >= keyFrames.get(i + 1).time)
             {
                 throw new RuntimeException(
-                    "Keyframes were in the wrong order: " + i + " time=" +
-                        keyFrames.get(i).time + ", " + (i + 1) + " time=" +
-                        keyFrames.get(i).time + ".");
+                    "Keyframes (size=" + keyFrames.size() + ") were in the wrong order: frame " + i + " time=" +
+                        keyFrames.get(i).time + ", frame " + (i + 1) + " time=" +
+                        keyFrames.get(i+1).time + ".");
             }
         }
 
@@ -62,13 +63,20 @@ public class KeyFrameAnim
         }
 
         int i = 0;
-        while (time < keyFrames.get(i).time) i++;
+        while (keyFrames.get(i).time  < time) i++;
 
-        KeyFrame lowerFrame = keyFrames.get(i);
-        KeyFrame upperFrame = keyFrames.get(i + 1);
+        KeyFrame upperFrame = keyFrames.get(i);
+        if (upperFrame.time == time)
+        {
+            return upperFrame.pos;
+        }
+
+        KeyFrame lowerFrame = keyFrames.get(i - 1);
+        // Log.log(this, "Time: " + time + ", lower=" + lowerFrame.time);
 
         float frameTime = (time - lowerFrame.time) /
-            upperFrame.time - lowerFrame.time;
+            (upperFrame.time - lowerFrame.time);
+
 
         float xDiff = (upperFrame.pos.x - lowerFrame.pos.x) * frameTime;
         float yDiff = (upperFrame.pos.y - lowerFrame.pos.y) * frameTime;

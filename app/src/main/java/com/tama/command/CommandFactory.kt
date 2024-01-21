@@ -26,7 +26,7 @@ class CommandFactory
         }
 
         fun commandWalkAndAdjacentAction(target: Thing,
-                                         command: Command): CommandQueue
+                                         adjacentCommand: Command): CommandQueue
         {
             val commandQueue = CommandQueue();
             commandQueue.failAllOnFail(true);
@@ -34,7 +34,7 @@ class CommandFactory
                     CommandQueue(pathInitializer(target.loc, 1))
             walk.failAllOnFail(true);
             commandQueue.add(walk);
-            commandQueue.add(command);
+            commandQueue.add(adjacentCommand);
             commandQueue.ultimateTarget = target.loc;
             return commandQueue;
         }

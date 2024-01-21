@@ -34,12 +34,12 @@ public class Stats implements Serializable
 
     public void updateStats(Pet p)
     {
-        stats[hunger].add(-PetGame.gameSpeed);
+        stats[hunger].add(-GameLoop.deltaTime);
         if (stats[energy].getProp() < 1)
         {
-            stats[energy].add(PetGame.gameSpeed);
+            stats[energy].add(GameLoop.deltaTime);
         }
-        stats[sleep].add(-PetGame.gameSpeed);
+        stats[sleep].add(-GameLoop.deltaTime);
 
     }
 
@@ -50,7 +50,7 @@ public class Stats implements Serializable
 
         Stat()
         {
-            this(20000);
+            this(20);
         }
 
         Stat(float current, float maximum)

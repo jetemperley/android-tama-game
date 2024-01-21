@@ -17,7 +17,7 @@ public abstract class Thing implements java.io.Serializable
 {
     @NotNull
     final public WorldObject loc;
-    protected String asset = Assets.static_poop;
+    protected String asset = Assets.Names.static_poop.name();
     public final List<Thing> children;
     public final List<Component> components;
 

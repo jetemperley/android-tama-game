@@ -1,6 +1,7 @@
 package com.tama.command
 
 import com.tama.core.DisplayAdapter
+import com.tama.core.GameLoop
 import com.tama.core.PetGame
 import com.tama.core.World
 import com.tama.thing.Pet
@@ -9,9 +10,9 @@ import com.tama.util.Log
 
 class CommandEat(targetToEat: Thing) : Command()
 {
-    val totalTime: Int = 1000;
-    var currentTime: Int = 0;
-    val toEat: Thing = targetToEat;
+    private val totalTime: Float = 1f;
+    private var currentTime: Float = 0f;
+    private val toEat: Thing = targetToEat;
 
     override fun start(pet: Pet, world: World)
     {
@@ -22,8 +23,8 @@ class CommandEat(targetToEat: Thing) : Command()
 
     override fun doing(pet: Pet, world: World)
     {
-        currentTime += PetGame.gameSpeed;
-        Log.log(this, "time is $currentTime");
+        currentTime += GameLoop.deltaTime;
+
         if (currentTime > totalTime)
         {
             pet.children.remove(toEat);
