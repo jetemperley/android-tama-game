@@ -12,7 +12,7 @@ public class Bush extends Thing
 
     public Bush()
     {
-        asset = Assets.sheet_16_bush;
+        asset = Assets.Names.sheet_16_bush.name();
         loadAsset();
     }
 

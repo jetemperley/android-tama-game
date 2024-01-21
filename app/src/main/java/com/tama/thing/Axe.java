@@ -9,7 +9,7 @@ public class Axe extends Thing
     Axe()
     {
         super();
-        asset = Assets.static_axe;
+        asset = Assets.Names.static_axe.name();
         loadAsset();
     }
 

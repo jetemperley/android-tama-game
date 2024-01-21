@@ -7,7 +7,7 @@ class Wood extends Thing
 
     Wood()
     {
-        asset = Assets.static_log;
+        asset = Assets.Names.static_log.name();
         loadAsset();
     }
 

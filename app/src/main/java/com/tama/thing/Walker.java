@@ -8,7 +8,7 @@ public class Walker extends Pet
     public Walker()
     {
         super();
-        asset = Assets.sheet_16_walker;
+        asset = Assets.Names.sheet_16_walker.name();
         loadAsset();
     }
 }

@@ -7,7 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 
-import com.tama.apptest.R;
+import com.tama.R;
 
 import java.io.File;
 
@@ -15,7 +15,7 @@ import java.io.File;
 public class MainActivity extends AppCompatActivity
 {
 
-    public static final String EXTRA_MESSAGE = "com.example.apptest.MESSAGE";
+    public static final String EXTRA_MESSAGE = "com.tama.MESSAGE";
 
     @Override
     protected void onCreate(Bundle savedInstanceState)

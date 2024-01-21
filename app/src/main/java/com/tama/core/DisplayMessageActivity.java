@@ -5,7 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.TextView;
 
-import com.tama.apptest.R;
+import com.tama.R;
 
 public class DisplayMessageActivity extends AppCompatActivity
 {

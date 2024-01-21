@@ -10,7 +10,7 @@ class Seed extends Thing
     Seed()
     {
         super();
-        asset = Assets.static_seed;
+        asset = Assets.Names.static_seed.name();
         loadAsset();
     }
 

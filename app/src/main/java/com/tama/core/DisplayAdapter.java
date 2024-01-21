@@ -4,7 +4,7 @@ import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Rect;
 
-import com.tama.apptest.R;
+import com.tama.R;
 import com.tama.thing.Pet;
 import com.tama.thing.Thing;
 import com.tama.util.Log;
@@ -101,7 +101,7 @@ class AndroidDisplay implements DisplayAdapter
         Vec2<Float> selectedScreenPos =
             convertWorldToScreen(t.loc.getWorldArrPos());
         canvas.drawBitmap(
-            Assets.getSprite(Assets.static_inv).getSprite(),
+            Assets.getSprite(Assets.Names.static_inv.name()).getSprite(),
             selectedScreenPos.x,
             selectedScreenPos.y,
             GameActivity.black);

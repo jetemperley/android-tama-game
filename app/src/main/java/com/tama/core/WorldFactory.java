@@ -1,6 +1,6 @@
 package com.tama.core;
 
-import com.tama.apptest.R;
+import com.tama.R;
 import com.tama.thing.BackpackSlot;
 import com.tama.thing.Bush;
 import com.tama.thing.DynTile;

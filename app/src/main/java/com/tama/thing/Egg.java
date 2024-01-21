@@ -22,7 +22,7 @@ class Egg extends Thing
         age = 0;
         hatchAge = 20000;
 
-        asset = Assets.sheet_16_egg;
+        asset = Assets.Names.sheet_16_egg.name();
         loadAsset();
 
     }

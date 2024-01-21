@@ -1,11 +1,10 @@
-package com.tama.apptest;
+package com.tama.test;
 
 import com.tama.anim.KeyFrame;
 import com.tama.anim.KeyFrameAnim;
 import com.tama.anim.KeyFrameAssets;
 import com.tama.util.Vec2;
 
-import org.jetbrains.annotations.TestOnly;
 import org.junit.Test;
 
 import java.util.ArrayList;

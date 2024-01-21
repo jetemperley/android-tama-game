@@ -1,6 +1,6 @@
 package com.tama.thing;
 
-import com.tama.apptest.R;
+import com.tama.R;
 import com.tama.core.Animator;
 import com.tama.core.Assets;
 import com.tama.core.Displayable;
@@ -16,7 +16,7 @@ public class Tree extends Thing implements java.io.Serializable
     public Tree(int level)
     {
         super();
-        asset = Assets.static_poop;
+        asset = Assets.Names.static_poop.name();
         loadAsset();
 
         lvl = level;

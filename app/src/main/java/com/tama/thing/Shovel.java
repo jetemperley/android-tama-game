@@ -11,7 +11,7 @@ class Shovel extends Thing
     Shovel()
     {
         super();
-        asset = Assets.static_shovel;
+        asset = Assets.Names.static_shovel.name();
         loadAsset();
     }
 

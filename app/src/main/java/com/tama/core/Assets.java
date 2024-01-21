@@ -5,7 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
 
-import com.tama.apptest.R;
+import com.tama.R;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;

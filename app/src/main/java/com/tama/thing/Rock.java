@@ -8,7 +8,7 @@ class Rock extends Thing
     Rock()
     {
         super();
-        asset = Assets.static_rock;
+        asset = Assets.Names.static_rock.name();
         loadAsset();
     }
 

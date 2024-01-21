@@ -35,7 +35,7 @@ public class PetGame extends Interactive implements java.io.Serializable
         buttonManager.add(new Button(0, 0)
         {
             {
-                asset = Assets.static_menu;
+                asset = Assets.Names.static_menu.name();
                 loadAsset();
             }
             @Override
@@ -48,7 +48,7 @@ public class PetGame extends Interactive implements java.io.Serializable
         buttonManager.add(new Button(16, 0)
         {
             {
-                asset = Assets.static_backpack;
+                asset = Assets.Names.static_backpack.name();
                 loadAsset();
             }
 
@@ -95,7 +95,7 @@ public class PetGame extends Interactive implements java.io.Serializable
         if (selected != null)
         {
             d.display(
-                Assets.getSprite(Assets.static_inv),
+                Assets.getSprite(Assets.Names.static_inv.name()),
                 selected.loc.getWorldArrPos().x,
                 selected.loc.getWorldArrPos().y);
             if (selected instanceof Pet)

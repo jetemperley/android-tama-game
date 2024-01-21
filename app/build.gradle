@@ -4,7 +4,7 @@ apply plugin: 'kotlin-android'
 android {
     compileSdkVersion 29
     defaultConfig {
-        applicationId "com.example.apptest"
+        applicationId "com.tama"
         minSdkVersion 28
         targetSdkVersion 29
         versionCode 1

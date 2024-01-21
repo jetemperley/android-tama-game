@@ -9,7 +9,7 @@ import com.tama.util.Vec2;
 public abstract class Button
 {
     transient Displayable sprite;
-    protected String asset = Assets.static_poop;
+    protected String asset = Assets.Names.static_poop.name();
     Vec2<Float> pos;
 
     public Button(float x, float y)

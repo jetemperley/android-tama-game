@@ -10,7 +10,7 @@ public class Poop extends Thing
     public Poop()
     {
         super();
-        asset = Assets.static_poop;
+        asset = Assets.Names.static_poop.name();
         loadAsset();
     }
 
