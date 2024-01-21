@@ -11,7 +11,7 @@ class Seed extends Thing
     {
         super();
         asset = Assets.Names.static_seed.name();
-        loadAsset();
+        load();
     }
 
     boolean isItem()

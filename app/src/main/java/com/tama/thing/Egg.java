@@ -4,7 +4,6 @@ import com.tama.core.Animator;
 import com.tama.core.Assets;
 import com.tama.core.Displayable;
 import com.tama.core.GameLoop;
-import com.tama.core.PetGame;
 import com.tama.util.Rand;
 import com.tama.core.World;
 
@@ -23,7 +22,7 @@ class Egg extends Thing
         hatchAge = 20000;
 
         asset = Assets.Names.sheet_16_egg.name();
-        loadAsset();
+        load();
 
     }
 

@@ -27,12 +27,12 @@ public abstract class Tile implements java.io.Serializable
         return Assets.sheets.get(R.drawable.sheet_16_terrain).getSprite(0, 0);
     }
 
-    public void reLoadAsset()
+    public void load()
     {
         loc.sprite = getAssets();
         if (thing != null)
         {
-            thing.loadAsset();
+            thing.load();
         }
     }
 

@@ -5,7 +5,6 @@ import android.util.Log;
 import com.tama.command.Command;
 import com.tama.command.CommandAttack;
 import com.tama.command.CommandFactory;
-import com.tama.command.CommandQueue;
 import com.tama.command.CommandReplacer;
 import com.tama.command.State;
 import com.tama.command.Wander;
@@ -58,7 +57,7 @@ public abstract class Pet extends Thing
         stats = new Stats();
         currentCommand = new CommandReplacer();
         asset = Assets.Names.sheet_16_blob.name();
-        loadAsset();
+        load();
         components.add(new Health(this));
     }
 

@@ -9,6 +9,6 @@ class PulledBush extends Thing
     {
         super();
         asset = Assets.Names.static_pullbush.name();
-        loadAsset();
+        load();
     }
 }

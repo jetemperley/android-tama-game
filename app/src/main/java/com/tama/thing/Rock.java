@@ -9,7 +9,7 @@ class Rock extends Thing
     {
         super();
         asset = Assets.Names.static_rock.name();
-        loadAsset();
+        load();
     }
 
     public String getDescription()

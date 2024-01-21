@@ -2,11 +2,10 @@ package com.tama.core;
 
 import android.graphics.Matrix;
 
-import com.tama.util.Log;
 import com.tama.util.MatrixUtil;
 import com.tama.util.Vec2;
 
-public abstract class Button
+public abstract class Button implements Loadable
 {
     transient Displayable sprite;
     protected String asset = Assets.Names.static_poop.name();
@@ -15,7 +14,7 @@ public abstract class Button
     public Button(float x, float y)
     {
         pos = new Vec2<Float>(x, y);
-        loadAsset();
+        load();
     }
 
     void draw(DisplayAdapter display)
@@ -27,7 +26,8 @@ public abstract class Button
     {
     }
 
-    void loadAsset()
+    @Override
+    public void load()
     {
         sprite = Assets.getSprite(asset);
     }

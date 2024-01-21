@@ -10,7 +10,7 @@ class Hammer extends Thing
     {
         super();
         asset = Assets.Names.static_axe.name();
-        loadAsset();
+        load();
     }
 
     boolean isItem()

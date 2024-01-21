@@ -12,7 +12,7 @@ class Shovel extends Thing
     {
         super();
         asset = Assets.Names.static_shovel.name();
-        loadAsset();
+        load();
     }
 
     boolean isItem()

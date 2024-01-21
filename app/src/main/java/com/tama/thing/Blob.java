@@ -9,6 +9,6 @@ class Blob extends Pet
     {
         super();
         asset = Assets.Names.sheet_16_blob.name();
-        loadAsset();
+        load();
     }
 }

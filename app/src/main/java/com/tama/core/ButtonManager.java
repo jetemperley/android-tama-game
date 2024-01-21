@@ -40,7 +40,7 @@ public class ButtonManager implements GestureEventHandler
     {
         for (Button b : buttons)
         {
-            b.loadAsset();
+            b.load();
         }
     }
 

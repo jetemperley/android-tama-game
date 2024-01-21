@@ -4,6 +4,7 @@ import com.tama.component.Component;
 import com.tama.core.Assets;
 import com.tama.core.DisplayAdapter;
 import com.tama.core.Displayable;
+import com.tama.core.Loadable;
 import com.tama.core.Type;
 import com.tama.core.World;
 import com.tama.core.WorldObject;
@@ -13,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class Thing implements java.io.Serializable
+public abstract class Thing implements java.io.Serializable, Loadable
 {
     @NotNull
     final public WorldObject loc;
@@ -43,7 +44,8 @@ public abstract class Thing implements java.io.Serializable
         return Assets.getSprite(asset);
     }
 
-    public void loadAsset()
+    @Override
+    public void load()
     {
         loc.sprite = getAsset();
     }

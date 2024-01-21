@@ -86,7 +86,7 @@ public class World implements java.io.Serializable
         {
             for (int y = 0; y < tiles[x].length; y++)
             {
-                tiles[x][y].reLoadAsset();
+                tiles[x][y].load();
                 tiles[x][y].updateDetails(this);
             }
         }

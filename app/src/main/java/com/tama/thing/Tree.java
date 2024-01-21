@@ -17,7 +17,7 @@ public class Tree extends Thing implements java.io.Serializable
     {
         super();
         asset = Assets.Names.static_poop.name();
-        loadAsset();
+        load();
 
         lvl = level;
         if (lvl < 0 || lvl > 4)

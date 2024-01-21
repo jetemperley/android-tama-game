@@ -8,7 +8,7 @@ class Wood extends Thing
     Wood()
     {
         asset = Assets.Names.static_log.name();
-        loadAsset();
+        load();
     }
 
     boolean isItem()

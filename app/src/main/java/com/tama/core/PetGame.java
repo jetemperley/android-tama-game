@@ -36,7 +36,7 @@ public class PetGame extends Interactive implements java.io.Serializable
         {
             {
                 asset = Assets.Names.static_menu.name();
-                loadAsset();
+                load();
             }
             @Override
             void onClick()
@@ -49,7 +49,7 @@ public class PetGame extends Interactive implements java.io.Serializable
         {
             {
                 asset = Assets.Names.static_backpack.name();
-                loadAsset();
+                load();
             }
 
             @Override
@@ -117,7 +117,7 @@ public class PetGame extends Interactive implements java.io.Serializable
         world.reLoadAllAssets();
         if (held != null)
         {
-            held.loadAsset();
+            held.load();
         }
         buttonManager.loadAssets();
     }

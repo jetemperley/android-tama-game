@@ -11,7 +11,7 @@ public class Poop extends Thing
     {
         super();
         asset = Assets.Names.static_poop.name();
-        loadAsset();
+        load();
     }
 
     boolean isItem()

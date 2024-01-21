@@ -9,6 +9,6 @@ public class Walker extends Pet
     {
         super();
         asset = Assets.Names.sheet_16_walker.name();
-        loadAsset();
+        load();
     }
 }

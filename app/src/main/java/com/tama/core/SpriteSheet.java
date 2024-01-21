@@ -26,11 +26,22 @@ public class SpriteSheet
         return sheet[row][col];
     }
 
-    int len(int row)
+    public int len(int row)
     {
         return sheet[row].length;
     }
 
+    /**
+     * Gets the i-th sprite, counting left to right, row by row.
+     * @param i
+     * @return
+     */
+    public StaticSprite getSprite(int i)
+    {
+        int row = i/sheet[0].length;
+        int col = i%sheet[0].length;
+        return getSprite(row, col);
+    }
 }
 
 

@@ -25,9 +25,14 @@ public class Assets
         sheet_16_treegrowth,
         sheet_16_treeripped,
         sheet_16_walker,
+        sheet_16_letters,
+
         sheet_5_num,
         sheet_8_water,
         sheet_8_watersimp,
+        sheet_8_letters,
+        sheet_8_symbols,
+
         static_acorn,
         static_apple,
         static_axe,
