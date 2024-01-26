@@ -22,7 +22,7 @@ public class PetGame extends Interactive implements java.io.Serializable
     private DepthDisplay depthDisplay = new DepthDisplay();
     private Matrix worldMat = new Matrix();
 
-    private ButtonManager buttonManager = new ButtonManager();
+    private ButtonManager buttonManager;
     private Container backpack = new Container(this, worldMat, 2);
 
     /** The amount of ms this game has been running for. */
@@ -32,28 +32,23 @@ public class PetGame extends Interactive implements java.io.Serializable
 
     public PetGame()
     {
-        buttonManager.add(new Button(0, 0)
+        Matrix mat = new Matrix();
+        mat.setScale(6, 6);
+        buttonManager = new ButtonManager(mat);
+        buttonManager.add(new Button(0, 0, Assets.Names.static_menu.name())
         {
-            {
-                asset = Assets.Names.static_menu.name();
-                load();
-            }
             @Override
-            void onClick()
+            void activate()
             {
                 GameManager.INST.pause();
             }
         });
 
-        buttonManager.add(new Button(16, 0)
+        buttonManager.add(new Button(16, 0, Assets.Names.static_backpack.name())
         {
-            {
-                asset = Assets.Names.static_backpack.name();
-                load();
-            }
 
             @Override
-            void onClick()
+            void activate()
             {
                 showBackpack = !showBackpack;
             }
@@ -82,7 +77,7 @@ public class PetGame extends Interactive implements java.io.Serializable
         }
 
         drawSelected(display);
-        buttonManager.drawMenus(display);
+        buttonManager.draw(display);
     }
 
     void drawEnv(DisplayAdapter d)
@@ -128,7 +123,6 @@ public class PetGame extends Interactive implements java.io.Serializable
     }
 
     /**
-     *
      * @param ax array tap
      * @param ay array tap
      */
@@ -147,10 +141,9 @@ public class PetGame extends Interactive implements java.io.Serializable
     }
 
     /**
-     *
      * @param thing The thing to hold.
-     * @param x array position of tap
-     * @param y array position of tap
+     * @param x     array position of tap
+     * @param y     array position of tap
      */
     public void setHeld(Thing thing, float x, float y)
     {
@@ -168,7 +161,9 @@ public class PetGame extends Interactive implements java.io.Serializable
         Vec2<Float> worldPos = t.loc.getWorldBitPos();
         Log.log(this, "object loc is " + worldPos.x + " " + worldPos.y);
 
-        float[] f = new float[] {worldPos.x, worldPos.y};
+        float[] f = new float[]{
+            worldPos.x,
+            worldPos.y};
         containerMat.mapPoints(f);
         Log.log(this, "screen loc is " + f[0] + " " + f[1]);
 
@@ -177,8 +172,8 @@ public class PetGame extends Interactive implements java.io.Serializable
         inv.mapPoints(f);
         Log.log(this, "world loc is " + f[0] + " " + f[1]);
 
-        t.loc.x = (int)f[0];
-        t.loc.y = (int)f[1];
+        t.loc.x = (int) f[0];
+        t.loc.y = (int) f[1];
         setHeld(t, f[0], f[1]);
         return f;
     }

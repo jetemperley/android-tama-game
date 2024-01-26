@@ -17,6 +17,11 @@ public class Text implements UpdateDraw, Loadable
         load();
     }
 
+    public Text(String text)
+    {
+        this(text, 0, 0);
+    }
+
     @Override
     public void update()
     {
@@ -29,6 +34,20 @@ public class Text implements UpdateDraw, Loadable
         int x = 0;
         for (Displayable d : letters)
         {
+            if (d != null)
+            {
+                display.displayAbsolute(d, xPos + x, yPos);
+            }
+            x+=8;
+        }
+    }
+
+    public void draw(DisplayAdapter display, int firstN)
+    {
+        int x = 0;
+        for (int i = 0; i < firstN && i < letters.length; i++)
+        {
+            Displayable d = letters[i];
             if (d != null)
             {
                 display.displayAbsolute(d, xPos + x, yPos);
@@ -59,5 +78,16 @@ public class Text implements UpdateDraw, Loadable
                 letters[i] = sheet.getSprite(b-'!');
             }
         }
+    }
+
+    /**
+     * Set the position in pixel coordinates
+     * @param xPos
+     * @param yPos
+     */
+    public void setPos(float xPos, float yPos)
+    {
+        this.xPos = xPos;
+        this.yPos = yPos;
     }
 }

@@ -3,6 +3,7 @@ package com.tama.util;
 import android.graphics.Matrix;
 
 import com.tama.core.GameActivity;
+import com.tama.core.GameLoop;
 
 public class MatrixUtil
 {
@@ -36,7 +37,10 @@ public class MatrixUtil
     }
 
     private static Matrix temp = new Matrix();
-    public static float[] convertScreenToWorldArray(Matrix mat, float x, float y)
+
+    public static float[] convertScreenToWorldArray(Matrix mat,
+                                                    float x,
+                                                    float y)
     {
         float[] f2 = new float[9];
         mat.getValues(f2);
@@ -66,11 +70,13 @@ public class MatrixUtil
     }
 
     static float[] f = new float[9];
+
     public static float dx(Matrix mat)
     {
         mat.getValues(f);
         return f[2];
     }
+
     public static float dy(Matrix mat)
     {
         mat.getValues(f);
@@ -83,7 +89,7 @@ public class MatrixUtil
         mat.getValues(f);
         for (int i = 0; i < 3; i++)
         {
-            Log.log(util, f[0+i] + " " + f[3+i] + " " + f[6+i]);
+            Log.log(util, f[0 + i] + " " + f[3 + i] + " " + f[6 + i]);
         }
     }
 
@@ -112,4 +118,20 @@ public class MatrixUtil
         mat.setValues(f);
     }
 
+    public static float relativeScreenWidth(Matrix mat)
+    {
+        float scale = getScale(mat);
+        return GameActivity.screenSize.width() / scale;
+    }
+
+    public static float relativeScreenHeight(Matrix mat)
+    {
+        float scale = getScale(mat);
+        return GameActivity.screenSize.height() / scale;
+    }
+
+    public static float getScaleToFitWidth(int pixels)
+    {
+        return GameActivity.screenSize.width()/(float)pixels;
+    }
 }

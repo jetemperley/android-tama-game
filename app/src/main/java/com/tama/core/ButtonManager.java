@@ -3,28 +3,34 @@ package com.tama.core;
 import android.graphics.Matrix;
 
 import com.tama.gesture.GestureEvent;
-import com.tama.gesture.GestureEventHandler;
 import com.tama.gesture.SingleTap;
 import com.tama.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ButtonManager implements GestureEventHandler
+public class ButtonManager extends Interactive
 {
-    private Matrix matrixUI = new Matrix();
+    private Matrix matrix = new Matrix();
     private List<Button> buttons = new ArrayList<>();
 
-    public ButtonManager()
+    public ButtonManager(Matrix mat)
     {
-        float scale = 6;
-        matrixUI.setScale(scale, scale);
-
+        this.matrix = mat;
     }
 
-    public void drawMenus(DisplayAdapter d)
+    @Override
+    public void update()
     {
-        d.setMatrix(matrixUI);
+        for (Button b : buttons)
+        {
+            b.update();
+        }
+    }
+
+    public void draw(DisplayAdapter d)
+    {
+        d.setMatrix(matrix);
         for (Button butt : buttons)
         {
             butt.draw(d);
@@ -46,19 +52,16 @@ public class ButtonManager implements GestureEventHandler
 
     public boolean handleEvent(GestureEvent e)
     {
-        if (e.getClass() == SingleTap.class)
+        for (Button b : buttons)
         {
-            for (Button b : buttons)
+            Log.log(this, "checking button");
+            if (b.isInside(e.x, e.y, matrix))
             {
-                Log.log(this, "checking button");
-                if (b.isInside(e.x, e.y, matrixUI))
-                {
-                    Log.log(this, "clicked a button");
-                    b.onClick();
-                    return true;
-                }
+                if (b.handleEvent(e))
+                return true;
             }
         }
+
         return false;
     }
 }

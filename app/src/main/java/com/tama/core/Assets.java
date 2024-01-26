@@ -25,7 +25,7 @@ public class Assets
         sheet_16_treegrowth,
         sheet_16_treeripped,
         sheet_16_walker,
-        sheet_16_letters,
+        sheet_16_button,
 
         sheet_5_num,
         sheet_8_water,
@@ -70,6 +70,7 @@ public class Assets
         static_pullbush,
         static_menu,
         static_backpack,
+        static_empty,
     }
 
     public static Map<Integer, StaticSprite> sprites;
@@ -161,6 +162,10 @@ public class Assets
 
     public static StaticSprite getSprite(String name)
     {
+        if (name == null)
+        {
+            return sprites.get(R.drawable.static_empty);
+        }
         try
         {
             Field f = R.drawable.class.getField(name);
@@ -168,8 +173,8 @@ public class Assets
             return ret;
         } catch (Exception e)
         {
+            throw new RuntimeException("Sprite asset did not exist: " + name);
         }
-        return sprites.get(R.drawable.static_poop);
     }
 
     public static SpriteSheet getSheet(String name)

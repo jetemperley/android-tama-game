@@ -39,10 +39,10 @@ public class Container extends Interactive implements GestureEventHandler
 
         world = WorldFactory.makeBackpack(2, 2);
         world.add(new Bush(), 0, 0);
-        buttons.add(new Button(0, 0)
+        buttons.add(new Button(0, 0, null)
         {
             @Override
-            void onClick()
+            void activate()
             {
 
             }

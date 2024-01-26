@@ -40,7 +40,7 @@ public class GameActivity extends Activity
     static Paint red, black, white;
     CustomView view;
     Timer timer;
-    static Rect screenSize;
+    public static Rect screenSize;
     final String
         CHANNEL_ID = "01",
         channel_name = "ch1",
