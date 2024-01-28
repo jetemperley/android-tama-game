@@ -22,4 +22,10 @@ public class DoubleTapDragStart extends GestureEvent
         this.currentX = currentX;
         this.currentY = currentY;
     }
+
+    @Override
+    public Type type()
+    {
+        return Type.dragStart;
+    }
 }

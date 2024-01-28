@@ -5,6 +5,7 @@ import android.graphics.Matrix;
 import com.tama.command.CommandFactory;
 import com.tama.command.CommandQueue;
 import com.tama.gesture.GestureEvent;
+import com.tama.gesture.GestureEventHandler;
 import com.tama.thing.Pet;
 import com.tama.thing.Thing;
 import com.tama.util.Log;
@@ -13,28 +14,36 @@ import com.tama.util.Vec2;
 
 public class PetGame extends Interactive implements java.io.Serializable
 {
-    private World world = WorldFactory.makeWorld();
     public Thing held = null;
-    private Thing selected = null;
-    private Vec2<Float> heldPos = new Vec2<>(0f, 0f);
-    private Vec2<Float> heldOffset = new Vec2<>(0f, 0f);
-
-    private DepthDisplay depthDisplay = new DepthDisplay();
-    private Matrix worldMat = new Matrix();
-
-    private ButtonManager buttonManager;
-    private Container backpack = new Container(this, worldMat, 2);
-
+    public Matrix worldMat;
     /** The amount of ms this game has been running for. */
     public static long time = 0;
 
     boolean showBackpack = true;
 
+    private World world = WorldFactory.makeWorld();
+    private Thing selected = null;
+    private Vec2<Float> heldPos = new Vec2<>(0f, 0f);
+    private Vec2<Float> heldOffset = new Vec2<>(0f, 0f);
+    private DepthDisplay depthDisplay = new DepthDisplay();
+    private ButtonManager buttonManager;
+    private Container backpack;
+
+    private Matrix identity = new Matrix();
+
     public PetGame()
     {
-        Matrix mat = new Matrix();
-        mat.setScale(6, 6);
-        buttonManager = new ButtonManager(mat);
+        worldMat = new Matrix();
+
+        Matrix uiMat = new Matrix();
+        uiMat.setScale(6, 6);
+        buttonManager = new ButtonManager(uiMat);
+
+        Matrix backpackMat = new Matrix();
+        backpackMat.set(uiMat);
+        backpackMat.preTranslate(0, 16);
+        backpack = new Container(this, backpackMat, 2);
+
         buttonManager.add(new Button(0, 0, Assets.Names.static_menu.name())
         {
             @Override
@@ -57,7 +66,6 @@ public class PetGame extends Interactive implements java.io.Serializable
 
     public void update()
     {
-        backpack.worldMat = worldMat;
         world.update();
         backpack.update();
         time += GameLoop.deltaTime;
@@ -67,22 +75,19 @@ public class PetGame extends Interactive implements java.io.Serializable
     {
         display.setMatrix(worldMat);
         depthDisplay.display = display;
-        drawEnv(depthDisplay);
+        world.draw(depthDisplay);
         depthDisplay.drawQ();
         depthDisplay.clearQ();
 
+        display.setMatrix(identity);
         if (showBackpack)
         {
             backpack.draw(display);
         }
-
-        drawSelected(display);
         buttonManager.draw(display);
-    }
 
-    void drawEnv(DisplayAdapter d)
-    {
-        world.draw(d);
+        display.setMatrix(worldMat);
+        drawSelected(display);
     }
 
     void drawSelected(DisplayAdapter d)

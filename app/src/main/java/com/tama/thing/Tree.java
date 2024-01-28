@@ -13,13 +13,22 @@ public class Tree extends Thing implements java.io.Serializable
     int growth = 0;
     Animator anim;
 
-    public Tree(int level)
+    public enum GrowthLevel
+    {
+        sprout_0,
+        sapling_1,
+        medium_2,
+        large_3,
+        dead_4
+    }
+
+    public Tree(GrowthLevel level)
     {
         super();
         asset = Assets.Names.static_poop.name();
         load();
 
-        lvl = level;
+        lvl = level.ordinal();
         if (lvl < 0 || lvl > 4)
         {
             lvl = 0;

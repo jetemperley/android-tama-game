@@ -7,7 +7,7 @@ import com.tama.core.GameLoop;
 
 public class MatrixUtil
 {
-    static MatrixUtil util = new MatrixUtil();
+    private static MatrixUtil util = new MatrixUtil();
 
     public static void convertScreenToWorldArr(Matrix mat, float[] points)
     {
@@ -134,4 +134,9 @@ public class MatrixUtil
     {
         return GameActivity.screenSize.width()/(float)pixels;
     }
+
+//    public static Matrix identity()
+//    {
+//
+//    }
 }

@@ -9,4 +9,10 @@ public class Down extends GestureEvent
     {
         handler.singleDown(x, y);
     }
+
+    @Override
+    public Type type()
+    {
+        return Type.press;
+    }
 }

@@ -9,4 +9,10 @@ public class DoubleTapDragEnd extends GestureEvent
     {
         handler.doubleTapDragEnd(x, y);
     }
+
+    @Override
+    public Type type()
+    {
+        return Type.dragEnd;
+    }
 }

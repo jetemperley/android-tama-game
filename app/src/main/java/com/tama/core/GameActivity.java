@@ -140,7 +140,6 @@ public class GameActivity extends Activity
 
             if (canvas != null)
             {
-                canvas.setMatrix(displayAdapter.worldMat);
                 displayAdapter.canvas = canvas;
                 canvas.drawColor(Color.BLACK);
                 gameManager.updateAndDraw(displayAdapter);

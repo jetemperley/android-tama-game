@@ -19,4 +19,10 @@ public class Scroll extends GestureEvent
         this.prev = prev;
         this.next = next;
     }
+
+    @Override
+    public Type type()
+    {
+        return Type.drag;
+    }
 }

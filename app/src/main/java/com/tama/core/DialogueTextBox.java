@@ -107,6 +107,7 @@ public class DialogueTextBox extends Button
                 currentLine = currentLine + " " + words[i];
             }
         }
+
         if (!currentLine.isEmpty())
         {
             lines.add(currentLine);

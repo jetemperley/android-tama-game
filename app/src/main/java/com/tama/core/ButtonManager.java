@@ -3,7 +3,6 @@ package com.tama.core;
 import android.graphics.Matrix;
 
 import com.tama.gesture.GestureEvent;
-import com.tama.gesture.SingleTap;
 import com.tama.util.Log;
 
 import java.util.ArrayList;
@@ -30,11 +29,13 @@ public class ButtonManager extends Interactive
 
     public void draw(DisplayAdapter d)
     {
-        d.setMatrix(matrix);
+        d.push();
+        d.preConcat(matrix);
         for (Button butt : buttons)
         {
             butt.draw(d);
         }
+        d.pop();
     }
 
     public void add(Button butt)
@@ -58,10 +59,12 @@ public class ButtonManager extends Interactive
             if (b.isInside(e.x, e.y, matrix))
             {
                 if (b.handleEvent(e))
-                return true;
+                {
+                    return true;
+                }
             }
         }
 
-        return false;
+        return e.type() == GestureEvent.Type.press;
     }
 }

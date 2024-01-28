@@ -173,7 +173,7 @@ public class Assets
             return ret;
         } catch (Exception e)
         {
-            throw new RuntimeException("Sprite asset did not exist: " + name);
+            throw new RuntimeException("Sprite asset did not exist: " + name, e);
         }
     }
 
@@ -182,11 +182,10 @@ public class Assets
         try
         {
             Field f = R.drawable.class.getField(name);
-            SpriteSheet ret = sheets.get(f.getInt(f));
-            return ret;
-        } catch (Exception e)
-        {
-        }
+            SpriteSheet sheet = sheets.get(f.getInt(f));
+            return sheet;
+        } catch (Exception e) {}
+
         return sheets.get(R.drawable.sheet_16_terrainsimp);
     }
 

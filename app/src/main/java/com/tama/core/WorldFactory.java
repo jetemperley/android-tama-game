@@ -45,7 +45,7 @@ public class WorldFactory
 
                 if (r > 0.95)
                 {
-                    w.add(new Tree(3), x, y);
+                    w.add(new Tree(Tree.GrowthLevel.large_3), x, y);
                 }
                 else if (r > 0.92)
                 {

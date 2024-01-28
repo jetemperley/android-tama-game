@@ -29,10 +29,6 @@ public class Gesture implements Input
 
     public Gesture()
     {
-//        prev1 = new Vec2(0, 0);
-//        prev2 = new Vec2(0, 0);
-//        new1 = new Vec2(0, 0);
-//        new2 = new Vec2(0, 0);
 
         state = new GState[7];
         state[0] = new Wait();
