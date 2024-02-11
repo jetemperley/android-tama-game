@@ -59,7 +59,7 @@ public class DynTile extends Tile
     {
         if (thing != null)
         {
-            thing.display(d);
+            thing.draw(d);
         }
 
         for (int a = 0; a < parts.length; a++)

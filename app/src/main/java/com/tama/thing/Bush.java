@@ -16,9 +16,9 @@ public class Bush extends Thing
         load();
     }
 
+    @Override
     Displayable getAsset()
     {
-
         if (anim == null)
         {
             anim = new Animator(Assets.getSheet(asset));

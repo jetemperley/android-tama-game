@@ -52,6 +52,10 @@ public interface DisplayAdapter
 
     void drawRect(float x, float y, float width, float height);
 
+    /**
+     * preConcat effect the matrix in its *local* frame of reference
+     * @param mat
+     */
     void preConcat(Matrix mat);
 }
 
@@ -139,10 +143,6 @@ class AndroidDisplay implements DisplayAdapter
         canvas.restore();
     }
 
-    /**
-     * preConcat effect the matrix in its *local* frame of reference
-     * @param mat
-     */
     @Override
     public void preConcat(Matrix mat)
     {

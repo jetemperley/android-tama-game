@@ -53,18 +53,17 @@ public class ButtonManager extends Interactive
 
     public boolean handleEvent(GestureEvent e)
     {
+
         for (Button b : buttons)
         {
             Log.log(this, "checking button");
             if (b.isInside(e.x, e.y, matrix))
             {
-                if (b.handleEvent(e))
-                {
-                    return true;
-                }
+                return b.handleEvent(e);
+
             }
         }
 
-        return e.type() == GestureEvent.Type.press;
+        return false;
     }
 }

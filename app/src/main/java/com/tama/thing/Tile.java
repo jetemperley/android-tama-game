@@ -44,7 +44,7 @@ public abstract class Tile implements java.io.Serializable
         }
         if (thing != null)
         {
-            thing.display(d);
+            thing.draw(d);
         }
     }
 

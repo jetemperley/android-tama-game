@@ -1,5 +1,6 @@
 package com.tama.core;
 
+import android.content.Context;
 import android.graphics.Matrix;
 
 import com.tama.command.CommandFactory;
@@ -12,6 +13,11 @@ import com.tama.util.Log;
 import com.tama.util.MatrixUtil;
 import com.tama.util.Vec2;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.PriorityQueue;
+import java.util.Queue;
+
 public class PetGame extends Interactive implements java.io.Serializable
 {
     public Thing held = null;
@@ -21,18 +27,24 @@ public class PetGame extends Interactive implements java.io.Serializable
 
     boolean showBackpack = true;
 
-    private World world = WorldFactory.makeWorld();
+    private World world;
     private Thing selected = null;
     private Vec2<Float> heldPos = new Vec2<>(0f, 0f);
     private Vec2<Float> heldOffset = new Vec2<>(0f, 0f);
     private DepthDisplay depthDisplay = new DepthDisplay();
     private ButtonManager buttonManager;
-    private Container backpack;
+    private Container backpackSlot;
+    public List<Container> containers;
 
     private Matrix identity = new Matrix();
 
+    private Matrix heldMatrix;
+
     public PetGame()
     {
+        world = WorldFactory.makeWorld();
+        world.addOrClosest(new Container(this, 2 ), 2, 2);
+
         worldMat = new Matrix();
 
         Matrix uiMat = new Matrix();
@@ -41,8 +53,8 @@ public class PetGame extends Interactive implements java.io.Serializable
 
         Matrix backpackMat = new Matrix();
         backpackMat.set(uiMat);
-        backpackMat.preTranslate(0, 16);
-        backpack = new Container(this, backpackMat, 2);
+        backpackMat.preTranslate(16, 0);
+        backpackSlot = null;//= new Container(this, 1);
 
         buttonManager.add(new Button(0, 0, Assets.Names.static_menu.name())
         {
@@ -52,22 +64,13 @@ public class PetGame extends Interactive implements java.io.Serializable
                 GameManager.INST.pause();
             }
         });
-
-        buttonManager.add(new Button(16, 0, Assets.Names.static_backpack.name())
-        {
-
-            @Override
-            void activate()
-            {
-                showBackpack = !showBackpack;
-            }
-        });
+        containers = new ArrayList<>();
     }
 
     public void update()
     {
         world.update();
-        backpack.update();
+
         time += GameLoop.deltaTime;
     }
 
@@ -79,14 +82,19 @@ public class PetGame extends Interactive implements java.io.Serializable
         depthDisplay.drawQ();
         depthDisplay.clearQ();
 
+        for (Container container : containers)
+        {
+            container.drawWorld(display);
+        }
+
         display.setMatrix(identity);
         if (showBackpack)
         {
-            backpack.draw(display);
+            //backpackSlot.draw(display);
         }
         buttonManager.draw(display);
 
-        display.setMatrix(worldMat);
+        display.setMatrix(heldMatrix);
         drawSelected(display);
     }
 
@@ -164,18 +172,18 @@ public class PetGame extends Interactive implements java.io.Serializable
     public float[] transferFromContainer(Thing t, Matrix containerMat)
     {
         Vec2<Float> worldPos = t.loc.getWorldBitPos();
-        Log.log(this, "object loc is " + worldPos.x + " " + worldPos.y);
+        Log.log(this, "transferFromContainer object loc is " + worldPos.x + " " + worldPos.y);
 
         float[] f = new float[]{
             worldPos.x,
             worldPos.y};
         containerMat.mapPoints(f);
-        Log.log(this, "screen loc is " + f[0] + " " + f[1]);
+        Log.log(this, "transferFromContainer screen loc is " + f[0] + " " + f[1]);
 
         Matrix inv = new Matrix();
         worldMat.invert(inv);
         inv.mapPoints(f);
-        Log.log(this, "world loc is " + f[0] + " " + f[1]);
+        Log.log(this, "transferFromContainer world loc is " + f[0] + " " + f[1]);
 
         t.loc.x = (int) f[0];
         t.loc.y = (int) f[1];
@@ -314,7 +322,10 @@ public class PetGame extends Interactive implements java.io.Serializable
     }
 
     @Override
-    public void doubleTapDragStart(float startX, float startY, float currentX, float currentY)
+    public void doubleTapDragStart(float startX,
+                                   float startY,
+                                   float currentX,
+                                   float currentY)
     {
         float[] f =
             MatrixUtil.convertScreenToWorldArray(worldMat, startX, startY);
@@ -322,18 +333,30 @@ public class PetGame extends Interactive implements java.io.Serializable
     }
 
     @Override
-    public void doubleTapDrag(float prevX, float prevY, float nextX, float nextY)
+    public void doubleTapDrag(float prevX,
+                              float prevY,
+                              float nextX,
+                              float nextY)
     {
-        float[] f =
-            MatrixUtil.convertScreenToWorldArray(worldMat, nextX, nextY);
-        setHeldPosition(f[0], f[1]);
+//        if (backpackSlot.isTouchInside(nextX, nextY))
+//        {
+//            heldMatrix = backpackSlot.mat;
+//            float[] f =
+//                MatrixUtil.convertScreenToWorldArray(heldMatrix, nextX, nextY);
+//            setHeldPosition(f[0], f[1]);
+//        }
+//        else
+//        {
+            heldMatrix = worldMat;
+            float[] f =
+                MatrixUtil.convertScreenToWorldArray(worldMat, nextX, nextY);
+            setHeldPosition(f[0], f[1]);
+//        }
     }
 
     @Override
     public void doubleTapRelease(float x, float y)
     {
-        float[] f = MatrixUtil.convertScreenToWorldArray(worldMat, x, y);
-        // drop(f[0], f[1]);
     }
 
     @Override
@@ -344,7 +367,10 @@ public class PetGame extends Interactive implements java.io.Serializable
     }
 
     @Override
-    public void scale(Vec2<Float> p1, Vec2<Float> p2, Vec2<Float> n1, Vec2<Float> n2)
+    public void scale(Vec2<Float> p1,
+                      Vec2<Float> p2,
+                      Vec2<Float> n1,
+                      Vec2<Float> n2)
     {
         // find the centres of the touch pairs
         Vec2<Float> pmid = new Vec2((p1.x + p2.x) / 2, (p1.y + p2.y) / 2);
@@ -389,9 +415,17 @@ public class PetGame extends Interactive implements java.io.Serializable
         {
             return true;
         }
-        if (showBackpack && backpack.handleEvent(e))
+//        if (backpackSlot.handleEvent(e))
+//        {
+//            return true;
+//        }
+
+        for (int i = containers.size() -1; i >= 0; i--)
         {
-            return true;
+            if (containers.get(i).handleEvent(e))
+            {
+                return true;
+            }
         }
         e.callEvent(this);
         return true;

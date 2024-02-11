@@ -6,6 +6,7 @@ import com.tama.core.DisplayAdapter;
 import com.tama.core.Displayable;
 import com.tama.core.Loadable;
 import com.tama.core.Type;
+import com.tama.core.UpdateDraw;
 import com.tama.core.World;
 import com.tama.core.WorldObject;
 
@@ -30,12 +31,12 @@ public abstract class Thing implements java.io.Serializable, Loadable
         components = new ArrayList<>();
     }
 
-    public void display(DisplayAdapter d)
+    public void draw(DisplayAdapter d)
     {
         d.display(loc);
         for (Thing thing : children)
         {
-            thing.display(d);
+            thing.draw(d);
         }
     }
 
