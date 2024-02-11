@@ -1,8 +1,6 @@
 package com.tama.core;
 
-public interface UpdateDraw
+public interface Drawable
 {
-    public void update();
-
     public void draw(DisplayAdapter display);
 }

@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Queue;
 
-public class PetGame extends Interactive implements java.io.Serializable
+public class PetGame extends Interactive implements java.io.Serializable, Input
 {
     public Thing held = null;
     public Matrix worldMat;
@@ -302,6 +302,12 @@ public class PetGame extends Interactive implements java.io.Serializable
     }
 
     @Override
+    public void singleDown(float x, float y)
+    {
+
+    }
+
+    @Override
     public void longPressConfirmed(float x, float y)
     {
         float[] f = MatrixUtil.convertScreenToWorldArray(worldMat, x, y);
@@ -312,7 +318,6 @@ public class PetGame extends Interactive implements java.io.Serializable
     public void doubleTapConfirmed(float x, float y)
     {
         Log.log(this, "double tap confirmed");
-        super.doubleTapConfirmed(x, y);
         float[] f = MatrixUtil.convertScreenToWorldArray(
             worldMat,
             x,

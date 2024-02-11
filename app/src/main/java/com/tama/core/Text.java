@@ -1,6 +1,6 @@
 package com.tama.core;
 
-public class Text implements UpdateDraw, Loadable
+public class Text implements Updateable, Drawable, Loadable
 {
     private String text;
     private transient Displayable[] letters;

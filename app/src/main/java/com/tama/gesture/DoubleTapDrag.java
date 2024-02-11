@@ -1,6 +1,6 @@
 package com.tama.gesture;
 
-import com.tama.core.Interactive;
+import com.tama.core.Input;
 
 public class DoubleTapDrag extends GestureEvent
 {
@@ -10,7 +10,7 @@ public class DoubleTapDrag extends GestureEvent
     float nextY;
 
     @Override
-    public void callEvent(Interactive handler)
+    public void callEvent(Input handler)
     {
         handler.doubleTapDrag(prevX, prevY, nextX, nextY);
     }

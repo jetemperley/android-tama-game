@@ -1,6 +1,6 @@
 package com.tama.gesture;
 
-import com.tama.core.Interactive;
+import com.tama.core.Input;
 
 public abstract class GestureEvent
 {
@@ -14,7 +14,7 @@ public abstract class GestureEvent
 
     public float x, y;
 
-    public abstract void callEvent(Interactive handler);
+    public abstract void callEvent(Input handler);
 
     public void set(float x, float y)
     {

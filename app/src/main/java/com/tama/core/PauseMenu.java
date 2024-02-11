@@ -4,7 +4,6 @@ import android.graphics.Matrix;
 import android.graphics.Rect;
 
 import com.tama.gesture.GestureEvent;
-import com.tama.util.Log;
 import com.tama.util.MatrixUtil;
 
 public class PauseMenu extends Interactive
@@ -16,7 +15,7 @@ public class PauseMenu extends Interactive
     public PauseMenu()
     {
         Matrix matrix = new Matrix();
-        float scale = MatrixUtil.getScaleToFitWidth(10*16);
+        float scale = MatrixUtil.getScaleToFitWidth(10 * 16);
         matrix.setScale(scale, scale);
 
         Rect size = GameActivity.screenSize;
@@ -56,11 +55,7 @@ public class PauseMenu extends Interactive
     @Override
     public boolean handleEvent(GestureEvent event)
     {
-        if (buttons.handleEvent(event))
-        {
-            return true;
-        }
-        event.callEvent(this);
+        buttons.handleEvent(event);
         return true;
     }
 }

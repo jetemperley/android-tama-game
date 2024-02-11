@@ -1,11 +1,11 @@
 package com.tama.gesture;
 
-import com.tama.core.Interactive;
+import com.tama.core.Input;
 
 public class SingleTap extends GestureEvent
 {
     @Override
-    public void callEvent(Interactive handler)
+    public void callEvent(Input handler)
     {
         handler.singleTapConfirmed(x, y);
     }

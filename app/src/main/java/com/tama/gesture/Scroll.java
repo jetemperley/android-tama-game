@@ -1,6 +1,6 @@
 package com.tama.gesture;
 
-import com.tama.core.Interactive;
+import com.tama.core.Input;
 import com.tama.util.Vec2;
 
 public class Scroll extends GestureEvent
@@ -9,7 +9,7 @@ public class Scroll extends GestureEvent
     Vec2<Float> next = new Vec2<Float>(0f, 0f);
 
     @Override
-    public void callEvent(Interactive handler)
+    public void callEvent(Input handler)
     {
         handler.scroll(prev, next);
     }
