@@ -1,10 +1,10 @@
 package com.tama.test;
 
-import com.tama.anim.KeyFrame;
-import com.tama.anim.KeyFrameAnim;
-import com.tama.anim.KeyFrameAssets;
-import com.tama.core.DialogueTextBox;
-import com.tama.util.Vec2;
+import com.game.tama.anim.KeyFrame;
+import com.game.tama.anim.KeyFrameAnim;
+import com.game.tama.anim.KeyFrameAssets;
+import com.game.tama.core.DialogueTextBox;
+import com.game.tama.util.Vec2;
 
 import org.junit.Assert;
 import org.junit.Test;
