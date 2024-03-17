@@ -3,7 +3,7 @@ package com.game.tama.thing;
 
 import com.tama.R;
 import com.game.tama.core.Assets;
-import com.game.tama.core.Displayable;
+import com.game.tama.core.Sprite;
 import com.game.tama.core.Type;
 import com.game.tama.core.World;
 
@@ -74,7 +74,7 @@ public class Food extends Thing implements java.io.Serializable
         }
     }
 
-    Displayable getAsset()
+    Sprite getAsset()
     {
         return Assets.sprites.get(id);
     }

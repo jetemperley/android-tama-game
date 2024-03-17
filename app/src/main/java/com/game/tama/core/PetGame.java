@@ -4,12 +4,14 @@ import android.graphics.Matrix;
 
 import com.game.android.DepthDisplay;
 import com.game.android.DisplayAdapter;
+import com.game.tama.behaviour.PetGameBehaviour;
 import com.game.tama.command.CommandFactory;
 import com.game.tama.command.CommandQueue;
 import com.game.android.gesture.GestureEvent;
 import com.game.android.gesture.GestureEventHandler;
 import com.game.tama.thing.Pet;
 import com.game.tama.thing.Thing;
+import com.game.tama.ui.ContainerManager;
 import com.game.tama.util.Log;
 import com.game.tama.util.MatrixUtil;
 import com.game.tama.util.Vec2;
@@ -21,6 +23,7 @@ public class PetGame implements java.io.Serializable, Input,
     public Matrix worldMat;
     /** The amount of ms this game has been running for. */
     public static long time = 0;
+    public ContainerManager containerManager = new ContainerManager();
 
     boolean showBackpack = true;
 
@@ -29,16 +32,14 @@ public class PetGame implements java.io.Serializable, Input,
     private Vec2<Float> heldPos = new Vec2<>(0f, 0f);
     private Vec2<Float> heldOffset = new Vec2<>(0f, 0f);
     private DepthDisplay depthDisplay = new DepthDisplay();
-    private ButtonManager buttonManager;
     private Container backpackSlot;
-    private ContainerManager containerManager;
-
-    private Matrix identity = new Matrix();
-
     private Matrix heldMatrix;
+    private Matrix identity = new Matrix();
+    private PetGameBehaviour behaviour;
 
-    public PetGame()
+    public PetGame(PetGameBehaviour parent)
     {
+        behaviour = parent;
         world = WorldFactory.makeWorld();
         world.addOrClosest(new Container(this, 2), 2, 2);
 
@@ -46,21 +47,11 @@ public class PetGame implements java.io.Serializable, Input,
 
         Matrix uiMat = new Matrix();
         uiMat.setScale(6, 6);
-        buttonManager = new ButtonManager(uiMat);
 
         Matrix backpackMat = new Matrix();
         backpackMat.set(uiMat);
         backpackMat.preTranslate(16, 0);
         backpackSlot = null;//= new Container(this, 1);
-
-        buttonManager.add(new Button(0, 0, Assets.Names.static_menu.name())
-        {
-            @Override
-            void activate()
-            {
-                GameManager.INST.pause();
-            }
-        });
     }
 
     public void update()
@@ -82,13 +73,12 @@ public class PetGame implements java.io.Serializable, Input,
         {
             //backpackSlot.draw(display);
         }
-        buttonManager.draw(display);
 
         display.setMatrix(heldMatrix);
         drawSelected(display);
     }
 
-    void drawSelected(DisplayAdapter d)
+    public void drawSelected(DisplayAdapter d)
     {
         if (selected != null)
         {
@@ -110,17 +100,16 @@ public class PetGame implements java.io.Serializable, Input,
         }
     }
 
-    void reLoadAllAssets()
+    public void reLoadAllAssets()
     {
         world.reLoadAllAssets();
         if (held != null)
         {
             held.load();
         }
-        buttonManager.loadAssets();
     }
 
-    void setHeldPosition(float x, float y)
+    public void setHeldPosition(float x, float y)
     {
         heldPos.set(x, y);
     }
@@ -129,7 +118,7 @@ public class PetGame implements java.io.Serializable, Input,
      * @param ax array tap
      * @param ay array tap
      */
-    void setHeld(float ax, float ay)
+    public void setHeld(float ax, float ay)
     {
         Log.log(this, "checking in " + ax + " " + ay);
         Thing thing = world.checkCollision(ax, ay);
@@ -188,12 +177,12 @@ public class PetGame implements java.io.Serializable, Input,
         return f;
     }
 
-    void setSelected(int x, int y)
+    public void setSelected(int x, int y)
     {
         selected = world.getThing(x, y);
     }
 
-    void pickup(float x, float y)
+    public void pickup(float x, float y)
     {
         if (held != null)
         {
@@ -218,7 +207,7 @@ public class PetGame implements java.io.Serializable, Input,
         held = null;
     }
 
-    void select(float x, float y)
+    public void select(float x, float y)
     {
         Thing t = world.checkCollision(x, y);
         if (selected == t)
@@ -237,7 +226,7 @@ public class PetGame implements java.io.Serializable, Input,
      * @param x coord relative to array position
      * @param y coord relative to array position
      */
-    void poke(float x, float y)
+    public void poke(float x, float y)
     {
         Thing t = world.checkCollision(x, y);
         if (t != null)
@@ -246,7 +235,7 @@ public class PetGame implements java.io.Serializable, Input,
         }
     }
 
-    void use(float x, float y)
+    public void use(float x, float y)
     {
         Thing t = world.checkCollision(x, y);
         if (t == null)
@@ -413,15 +402,6 @@ public class PetGame implements java.io.Serializable, Input,
     @Override
     public boolean handleEvent(GestureEvent e)
     {
-        if (buttonManager.handleEvent(e))
-        {
-            return true;
-        }
-        //        if (backpackSlot.handleEvent(e))
-        //        {
-        //            return true;
-        //        }
-
         for (int i = containerManager.containers.size() - 1; i >= 0; i--)
         {
             if (containerManager.containers.get(i).handleEvent(e))
@@ -432,4 +412,6 @@ public class PetGame implements java.io.Serializable, Input,
         e.callEvent(this);
         return true;
     }
+
+    public void toggle(Container container) {}
 }

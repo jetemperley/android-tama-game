@@ -2,13 +2,13 @@ package com.game.android.gesture;
 
 import com.game.tama.util.Vec2;
 
-import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
-public class GestureSubscriber extends Gesture
+public class GesturePrioritySubscriber extends Gesture
 {
-    private static GestureSubscriber instance;
-    public List<GestureEventHandler> subscribers;
-
+    private static GesturePrioritySubscriber instance;
+    private Set<InputPriority> subscribers = new TreeSet<>();
     private final SingleTap singleTap = new SingleTap();
     private final DoubleTap doubleTap = new DoubleTap();
     private final DoubleTapRelease doubleTapRelease = new DoubleTapRelease();
@@ -21,13 +21,13 @@ public class GestureSubscriber extends Gesture
     private final Scale scale = new Scale();
     private final Scroll scroll = new Scroll();
 
-    public GestureSubscriber()
+    private GesturePrioritySubscriber()
     {
         super();
         if (instance != null)
         {
             throw new RuntimeException(
-                "2 instances of GestureSubscrier were attempted to be created" +
+                "2 instances of Gesture Subscriber were attempted to be created" +
                     ".");
         }
         instance = this;
@@ -118,19 +118,54 @@ public class GestureSubscriber extends Gesture
         handleEvent(scroll);
     }
 
-    public static void subscribe(GestureEventHandler handler)
+    public static void subscribe(GestureEventHandler handler,  int priority)
     {
         if (instance == null)
         {
-            instance = new GestureSubscriber();
+            instance = new GesturePrioritySubscriber();
         }
+        instance.subscribe(new InputPriority(handler, priority));
+    }
+
+    private void subscribe(InputPriority ip)
+    {
+        subscribers.add(ip);
     }
 
     private void handleEvent(GestureEvent event)
     {
-        for (GestureEventHandler handler : subscribers)
+        for (InputPriority ip : subscribers)
         {
-            handler.handleEvent(event);
+            if (ip.handler.handleEvent(event))
+            {
+                return;
+            }
         }
+    }
+
+    private static class InputPriority implements Comparable<InputPriority>
+    {
+        public int priority = 0;
+        public GestureEventHandler handler;
+
+        InputPriority(GestureEventHandler handler, int priority)
+        {
+            this.priority = priority;
+            this.handler = handler;
+        }
+        @Override
+        public int compareTo(InputPriority input)
+        {
+            return priority - input.priority;
+        }
+    }
+
+    public static GesturePrioritySubscriber instance()
+    {
+        if (instance == null)
+        {
+            instance = new GesturePrioritySubscriber();
+        }
+        return instance;
     }
 }

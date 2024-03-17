@@ -4,7 +4,7 @@ import com.game.android.DisplayAdapter;
 import com.game.tama.core.WorldObject;
 import com.tama.R;
 import com.game.tama.core.Assets;
-import com.game.tama.core.Displayable;
+import com.game.tama.core.Sprite;
 
 class LongGrass extends Tile
 {
@@ -26,9 +26,9 @@ class LongGrass extends Tile
         sprite3.flat = false;
     }
 
-    Displayable getAssets()
+    Sprite getAssets()
     {
-        Displayable d = Assets.sprites.get(R.drawable.static_longgrass);
+        Sprite d = Assets.sprites.get(R.drawable.static_longgrass);
         if (sprite2 != null)
         {
             sprite2.sprite = d;

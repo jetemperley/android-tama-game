@@ -5,14 +5,14 @@ import com.game.tama.util.Vec2;
 public class WorldObject implements java.io.Serializable
 {
 
-    public transient Displayable sprite;
+    public transient Sprite sprite;
     protected String asset;
     public int x, y;
     public int xoff, yoff;
     // flat indicates if the sprite is displayed as a ground base layer
     public boolean flat = false;
 
-    public WorldObject(Displayable img)
+    public WorldObject(Sprite img)
     {
         sprite = img;
         x = 0;

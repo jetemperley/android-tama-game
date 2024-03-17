@@ -5,7 +5,7 @@ import com.game.tama.core.GameLoop;
 import com.game.tama.core.World;
 import com.game.tama.util.Rand;
 import com.game.tama.core.Assets;
-import com.game.tama.core.Displayable;
+import com.game.tama.core.Sprite;
 
 class Egg extends Thing
 {
@@ -26,7 +26,7 @@ class Egg extends Thing
 
     }
 
-    Displayable getAsset()
+    Sprite getAsset()
     {
 
         if (anim == null)

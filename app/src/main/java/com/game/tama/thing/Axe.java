@@ -30,7 +30,7 @@ public class Axe extends Thing
 
         switch (t.type())
         {
-            case Type.tree:
+            case tree:
 
                 Tree tree = (Tree) t;
                 m.removeThing(ax, ay);
@@ -40,7 +40,7 @@ public class Axe extends Thing
                 }
                 break;
 
-            case Type.food:
+            case food:
 
                 break;
 

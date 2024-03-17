@@ -5,7 +5,7 @@ import com.game.tama.core.Assets;
 import com.game.tama.core.Type;
 import com.game.tama.core.World;
 import com.tama.R;
-import com.game.tama.core.Displayable;
+import com.game.tama.core.Sprite;
 
 public class Tree extends Thing implements java.io.Serializable
 {
@@ -37,7 +37,7 @@ public class Tree extends Thing implements java.io.Serializable
 
     }
 
-    Displayable getAsset()
+    Sprite getAsset()
     {
         if (anim == null)
         {

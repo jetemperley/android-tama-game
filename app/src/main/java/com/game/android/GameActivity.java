@@ -19,10 +19,10 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import com.game.engine.Node;
-import com.game.android.gesture.GestureSubscriber;
+import com.game.android.gesture.GesturePrioritySubscriber;
 import com.game.tama.core.Assets;
 import com.game.tama.core.GameLoop;
-import com.game.tama.core.GameManager;
+import com.game.tama.behaviour.GameManager;
 import com.game.tama.core.PetGame;
 import com.game.tama.util.Log;
 
@@ -56,7 +56,7 @@ public class GameActivity extends Activity
 
     Node root;
     GameManager gameManager;
-    GestureSubscriber gesture;
+    GesturePrioritySubscriber gesture;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -124,7 +124,7 @@ public class GameActivity extends Activity
 
         root = new Node();
         gameManager = new GameManager(root);
-        gesture = new GestureSubscriber();
+        gesture = GesturePrioritySubscriber.instance();
         // TODO load the game somewhere
         gameManager.play();
 
@@ -145,10 +145,11 @@ public class GameActivity extends Activity
 
             if (canvas != null)
             {
+                Log.log(this, "UpdateAndDraw");
                 displayAdapter.canvas = canvas;
                 canvas.drawColor(Color.BLACK);
-                root.update();
-                root.draw(displayAdapter);
+                root.engine_update();
+                root.engine_draw(displayAdapter);
                 if (view.surface.getSurface().isValid())
                 {
                     view.surface.unlockCanvasAndPost(canvas);
@@ -222,16 +223,16 @@ public class GameActivity extends Activity
             }
             catch (Exception e)
             {
-                game = new PetGame();
+                //game = new PetGame();
                 Log.log(this, "deserialization failed, " + e.getMessage());
             }
         }
         else
         {
             Log.log(this, "data file did not exist");
-            game = new PetGame();
+//            game = new PetGame();
         }
-        return game;
+        return null;
     }
 
     public class CustomView extends SurfaceView

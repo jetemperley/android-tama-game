@@ -1,11 +1,17 @@
-package com.game.tama.core;
+package com.game.tama.ui;
 
 import com.game.android.DisplayAdapter;
+import com.game.tama.core.Assets;
+import com.game.tama.core.Drawable;
+import com.game.tama.core.Loadable;
+import com.game.tama.core.Sprite;
+import com.game.tama.core.SpriteSheet;
+import com.game.tama.core.Updateable;
 
 public class Text implements Updateable, Drawable, Loadable
 {
     private String text;
-    private transient Displayable[] letters;
+    private transient Sprite[] letters;
     float xPos;
     float yPos;
 
@@ -34,7 +40,7 @@ public class Text implements Updateable, Drawable, Loadable
     public void draw(DisplayAdapter display)
     {
         int x = 0;
-        for (Displayable d : letters)
+        for (Sprite d : letters)
         {
             if (d != null)
             {
@@ -49,7 +55,7 @@ public class Text implements Updateable, Drawable, Loadable
         int x = 0;
         for (int i = 0; i < firstN && i < letters.length; i++)
         {
-            Displayable d = letters[i];
+            Sprite d = letters[i];
             if (d != null)
             {
                 display.displayAbsolute(d, xPos + x, yPos);
@@ -62,7 +68,7 @@ public class Text implements Updateable, Drawable, Loadable
     public void load()
     {
         SpriteSheet sheet = Assets.getSheet(Assets.Names.sheet_8_symbols.name());
-        letters = new Displayable[text.length()];
+        letters = new Sprite[text.length()];
         byte[] bytes = text.getBytes();
         for (int i = 0; i < text.length(); i++)
         {

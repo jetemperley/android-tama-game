@@ -1,15 +1,15 @@
 package com.game.engine;
 
-import android.support.annotation.NonNull;
-
+import com.game.android.DisplayAdapter;
+import com.game.android.gesture.GestureEvent;
+import com.game.android.gesture.GestureEventHandler;
 import com.game.tama.core.Drawable;
 import com.game.tama.core.Updateable;
 
-public abstract class Behaviour implements Updateable, Drawable
+public abstract class Behaviour implements Updateable, Drawable, GestureEventHandler
 {
     final public Node parent;
-
-    public boolean enabled = true;
+    private boolean enabled = true;
 
     public Behaviour(Node parent)
     {
@@ -18,20 +18,68 @@ public abstract class Behaviour implements Updateable, Drawable
             throw new RuntimeException("A behaviours parent cannot be null.");
         }
         this.parent = parent;
+        parent.addBehaviour(this);
     }
 
-    public <T extends Behaviour> T getBehaviour(Class<T> clazz)
+    public final <T extends Behaviour> T getBehaviour(Class<T> clazz)
     {
         return parent.getBehaviour(clazz);
     }
 
-    public void removeBehaviour(Behaviour b)
+    public final void removeBehaviour(Behaviour b)
     {
         parent.removeBehaviour(b);
     }
 
-    public <T extends Behaviour> T addBehaviour(Class<T> clazz)
+    void engine_draw(DisplayAdapter display)
     {
-        return parent.addBehaviour(clazz);
+        if (enabled)
+        {
+            draw(display);
+        }
+    }
+
+    @Override
+    public void draw(DisplayAdapter display)
+    {
+
+    }
+
+    public void engine_update()
+    {
+        if (enabled)
+        {
+            update();
+        }
+    }
+
+    @Override
+    public void update()
+    {
+
+    }
+
+    public boolean handleEvent(GestureEvent event)
+    {
+        if (isEnabled())
+        {
+            return handle(event);
+        }
+        return false;
+    }
+
+    public boolean handle(GestureEvent event)
+    {
+        return false;
+    }
+
+    public void setEnabled(boolean enabled)
+    {
+        this.enabled = enabled;
+    }
+
+    public boolean isEnabled()
+    {
+        return enabled && parent.isEnabled();
     }
 }

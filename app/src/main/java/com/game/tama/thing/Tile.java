@@ -4,7 +4,7 @@ import com.game.android.DisplayAdapter;
 import com.game.tama.core.WorldObject;
 import com.tama.R;
 import com.game.tama.core.Assets;
-import com.game.tama.core.Displayable;
+import com.game.tama.core.Sprite;
 import com.game.tama.core.World;
 
 public abstract class Tile implements java.io.Serializable
@@ -22,7 +22,7 @@ public abstract class Tile implements java.io.Serializable
         loc.flat = true;
     }
 
-    Displayable getAssets()
+    Sprite getAssets()
     {
         return Assets.sheets.get(R.drawable.sheet_16_terrain).getSprite(0, 0);
     }

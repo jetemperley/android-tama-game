@@ -4,7 +4,7 @@ import com.game.android.DisplayAdapter;
 import com.game.tama.core.WorldObject;
 import com.tama.R;
 import com.game.tama.core.Assets;
-import com.game.tama.core.Displayable;
+import com.game.tama.core.Sprite;
 import com.game.tama.core.SpriteSheet;
 import com.game.tama.core.World;
 
@@ -39,7 +39,7 @@ public class DynTile extends Tile
 
     }
 
-    Displayable getAssets()
+    Sprite getAssets()
     {
 
         if (sheet == null)

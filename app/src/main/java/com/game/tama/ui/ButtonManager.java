@@ -1,23 +1,19 @@
-package com.game.tama.core;
+package com.game.tama.ui;
 
 import android.graphics.Matrix;
 
 import com.game.android.DisplayAdapter;
 import com.game.android.gesture.GestureEvent;
+import com.game.tama.core.Drawable;
+import com.game.tama.core.Updateable;
 import com.game.tama.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ButtonManager extends Interactive
+public class ButtonManager implements Updateable, Drawable
 {
-    private Matrix matrix = new Matrix();
     private List<Button> buttons = new ArrayList<>();
-
-    public ButtonManager(Matrix mat)
-    {
-        this.matrix = mat;
-    }
 
     @Override
     public void update()
@@ -28,20 +24,18 @@ public class ButtonManager extends Interactive
         }
     }
 
+    @Override
     public void draw(DisplayAdapter d)
     {
-        d.push();
-        d.preConcat(matrix);
         for (Button butt : buttons)
         {
             butt.draw(d);
         }
-        d.pop();
     }
 
-    public void add(Button butt)
+    public void add(Button button)
     {
-        buttons.add(butt);
+        buttons.add(button);
     }
 
     public void loadAssets()
@@ -55,6 +49,8 @@ public class ButtonManager extends Interactive
     public boolean handleEvent(GestureEvent e)
     {
 
+        // TODO: get the matrix
+        Matrix matrix = null;
         for (Button b : buttons)
         {
             Log.log(this, "checking button");

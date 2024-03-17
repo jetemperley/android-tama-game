@@ -3,7 +3,7 @@ package com.tama.test;
 import com.game.tama.anim.KeyFrame;
 import com.game.tama.anim.KeyFrameAnim;
 import com.game.tama.anim.KeyFrameAssets;
-import com.game.tama.core.DialogueTextBox;
+import com.game.tama.ui.DialogueTextBox;
 import com.game.tama.util.Vec2;
 
 import org.junit.Assert;
@@ -89,4 +89,6 @@ public class ExampleUnitTest
         Assert.assertEquals("12345-", actual.get(0));
         Assert.assertEquals("6789", actual.get(1));
     }
+
+
 }

@@ -4,7 +4,7 @@ import android.graphics.Bitmap;
 
 import com.game.tama.thing.Thing;
 
-public class Animator implements Displayable, java.io.Serializable
+public class Animator implements Sprite, java.io.Serializable
 {
 
     public transient SpriteSheet sheet;

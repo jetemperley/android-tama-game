@@ -10,7 +10,7 @@ public class StatsDict implements java.io.Serializable
 {
 
     Map<String, Integer> stats;
-    transient Map<String, Displayable> pics;
+    transient Map<String, Sprite> pics;
 
     StatsDict()
     {

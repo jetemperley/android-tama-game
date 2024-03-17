@@ -11,9 +11,9 @@ import java.util.List;
 
 public class Node implements Updateable, Drawable
 {
-    public Node currentParent = null;
+    Node parent = null;
+    List<Node> children = new ArrayList<>();
     public Matrix transform = new Matrix();
-    public List<Node> children = new ArrayList<>();
     private List<Behaviour> behaviours = new ArrayList<>();
     private boolean enabled = true;
 
@@ -27,8 +27,7 @@ public class Node implements Updateable, Drawable
         setParent(parent);
     }
 
-    @Override
-    public void update()
+    public final void engine_update()
     {
         if (!enabled)
         {
@@ -37,21 +36,29 @@ public class Node implements Updateable, Drawable
 
         for (Behaviour b : behaviours)
         {
-            b.update();
+            b.engine_update();
         }
 
         for (Node node : children)
         {
-            if (node.enabled)
-            {
-                node.update();
-            }
+            node.engine_update();
         }
+    }
+
+    @Override
+    public void update()
+    {
+
     }
 
     @Override
     public void draw(DisplayAdapter display)
     {
+
+    }
+
+    public final void engine_draw(DisplayAdapter display)
+    {
         if (!enabled)
         {
             return;
@@ -59,65 +66,48 @@ public class Node implements Updateable, Drawable
 
         for (Behaviour b : behaviours)
         {
-            b.draw(display);
+            b.engine_draw(display);
         }
         for (Node node : children)
         {
-            if (node.enabled)
-            {
-                node.draw(display);
-            }
+            node.engine_draw(display);
         }
     }
 
-    public void setParent(Node parent)
+    public void setParent(Node newParent)
     {
         clearCurrentParent();
-        if (parent == null)
+        if (newParent == null)
         {
             return;
         }
-        currentParent = parent;
-        if (!parent.children.contains(this))
+        this.parent = newParent;
+        if (!newParent.children.contains(this))
         {
-            parent.children.add(this);
+            newParent.children.add(this);
         }
     }
 
     private void clearCurrentParent()
     {
-        if (currentParent == null)
+        if (parent == null)
         {
             return;
         }
 
-        currentParent.children.remove(this);
-        currentParent = null;
+        parent.children.remove(this);
+        parent = null;
     }
 
     public void getTransform(Matrix out)
     {
-        if (currentParent == null)
+        if (parent == null)
         {
             out.set(transform);
             return;
         }
         out.preConcat(transform);
         return;
-    }
-
-    public <T extends Behaviour> T addBehaviour(Class<T> clazz)
-    {
-        T b = null;
-        try
-        {
-            b = clazz.getConstructor(Node.class).newInstance(this);
-        } catch (Exception e)
-        {
-            throw new RuntimeException(e);
-        }
-        behaviours.add(b);
-        return b;
     }
 
     public void removeBehaviour(Behaviour b)
@@ -137,8 +127,18 @@ public class Node implements Updateable, Drawable
         return null;
     }
 
+    void addBehaviour(Behaviour b)
+    {
+        behaviours.add(b);
+    }
+
     public void setEnabled(boolean enabled)
     {
         this.enabled = enabled;
+    }
+
+    public boolean isEnabled()
+    {
+        return enabled && (parent == null || parent.isEnabled());
     }
 }

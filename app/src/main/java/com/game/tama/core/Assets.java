@@ -132,7 +132,7 @@ public class Assets
         return sheet;
     }
 
-    public static Displayable getStatPic(String stat)
+    public static Sprite getStatPic(String stat)
     {
 
         switch (stat)

@@ -48,16 +48,7 @@ public class Container extends Thing implements GestureEventHandler
     @Override
     public void poke()
     {
-        ContainerManager manager = parent.getBehaviour(ContainerManager.class);
-
-        if (manager.containers.contains(this))
-        {
-            manager.containers.remove(this);
-        }
-        else
-        {
-            manager.containers.add(this);
-        }
+        parent.toggle(this);
     }
 
     public void doubleTapDragStart(float startX,

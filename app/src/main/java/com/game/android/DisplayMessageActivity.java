@@ -1,4 +1,4 @@
-package com.game.tama.core;
+package com.game.android;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;

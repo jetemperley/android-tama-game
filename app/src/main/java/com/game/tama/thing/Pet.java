@@ -16,7 +16,7 @@ import com.game.tama.command.Wander;
 import com.game.tama.command.CommandEat;
 import com.game.tama.component.Health;
 import com.game.tama.core.Assets;
-import com.game.tama.core.Displayable;
+import com.game.tama.core.Sprite;
 import com.game.tama.core.World;
 
 import java.util.ArrayList;
@@ -62,7 +62,7 @@ public abstract class Pet extends Thing
     }
 
     @Override
-    Displayable getAsset()
+    Sprite getAsset()
     {
         if (anim == null)
         {

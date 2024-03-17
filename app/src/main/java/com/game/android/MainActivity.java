@@ -7,8 +7,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 
-import com.game.android.GameActivity;
-import com.game.tama.core.DisplayMessageActivity;
 import com.tama.R;
 
 import java.io.File;

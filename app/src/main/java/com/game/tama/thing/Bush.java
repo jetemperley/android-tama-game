@@ -3,7 +3,7 @@ package com.game.tama.thing;
 import com.game.tama.core.Animator;
 import com.game.tama.core.World;
 import com.game.tama.core.Assets;
-import com.game.tama.core.Displayable;
+import com.game.tama.core.Sprite;
 
 public class Bush extends Thing
 {
@@ -17,7 +17,7 @@ public class Bush extends Thing
     }
 
     @Override
-    Displayable getAsset()
+    Sprite getAsset()
     {
         if (anim == null)
         {

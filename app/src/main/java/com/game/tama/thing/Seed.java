@@ -31,7 +31,7 @@ class Seed extends Thing
 
         switch (t.type())
         {
-            case Type.pet:
+            case pet:
                 Pet p = (Pet) t;
                 if (p.consume(t))
                 {
@@ -39,7 +39,7 @@ class Seed extends Thing
                 }
                 return t;
 
-            case Type.food:
+            case food:
 
                 break;
         }

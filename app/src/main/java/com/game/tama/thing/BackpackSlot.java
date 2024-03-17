@@ -1,11 +1,11 @@
 package com.game.tama.thing;
 
 import com.game.tama.core.Assets;
-import com.game.tama.core.Displayable;
+import com.game.tama.core.Sprite;
 
 public class BackpackSlot extends Tile
 {
-    Displayable getAssets()
+    Sprite getAssets()
     {
         return Assets.getSprite(Assets.Names.static_inv.name());
     }

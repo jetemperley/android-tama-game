@@ -2,7 +2,7 @@ package com.game.tama.core;
 
 import android.graphics.Bitmap;
 
-public class StaticSprite implements Displayable
+public class StaticSprite implements Sprite
 {
 
     Bitmap img;

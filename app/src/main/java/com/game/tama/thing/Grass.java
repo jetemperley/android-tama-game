@@ -2,12 +2,12 @@ package com.game.tama.thing;
 
 import com.tama.R;
 import com.game.tama.core.Assets;
-import com.game.tama.core.Displayable;
+import com.game.tama.core.Sprite;
 
 public class Grass extends Tile
 {
 
-    Displayable getAssets()
+    Sprite getAssets()
     {
         return Assets.sheets.get(R.drawable.sheet_16_terrainsimp).getSprite(0, 0);
     }

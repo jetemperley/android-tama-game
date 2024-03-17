@@ -1,36 +1,42 @@
-package com.game.tama.core;
+package com.game.tama.ui;
 
 import android.graphics.Matrix;
 
 import com.game.android.DisplayAdapter;
 import com.game.android.gesture.Down;
 import com.game.android.gesture.GestureEvent;
+import com.game.tama.core.Assets;
+import com.game.tama.core.Loadable;
+import com.game.tama.core.Sprite;
+import com.game.tama.core.SpriteSheet;
 import com.game.tama.util.MatrixUtil;
 import com.game.tama.util.Vec2;
 import com.game.android.gesture.GestureEventHandler;
 
-public abstract class Button implements Loadable, GestureEventHandler
+public class Button implements Loadable, GestureEventHandler
 {
-    private transient Displayable sprite;
     protected String asset;
     protected Vec2<Float> pos;
     protected Vec2<Integer> size;
+    private Runnable activateMethod;
+    private Runnable updateMethod;
+    private transient Sprite sprite;
 
-    private static transient Displayable TOP_LEFT;
-    private static transient Displayable TOP_RIGHT;
-    private static transient Displayable BOT_LEFT;
-    private static transient Displayable BOT_RIGHT;
-    private static transient Displayable HORZ_PIPE;
-    private static transient Displayable VERT_PIPE;
-    private static transient Displayable LEFT_CAP;
-    private static transient Displayable RIGHT_CAP;
-    private static transient Displayable TOP_CAP;
-    private static transient Displayable BOT_CAP;
-    private static transient Displayable TOP;
-    private static transient Displayable LEFT;
-    private static transient Displayable BOT;
-    private static transient Displayable RIGHT;
-    private static transient Displayable SQUARE;
+    private static transient Sprite TOP_LEFT;
+    private static transient Sprite TOP_RIGHT;
+    private static transient Sprite BOT_LEFT;
+    private static transient Sprite BOT_RIGHT;
+    private static transient Sprite HORZ_PIPE;
+    private static transient Sprite VERT_PIPE;
+    private static transient Sprite LEFT_CAP;
+    private static transient Sprite RIGHT_CAP;
+    private static transient Sprite TOP_CAP;
+    private static transient Sprite BOT_CAP;
+    private static transient Sprite TOP;
+    private static transient Sprite LEFT;
+    private static transient Sprite BOT;
+    private static transient Sprite RIGHT;
+    private static transient Sprite SQUARE;
 
     /**
      * @param xPos pixel x position of the button
@@ -49,9 +55,26 @@ public abstract class Button implements Loadable, GestureEventHandler
      */
     public Button(float xPos, float yPos, int width, int height, String asset)
     {
+        this(xPos, yPos, width, height, asset, ()->{}, ()->{});
+    }
+    public Button(float xPos, float yPos, String asset, Runnable activate)
+    {
+        this(xPos, yPos, 1, 1, asset, activate, ()->{});
+    }
+
+    public Button(float xPos,
+                  float yPos,
+                  int width,
+                  int height,
+                  String asset,
+                  Runnable activate,
+                  Runnable update)
+    {
         this.pos = new Vec2<Float>(xPos, yPos);
         this.size = new Vec2<Integer>(width, height);
         this.asset = asset;
+        this.updateMethod = update;
+        this.activateMethod = activate;
         load();
     }
 
@@ -102,7 +125,10 @@ public abstract class Button implements Loadable, GestureEventHandler
         display.displayAbsolute(sprite, pos.x, pos.y);
     }
 
-    void update() {}
+    void update()
+    {
+        updateMethod.run();
+    }
 
     @Override
     public void load()
@@ -115,7 +141,10 @@ public abstract class Button implements Loadable, GestureEventHandler
         }
     }
 
-    abstract void activate();
+    public void activate()
+    {
+        activateMethod.run();
+    }
 
     public boolean isInside(float x, float y, Matrix matrix)
     {
@@ -123,8 +152,8 @@ public abstract class Button implements Loadable, GestureEventHandler
         return (
             loc[0] > pos.x &&
                 loc[1] > pos.y &&
-                loc[0] < pos.x + 16*size.x &&
-                loc[1] < pos.y + 16*size.y);
+                loc[0] < pos.x + 16 * size.x &&
+                loc[1] < pos.y + 16 * size.y);
     }
 
     private void drawCol(DisplayAdapter display)
@@ -179,7 +208,6 @@ public abstract class Button implements Loadable, GestureEventHandler
             y += 16;
         }
     }
-
 
     @Override
     public boolean handleEvent(GestureEvent e)

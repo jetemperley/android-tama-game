@@ -1,6 +1,7 @@
-package com.game.tama.core;
+package com.game.tama.ui;
 
 import com.game.android.DisplayAdapter;
+import com.game.tama.core.GameLoop;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,7 +73,7 @@ public class DialogueTextBox extends Button
     }
 
     @Override
-    void activate()
+    public void activate()
     {
         // move to next text box
         if (currentLetter <
