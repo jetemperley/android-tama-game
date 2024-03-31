@@ -14,7 +14,7 @@ public class Gesture implements Input
     private int stateidx = 0;
 
     int error = -1, wait = 0, down = 1, doubleTapDrag = 2,
-        scale = 3, singleTap = 4, scroll = 5,
+        scale = 3, singleTap = 4, drag = 5,
         doubleTap = 6;
 
     // pointer ids, (primary pointer is always at index 0)
@@ -23,7 +23,7 @@ public class Gesture implements Input
     // private Vec2<Float> prev1, prev2, new1, new2;
 
     private int singleTapConfirmDelay = 200;
-    private int dragConfirmSensitivity = 2000;
+    private int dragConfirmSensitivity = 1000;
 
     public Input gestureTarget;
 
@@ -37,7 +37,7 @@ public class Gesture implements Input
         state[2] = new DoubleTapDrag();
         state[3] = new Scale();
         state[4] = new SingleTap();
-        state[5] = new Scroll();
+        state[5] = new Drag();
         state[6] = new DoubleTap();
     }
 
@@ -129,12 +129,26 @@ public class Gesture implements Input
         gestureTarget.scale(p1, p2, n1, n2);
     }
 
-    public void scroll(Vec2<Float> prev, Vec2<Float> next)
+    @Override
+    public void dragStart(float x, float y)
+    {
+        y -= topOffset;
+        gestureTarget.dragStart(x, y);
+    }
+
+    public void drag(Vec2<Float> prev, Vec2<Float> next)
     {
         Log.log(this, "scroll confirm");
         prev.y -= topOffset;
         next.y -= topOffset;
-        gestureTarget.scroll(prev, next);
+        gestureTarget.drag(prev, next);
+    }
+
+    @Override
+    public void dragEnd(float x, float y)
+    {
+        y -= topOffset;
+        gestureTarget.dragEnd(x, y);
     }
 
     abstract class GState
@@ -206,18 +220,14 @@ public class Gesture implements Input
                     if (Vec2.distSq(initialPos, new Vec2(e.getX(), e.getY())) >
                         dragConfirmSensitivity)
                     {
-                        state[scroll].start(e);
-                        return scroll;
+                        ((Drag)state[drag]).start(initialPos.x, initialPos.y);
+                        return drag;
                     }
                     return down;
 
                 case MotionEvent.ACTION_UP:
-                    if (ChronoUnit.MILLIS.between(downTime, LocalTime.now()) <
-                        singleTapConfirmDelay)
-                    {
-                        state[singleTap].start(e);
-                        return singleTap;
-                    }
+
+                    singleTapConfirmed(initialPos.x, initialPos.y);
                     return wait;
 
                 case MotionEvent.ACTION_POINTER_2_DOWN:
@@ -346,31 +356,38 @@ public class Gesture implements Input
                     doubleTapRelease(e.getX(), e.getY());
                     return wait;
 
-                // pretty sure this is not meant to be here
-                //                case 261:
-                //                    state[doubleTap].start(e);
-                //                    return doubleTap;
-
             }
             return doubleTap;
         }
     }
 
-    private class Scroll extends GState
+    private class Drag extends GState
     {
 
         Vec2<Float> prev, next;
 
-        Scroll()
+        Drag()
         {
             prev = new Vec2(0, 0);
             next = new Vec2(0, 0);
         }
 
-        void start(MotionEvent e)
+        void start(float x, float y)
+        {
+            next(x, y);
+            dragStart(x, y);
+        }
+
+        void next(float x, float y)
         {
             prev.set(next);
-            next.set(e.getX(), e.getY());
+            next.set(x, y);
+        }
+
+        @Override
+        void start(MotionEvent e)
+        {
+            next(e.getX(), e.getY());
         }
 
         int onMotion(MotionEvent e)
@@ -379,19 +396,19 @@ public class Gesture implements Input
             {
 
                 case MotionEvent.ACTION_MOVE:
-                    start(e);
-                    scroll(new Vec2<>(prev), new Vec2<>(next));
-                    return scroll;
+                    next(e.getX(), e.getY());
+                    drag(new Vec2<>(prev), new Vec2<>(next));
+                    return drag;
 
                 case MotionEvent.ACTION_UP:
+                    dragEnd(e.getX(), e.getY());
                     return wait;
 
                 case MotionEvent.ACTION_POINTER_2_DOWN:
-
                     state[scale].start(e);
                     return scale;
             }
-            return scroll;
+            return drag;
         }
     }
 
@@ -447,8 +464,8 @@ public class Gesture implements Input
 
                 case MotionEvent.ACTION_POINTER_2_UP:
                     point2ID = -1;
-                    state[scroll].start(e);
-                    return scroll;
+                    state[drag].start(e);
+                    return drag;
             }
             return wait;
         }

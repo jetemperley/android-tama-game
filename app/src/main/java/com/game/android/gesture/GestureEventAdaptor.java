@@ -14,7 +14,9 @@ public class GestureEventAdaptor extends GestureEventSource implements Input
     private final LongPress longPress = new LongPress();
     private final Down down = new Down();
     private final Scale scale = new Scale();
-    private final Scroll scroll = new Scroll();
+    private final DragStart dragStart = new DragStart();
+    private final Drag drag = new Drag();
+    private final DragEnd dragEnd = new DragEnd();
 
     @Override
     public void singleTapConfirmed(float x, float y)
@@ -94,11 +96,25 @@ public class GestureEventAdaptor extends GestureEventSource implements Input
     }
 
     @Override
-    public void scroll(Vec2<Float> prev, Vec2<Float> next)
+    public void dragStart(float x, float y)
     {
-        scroll.setTouch(prev.x, prev.y);
-        scroll.setPrevNext(prev, next);
-        handleEvent(scroll);
+        dragStart.setTouch(x, y);
+        handleEvent(dragStart);
+    }
+
+    @Override
+    public void drag(Vec2<Float> prev, Vec2<Float> next)
+    {
+        drag.setTouch(prev.x, prev.y);
+        drag.setPrevNext(prev, next);
+        handleEvent(drag);
+    }
+
+    @Override
+    public void dragEnd(float x, float y)
+    {
+        dragEnd.setTouch(x, y);
+        handleEvent(dragEnd);
     }
 
     public boolean handleEvent(GestureEvent event)

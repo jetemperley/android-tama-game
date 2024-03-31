@@ -74,12 +74,12 @@ public class Container extends Thing implements GestureEventHandler
         arrPos[0] -= loc.x;
         arrPos[1] -= loc.y +1;
         Log.log(this, "doubleTapDragEnd drop loc " + arrPos[0] + " " + arrPos[1]);
-        if (world.addOrClosest(parent.held, (int) arrPos[0], (int) arrPos[1]))
+        if (world.addOrClosest(parent.heldThing.held, (int) arrPos[0], (int) arrPos[1]))
         {
-            parent.held = null;
+            parent.heldThing.held = null;
             return;
         }
-        parent.drop(x, y);
+        parent.dropHeld(x, y);
     }
 
     /**

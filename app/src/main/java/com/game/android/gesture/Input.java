@@ -22,5 +22,9 @@ public interface Input
 
     public void scale(Vec2<Float> p1, Vec2<Float> p2, Vec2<Float> n1, Vec2<Float> n2);
 
-    public void scroll(Vec2<Float> prev, Vec2<Float> next);
+    public void dragStart(float x, float y);
+
+    public void drag(Vec2<Float> prev, Vec2<Float> next);
+
+    public void dragEnd(float x, float y);
 }

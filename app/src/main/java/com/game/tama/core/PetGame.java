@@ -20,7 +20,6 @@ import com.game.tama.util.Vec2;
 public class PetGame implements java.io.Serializable, Input,
                                 GestureEventHandler
 {
-    public Thing held = null;
     public Matrix tempMat = new Matrix();
     /** The amount of ms this game has been running for. */
     public static long time = 0;
@@ -30,13 +29,11 @@ public class PetGame implements java.io.Serializable, Input,
 
     private World world;
     private Thing selected = null;
-    private Vec2<Float> heldPos = new Vec2<>(0f, 0f);
-    private Vec2<Float> heldOffset = new Vec2<>(0f, 0f);
     private DepthDisplay depthDisplay = new DepthDisplay();
     private Container backpackSlot;
-    private Matrix heldMatrix;
     private Matrix identity = new Matrix();
     private PetGameBehaviour behaviour;
+    public HeldThing heldThing = new HeldThing();
 
     public PetGame(PetGameBehaviour parent)
     {
@@ -77,40 +74,27 @@ public class PetGame implements java.io.Serializable, Input,
                 ((Pet) selected).currentCommand.draw(display);
             }
         }
-
-        display.setMatrix(identity);
+//        display.setMatrix(identity);
         if (showBackpack)
         {
             //backpackSlot.draw(display);
         }
+        heldThing.drawHeld(display);
 
-        display.setMatrix(heldMatrix);
-        drawSelected(display);
-    }
-
-    public void drawSelected(DisplayAdapter d)
-    {
-        if (held != null)
-        {
-            d.displayArr(
-                held.loc.sprite,
-                heldPos.x - heldOffset.x,
-                heldPos.y - heldOffset.y);
-        }
     }
 
     public void reLoadAllAssets()
     {
         world.reLoadAllAssets();
-        if (held != null)
+        if (heldThing.held != null)
         {
-            held.load();
+            heldThing.held.load();
         }
     }
 
     public void setHeldPosition(float x, float y)
     {
-        heldPos.set(x, y);
+        heldThing.heldPos.set(x, y);
     }
 
     /**
@@ -128,24 +112,9 @@ public class PetGame implements java.io.Serializable, Input,
         }
         Log.log(this, thing.getClass().getCanonicalName() + " set as held");
         thing = world.pickupThing(thing.loc.x, thing.loc.y);
-        setHeld(thing, ax, ay);
+        heldThing.setHeld(thing, ax, ay);
     }
 
-    /**
-     * @param thing The thing to hold.
-     * @param x     array position of tap
-     * @param y     array position of tap
-     */
-    public void setHeld(Thing thing, float x, float y)
-    {
-        held = thing;
-        heldPos.set(x, y);
-        Vec2<Float> pos = held.loc.getWorldArrPos();
-        Log.log(this, "params " + x + " " + y);
-        Log.log(this, "pos " + held.loc.x + " " + held.loc.y);
-        heldOffset.x = x - pos.x;
-        heldOffset.y = y - pos.y;
-    }
 
     public float[] transferFromContainer(Thing t, Matrix containerMat)
     {
@@ -173,7 +142,7 @@ public class PetGame implements java.io.Serializable, Input,
 
         t.loc.x = (int) f[0];
         t.loc.y = (int) f[1];
-        setHeld(t, f[0], f[1]);
+        heldThing.setHeld(t, f[0], f[1]);
         return f;
     }
 
@@ -184,27 +153,32 @@ public class PetGame implements java.io.Serializable, Input,
 
     public void pickup(float x, float y)
     {
-        if (held != null)
+        if (heldThing.held != null)
         {
-            heldPos.set(x, y);
+            heldThing.setPos(x, y);
             return;
         }
         Thing t = world.checkCollision(x, y);
         if (t != null)
         {
-            held = world.pickupThing(t.loc.x, t.loc.y);
-            heldPos.set(x, y);
-            Vec2<Float> pos = held.loc.getWorldArrPos();
-            heldOffset.x = x - pos.x;
-            heldOffset.y = y - pos.y;
+            heldThing.held = world.pickupThing(t.loc.x, t.loc.y);
+            heldThing.setPos(x, y);
+            Vec2<Float> pos = heldThing.held.loc.getWorldArrPos();
+            heldThing.setHeldOffset(x - pos.x, y - pos.y);
         }
     }
 
-    void drop(float x, float y)
+    void dropHeld()
+    {
+        //TODO make this drop properly
+        dropHeld(heldThing.heldPos.x, heldThing.heldPos.y);
+    }
+
+    void dropHeld(float x, float y)
     {
         Log.log(this, "dropping");
-        world.addOrClosest(held, (int) x, (int) y);
-        held = null;
+        world.addOrClosest(heldThing.held, (int) x, (int) y);
+        heldThing.held = null;
     }
 
     public void select(float x, float y)
@@ -280,11 +254,11 @@ public class PetGame implements java.io.Serializable, Input,
     @Override
     public void singleTapConfirmed(float x, float y)
     {
-        tempMat.reset();
         float[] f =
             MatrixUtil.convertScreenToWorldArray(behaviour.getWorldTransform(
                 tempMat), x, y);
-        Log.log(this, "tapped " + f[0] + " " + f[1]);
+//        Log.log(this, "tapped " + f[0] + " " + f[1]);
+
         select(f[0], f[1]);
         poke(f[0], f[1]);
     }
@@ -321,10 +295,7 @@ public class PetGame implements java.io.Serializable, Input,
                                    float currentX,
                                    float currentY)
     {
-        float[] f =
-            MatrixUtil.convertScreenToWorldArray(
-                getTempWorldTransform(), startX, startY);
-        setHeld(f[0], f[1]);
+
     }
 
     @Override
@@ -343,10 +314,10 @@ public class PetGame implements java.io.Serializable, Input,
         //        }
         //        else
         //        {
-        heldMatrix = behaviour.getWorldTransform(new Matrix());
-        float[] f =
-            MatrixUtil.convertScreenToWorldArray(heldMatrix, nextX, nextY);
-        setHeldPosition(f[0], f[1]);
+//        heldMatrix = behaviour.getWorldTransform(new Matrix());
+//        float[] f =
+//            MatrixUtil.convertScreenToWorldArray(heldMatrix, nextX, nextY);
+//        setHeldPosition(f[0], f[1]);
         //        }
     }
 
@@ -360,7 +331,7 @@ public class PetGame implements java.io.Serializable, Input,
     {
         float[] f = MatrixUtil.convertScreenToWorldArray(
             getTempWorldTransform(), x, y);
-        drop(f[0], f[1]);
+        dropHeld(f[0], f[1]);
     }
 
     @Override
@@ -398,11 +369,44 @@ public class PetGame implements java.io.Serializable, Input,
     }
 
     @Override
-    public void scroll(Vec2<Float> prev, Vec2<Float> next)
+    public void dragStart(float x, float y)
     {
+        float[] f =
+            MatrixUtil.convertScreenToWorldArray(
+                getTempWorldTransform(), x, y);
+        Thing touched = world.checkCollision(f[0], f[1]);
+        if (selected != null && selected == touched)
+        {
+            setHeld(f[0], f[1]);
+        }
+    }
+
+    @Override
+    public void drag(Vec2<Float> prev, Vec2<Float> next)
+    {
+        if (heldThing.held != null)
+        {
+            float[] f =
+                MatrixUtil.convertScreenToWorldArray(
+                    getTempWorldTransform(), next.x, next.y);
+            heldThing.setPos(f[0], f[1]);
+            return;
+        }
         behaviour.node.transform.postTranslate(
             next.x - prev.x,
             next.y - prev.y);
+    }
+
+    @Override
+    public void dragEnd(float x, float y)
+    {
+        float[] f =
+            MatrixUtil.convertScreenToWorldArray(
+                getTempWorldTransform(), x, y);
+        if (heldThing.held != null)
+        {
+            this.dropHeld(f[0], f[1]);
+        }
     }
 
     @Override
@@ -424,6 +428,50 @@ public class PetGame implements java.io.Serializable, Input,
     public Matrix getTempWorldTransform()
     {
         return behaviour.getWorldTransform(tempMat);
+    }
+
+    public static class HeldThing
+    {
+        public Thing held = null;
+        public Vec2<Float> heldPos = new Vec2<>(0f, 0f);
+        public Vec2<Float> heldOffset = new Vec2<>(0f, 0f);
+        public Matrix heldMatrix = null;
+
+        public void drawHeld(DisplayAdapter d)
+        {
+            //display.setMatrix(heldThing.heldMatrix);
+            if (held != null)
+            {
+                d.displayArr(
+                    held.loc.sprite,
+                    heldPos.x - heldOffset.x,
+                    heldPos.y - heldOffset.y);
+            }
+        }
+        /**
+         * @param thing The thing to hold.
+         * @param x     array position of tap
+         * @param y     array position of tap
+         */
+        public void setHeld(Thing thing, float x, float y)
+        {
+            held = thing;
+            heldPos.set(x, y);
+            Vec2<Float> pos = held.loc.getWorldArrPos();
+            Log.log(this, "params " + x + " " + y);
+            Log.log(this, "pos " + held.loc.x + " " + held.loc.y);
+            heldOffset.x = x - pos.x;
+            heldOffset.y = y - pos.y;
+        }
+
+        public void setPos(float x, float y) {
+            heldPos.set(x, y);
+        }
+
+        public void setHeldOffset(float x, float y)
+        {
+            heldOffset.set(x, y);
+        }
     }
 
 }
