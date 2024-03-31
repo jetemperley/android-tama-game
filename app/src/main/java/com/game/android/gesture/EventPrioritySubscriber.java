@@ -4,24 +4,30 @@ import com.game.tama.core.Updateable;
 
 import java.util.PriorityQueue;
 
-public class EventPrioritySubscriber implements Updateable
+public class EventPrioritySubscriber implements GestureEventHandler
 {
     private PriorityQueue<InputPriority> subscribers = new PriorityQueue<>();
 
-    private GestureEventPipe eventSource;
-
-    public EventPrioritySubscriber(GestureEventPipe eventSource)
+    public boolean handleEvent(GestureEvent event)
     {
-        this.eventSource = eventSource;
+        for (InputPriority ip : subscribers)
+        {
+            if (ip.handler.handleEvent(event))
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
-    @Override
-    public void update()
+    public void subscribe(GestureEventHandler handler, int priority)
     {
-        GestureEvent e = eventSource.getCurrentEvent();
-        if (e == null)
-            return;
-        handleEvent(e);
+        subscribe(new InputPriority(handler, priority));
+    }
+
+    private void subscribe(InputPriority ip)
+    {
+        subscribers.add(ip);
     }
 
     private static class InputPriority implements Comparable<InputPriority>
@@ -40,26 +46,5 @@ public class EventPrioritySubscriber implements Updateable
         {
             return priority - input.priority;
         }
-    }
-
-    private void handleEvent(GestureEvent event)
-    {
-        for (InputPriority ip : subscribers)
-        {
-            if (ip.handler.handleEvent(event))
-            {
-                return;
-            }
-        }
-    }
-
-    public void subscribe(GestureEventHandler handler, int priority)
-    {
-        subscribe(new InputPriority(handler, priority));
-    }
-
-    private void subscribe(InputPriority ip)
-    {
-        subscribers.add(ip);
     }
 }

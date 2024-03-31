@@ -2,10 +2,8 @@ package com.game.android.gesture;
 
 import com.game.tama.util.Vec2;
 
-public class GestureEventAdaptor implements Input, GestureEventPipe
+public class GestureEventAdaptor extends GestureEventSource implements Input
 {
-    public GestureEvent currentEvent = null;
-
     private final SingleTap singleTap = new SingleTap();
     private final DoubleTap doubleTap = new DoubleTap();
     private final DoubleTapRelease doubleTapRelease = new DoubleTapRelease();
@@ -103,16 +101,8 @@ public class GestureEventAdaptor implements Input, GestureEventPipe
         handleEvent(scroll);
     }
 
-    private void handleEvent(GestureEvent event)
+    public boolean handleEvent(GestureEvent event)
     {
-        currentEvent = event;
-    }
-
-    @Override
-    public GestureEvent getCurrentEvent()
-    {
-        GestureEvent e = currentEvent;
-        currentEvent = null;
-        return e;
+        return target.handleEvent(event);
     }
 }
