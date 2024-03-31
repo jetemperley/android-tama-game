@@ -1,5 +1,7 @@
 package com.game.engine;
 
+import android.graphics.Matrix;
+
 import com.game.android.DisplayAdapter;
 import com.game.android.gesture.GestureEvent;
 import com.game.android.gesture.GestureEventHandler;
@@ -81,5 +83,14 @@ public abstract class Behaviour implements Updateable, Drawable, GestureEventHan
     public boolean isEnabled()
     {
         return enabled && node.isEnabled();
+    }
+
+    /**
+     * Easy access for Node.getWorldTransform
+     * @param out
+     */
+    public Matrix getWorldTransform(Matrix out)
+    {
+        return node.getWorldTransform(out);
     }
 }

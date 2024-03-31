@@ -102,16 +102,21 @@ public class Node implements Updateable, Drawable
         parent = null;
     }
 
-    public void getWorldTransform(Matrix out)
+    /**
+     * Gets the world transform and returns it in the out matrix.
+     * @param out
+     * @return out
+     */
+    public Matrix getWorldTransform(Matrix out)
     {
         if (parent == null)
         {
             out.set(transform);
-            return;
+            return out;
         }
         parent.getWorldTransform(out);
         out.preConcat(transform);
-        return;
+        return out;
     }
 
     public void removeBehaviour(Behaviour b)

@@ -21,7 +21,7 @@ public class PetGame implements java.io.Serializable, Input,
                                 GestureEventHandler
 {
     public Thing held = null;
-    public Matrix worldMat;
+    public Matrix tempMat = new Matrix();
     /** The amount of ms this game has been running for. */
     public static long time = 0;
     public ContainerManager containerManager = new ContainerManager();
@@ -44,8 +44,6 @@ public class PetGame implements java.io.Serializable, Input,
         world = WorldFactory.makeWorld();
         world.addOrClosest(new Container(this, 2), 2, 2);
 
-        worldMat = new Matrix();
-
         Matrix uiMat = new Matrix();
         uiMat.setScale(6, 6);
 
@@ -63,11 +61,22 @@ public class PetGame implements java.io.Serializable, Input,
 
     public void draw(DisplayAdapter display)
     {
-        display.setMatrix(worldMat);
         depthDisplay.display = display;
         world.draw(depthDisplay);
         depthDisplay.drawQ();
         depthDisplay.clearQ();
+
+        if (selected != null)
+        {
+            display.displayArr(
+                Assets.getSprite(Assets.Names.static_inv.name()),
+                selected.loc.getWorldArrPos().x,
+                selected.loc.getWorldArrPos().y);
+            if (selected instanceof Pet)
+            {
+                ((Pet) selected).currentCommand.draw(display);
+            }
+        }
 
         display.setMatrix(identity);
         if (showBackpack)
@@ -81,17 +90,6 @@ public class PetGame implements java.io.Serializable, Input,
 
     public void drawSelected(DisplayAdapter d)
     {
-        if (selected != null)
-        {
-            d.displayArr(
-                Assets.getSprite(Assets.Names.static_inv.name()),
-                selected.loc.getWorldArrPos().x,
-                selected.loc.getWorldArrPos().y);
-            if (selected instanceof Pet)
-            {
-                ((Pet) selected).currentCommand.draw(d);
-            }
-        }
         if (held != null)
         {
             d.displayArr(
@@ -166,7 +164,8 @@ public class PetGame implements java.io.Serializable, Input,
             "transferFromContainer screen loc is " + f[0] + " " + f[1]);
 
         Matrix inv = new Matrix();
-        worldMat.invert(inv);
+        tempMat.reset();
+        getTempWorldTransform().invert(inv);
         inv.mapPoints(f);
         Log.log(
             this,
@@ -281,8 +280,10 @@ public class PetGame implements java.io.Serializable, Input,
     @Override
     public void singleTapConfirmed(float x, float y)
     {
-
-        float[] f = MatrixUtil.convertScreenToWorldArray(worldMat, x, y);
+        tempMat.reset();
+        float[] f =
+            MatrixUtil.convertScreenToWorldArray(behaviour.getWorldTransform(
+                tempMat), x, y);
         Log.log(this, "tapped " + f[0] + " " + f[1]);
         select(f[0], f[1]);
         poke(f[0], f[1]);
@@ -297,7 +298,9 @@ public class PetGame implements java.io.Serializable, Input,
     @Override
     public void longPressConfirmed(float x, float y)
     {
-        float[] f = MatrixUtil.convertScreenToWorldArray(worldMat, x, y);
+        float[] f =
+            MatrixUtil.convertScreenToWorldArray(
+                getTempWorldTransform(), x, y);
         use(f[0], f[1]);
     }
 
@@ -306,7 +309,7 @@ public class PetGame implements java.io.Serializable, Input,
     {
         Log.log(this, "double tap confirmed");
         float[] f = MatrixUtil.convertScreenToWorldArray(
-            worldMat,
+            getTempWorldTransform(),
             x,
             y);
         doubleSelect(f[0], f[1]);
@@ -319,7 +322,8 @@ public class PetGame implements java.io.Serializable, Input,
                                    float currentY)
     {
         float[] f =
-            MatrixUtil.convertScreenToWorldArray(worldMat, startX, startY);
+            MatrixUtil.convertScreenToWorldArray(
+                getTempWorldTransform(), startX, startY);
         setHeld(f[0], f[1]);
     }
 
@@ -339,9 +343,9 @@ public class PetGame implements java.io.Serializable, Input,
         //        }
         //        else
         //        {
-        heldMatrix = worldMat;
+        heldMatrix = behaviour.getWorldTransform(new Matrix());
         float[] f =
-            MatrixUtil.convertScreenToWorldArray(worldMat, nextX, nextY);
+            MatrixUtil.convertScreenToWorldArray(heldMatrix, nextX, nextY);
         setHeldPosition(f[0], f[1]);
         //        }
     }
@@ -354,7 +358,8 @@ public class PetGame implements java.io.Serializable, Input,
     @Override
     public void doubleTapDragEnd(float x, float y)
     {
-        float[] f = MatrixUtil.convertScreenToWorldArray(worldMat, x, y);
+        float[] f = MatrixUtil.convertScreenToWorldArray(
+            getTempWorldTransform(), x, y);
         drop(f[0], f[1]);
     }
 
@@ -384,10 +389,10 @@ public class PetGame implements java.io.Serializable, Input,
         float scale = nsize / psize;
 
         // apply changes
-        worldMat.postTranslate(-nmid.x, -nmid.y);
-        worldMat.postScale(scale, scale);
-        worldMat.postTranslate(nmid.x, nmid.y);
-        worldMat.postTranslate(
+        behaviour.node.transform.postTranslate(-nmid.x, -nmid.y);
+        behaviour.node.transform.postScale(scale, scale);
+        behaviour.node.transform.postTranslate(nmid.x, nmid.y);
+        behaviour.node.transform.postTranslate(
             nmid.x - pmid.x,
             nmid.y - pmid.y);
     }
@@ -395,7 +400,7 @@ public class PetGame implements java.io.Serializable, Input,
     @Override
     public void scroll(Vec2<Float> prev, Vec2<Float> next)
     {
-        worldMat.postTranslate(
+        behaviour.node.transform.postTranslate(
             next.x - prev.x,
             next.y - prev.y);
     }
@@ -415,4 +420,10 @@ public class PetGame implements java.io.Serializable, Input,
     }
 
     public void toggle(Container container) {}
+
+    public Matrix getTempWorldTransform()
+    {
+        return behaviour.getWorldTransform(tempMat);
+    }
+
 }

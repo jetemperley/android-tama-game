@@ -56,7 +56,8 @@ public class Container extends Thing implements GestureEventHandler
                                    float currX,
                                    float currY)
     {
-        float[] f = MatrixUtil.convertScreenToWorldArray(parent.worldMat, startX, startY);
+        float[] f = MatrixUtil.convertScreenToWorldArray(
+            parent.getTempWorldTransform(), startX, startY);
         f[0] -= loc.x;
         f[1] -= loc.y +1;
         Thing t = world.checkCollision(f[0], f[1]);
@@ -69,7 +70,7 @@ public class Container extends Thing implements GestureEventHandler
 
     public void doubleTapDragEnd(float x, float y)
     {
-        float[] arrPos = MatrixUtil.convertScreenToWorldArray(parent.worldMat, x, y);
+        float[] arrPos = MatrixUtil.convertScreenToWorldArray(parent.getTempWorldTransform(), x, y);
         arrPos[0] -= loc.x;
         arrPos[1] -= loc.y +1;
         Log.log(this, "doubleTapDragEnd drop loc " + arrPos[0] + " " + arrPos[1]);
@@ -89,7 +90,7 @@ public class Container extends Thing implements GestureEventHandler
     public boolean isTouchInside(float x, float y)
     {
         mat.setTranslate(0, 16);
-        mat.preConcat(parent.worldMat);
+        mat.preConcat(parent.getTempWorldTransform());
         float[] f = MatrixUtil.convertScreenToWorldBits(mat, x, y);
 
         Vec2<Float> pos = loc.getWorldBitPos();
