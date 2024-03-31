@@ -7,11 +7,12 @@ import com.game.tama.util.Vec2;
 
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
+import java.util.HashMap;
 
 public class Gesture implements Input
 {
-    private GState[] state;
-    private int stateidx = 0;
+    private HashMap<Class<? extends GState>, GState> states;
+    private Class<? extends GState> stateidx = null;
 
     int error = -1, wait = 0, down = 1, doubleTapDrag = 2,
         scale = 3, singleTap = 4, drag = 5,
@@ -23,7 +24,7 @@ public class Gesture implements Input
     // private Vec2<Float> prev1, prev2, new1, new2;
 
     private int singleTapConfirmDelay = 200;
-    private int dragConfirmSensitivity = 1000;
+    private int dragConfirmSensitivity = 10;
 
     public Input gestureTarget;
 
@@ -31,25 +32,25 @@ public class Gesture implements Input
 
     public Gesture()
     {
-        state = new GState[7];
-        state[0] = new Wait();
-        state[1] = new Down();
-        state[2] = new DoubleTapDrag();
-        state[3] = new Scale();
-        state[4] = new SingleTap();
-        state[5] = new Drag();
-        state[6] = new DoubleTap();
+        states = new HashMap<>();
+        states.put(Wait.class, new Wait());
+        states.put(Down.class, new Down());
+        states.put(Scale.class, new Scale());
+        states.put(SingleTap.class, new SingleTap());
+        states.put(Drag.class, new Drag());
+        states.put(DoubleTap.class, new DoubleTap());
+        stateidx = Wait.class;
     }
 
     public void update()
     {
         // Log.log("Game Gesture", "update");
-        state[stateidx].update();
+        states.get(stateidx).update();
     }
 
     public boolean onTouchEvent(MotionEvent e)
     {
-        stateidx = state[stateidx].onMotion(e);
+        stateidx = states.get(stateidx).onMotion(e);
         return true;
     }
 
@@ -156,7 +157,7 @@ public class Gesture implements Input
 
         abstract void start(MotionEvent e);
 
-        abstract int onMotion(MotionEvent e);
+        abstract Class<? extends GState> onMotion(MotionEvent e);
 
         void update()
         {
@@ -171,15 +172,15 @@ public class Gesture implements Input
             //reset everything?
         }
 
-        int onMotion(MotionEvent e)
+        Class onMotion(MotionEvent e)
         {
             if (e.getAction() == MotionEvent.ACTION_DOWN)
             {
                 singleDown(e.getX(), e.getY());
-                state[down].start(e);
-                return down;
+                states.get(Down.class).start(e);
+                return Down.class;
             }
-            return wait;
+            return Wait.class;
         }
     }
 
@@ -206,11 +207,11 @@ public class Gesture implements Input
                 singleTapConfirmDelay)
             {
                 longPressConfirmed(initialPos.x, initialPos.y);
-                // stateidx = wait;
+                stateidx = Wait.class;
             }
         }
 
-        int onMotion(MotionEvent e)
+        Class onMotion(MotionEvent e)
         {
 
             switch (e.getAction())
@@ -220,21 +221,22 @@ public class Gesture implements Input
                     if (Vec2.distSq(initialPos, new Vec2(e.getX(), e.getY())) >
                         dragConfirmSensitivity)
                     {
-                        ((Drag)state[drag]).start(initialPos.x, initialPos.y);
-                        return drag;
+                        ((Drag) states.get(Drag.class)).start(
+                            initialPos.x,
+                            initialPos.y);
+                        return Drag.class;
                     }
-                    return down;
 
                 case MotionEvent.ACTION_UP:
 
                     singleTapConfirmed(initialPos.x, initialPos.y);
-                    return wait;
+                    return Wait.class;
 
                 case MotionEvent.ACTION_POINTER_2_DOWN:
-                    state[scale].start(e);
-                    return scale;
+                    states.get(Scale.class).start(e);
+                    return Scale.class;
             }
-            return down;
+            return Down.class;
         }
     }
 
@@ -263,11 +265,11 @@ public class Gesture implements Input
                 singleTapConfirmDelay)
             {
                 singleTapConfirmed(loc.x, loc.y);
-                stateidx = wait;
+                stateidx = Wait.class;
             }
         }
 
-        int onMotion(MotionEvent e)
+        Class onMotion(MotionEvent e)
         {
 
             switch (e.getAction())
@@ -277,39 +279,12 @@ public class Gesture implements Input
                     if (ChronoUnit.MILLIS.between(upTime, LocalTime.now()) <
                         singleTapConfirmDelay)
                     {
-                        state[doubleTap].start(e);
-                        return doubleTap;
+                        states.get(DoubleTap.class).start(e);
+                        return DoubleTap.class;
                     }
-                    return down;
+                    return Down.class;
             }
-            return wait;
-        }
-    }
-
-    private class DoubleTapDrag extends GState
-    {
-        Vec2<Float> previous = new Vec2<>(0f, 0f);
-
-        void start(MotionEvent e)
-        {
-            previous.set(e.getX(), e.getY());
-        }
-
-        int onMotion(MotionEvent e)
-        {
-
-            switch (e.getAction())
-            {
-                case MotionEvent.ACTION_MOVE:
-                    doubleTapDrag(previous.x, previous.y, e.getX(), e.getY());
-                    previous.set(e.getX(), e.getY());
-                    return doubleTapDrag;
-
-                case MotionEvent.ACTION_UP:
-                    doubleTapDragEnd(e.getX(), e.getY());
-                    return wait;
-            }
-            return doubleTapDrag;
+            return Wait.class;
         }
     }
 
@@ -330,50 +305,41 @@ public class Gesture implements Input
             loc.set(e.getX(), e.getY());
         }
 
-        int onMotion(MotionEvent e)
+        Class onMotion(MotionEvent e)
         {
 
             switch (e.getAction())
             {
-
-                case MotionEvent.ACTION_MOVE:
-                    if (Vec2.distSq(loc, new Vec2(e.getX(), e.getY())) >
-                        dragConfirmSensitivity)
-                    {
-                        doubleTapDragStart(loc.x, loc.y, e.getX(), e.getY());
-                        state[doubleTapDrag].start(e);
-                        return doubleTapDrag;
-                    }
-                    return doubleTap;
 
                 case MotionEvent.ACTION_UP:
                     if (ChronoUnit.MILLIS.between(downTime, LocalTime.now()) <
                         singleTapConfirmDelay)
                     {
                         doubleTapConfirmed(e.getX(), e.getY());
-                        return wait;
+                        return Wait.class;
                     }
                     doubleTapRelease(e.getX(), e.getY());
-                    return wait;
-
+                    return Wait.class;
             }
-            return doubleTap;
+            return DoubleTap.class;
         }
     }
 
     private class Drag extends GState
     {
-
+        Vec2<Float> initialPos;
         Vec2<Float> prev, next;
 
         Drag()
         {
+            initialPos = new Vec2(0, 0);
             prev = new Vec2(0, 0);
             next = new Vec2(0, 0);
         }
 
         void start(float x, float y)
         {
+            initialPos.set(x, y);
             next(x, y);
             dragStart(x, y);
         }
@@ -390,25 +356,26 @@ public class Gesture implements Input
             next(e.getX(), e.getY());
         }
 
-        int onMotion(MotionEvent e)
+        Class onMotion(MotionEvent e)
         {
+
             switch (e.getAction())
             {
 
                 case MotionEvent.ACTION_MOVE:
                     next(e.getX(), e.getY());
                     drag(new Vec2<>(prev), new Vec2<>(next));
-                    return drag;
+                    return Drag.class;
 
                 case MotionEvent.ACTION_UP:
                     dragEnd(e.getX(), e.getY());
-                    return wait;
+                    return Wait.class;
 
                 case MotionEvent.ACTION_POINTER_2_DOWN:
-                    state[scale].start(e);
-                    return scale;
+                    states.get(Scale.class).start(e);
+                    return Scale.class;
             }
-            return drag;
+            return Drag.class;
         }
     }
 
@@ -442,7 +409,7 @@ public class Gesture implements Input
             }
         }
 
-        int onMotion(MotionEvent e)
+        Class onMotion(MotionEvent e)
         {
 
             switch (e.getAction())
@@ -456,18 +423,18 @@ public class Gesture implements Input
                         new Vec2<>(prev2),
                         new Vec2<>(next1),
                         new Vec2<>(next2));
-                    return scale;
+                    return Scale.class;
 
                 case MotionEvent.ACTION_UP:
                     point2ID = -1;
-                    return wait;
+                    return Wait.class;
 
                 case MotionEvent.ACTION_POINTER_2_UP:
                     point2ID = -1;
-                    state[drag].start(e);
-                    return drag;
+                    states.get(Drag.class).start(e);
+                    return Drag.class;
             }
-            return wait;
+            return Wait.class;
         }
     }
 }
