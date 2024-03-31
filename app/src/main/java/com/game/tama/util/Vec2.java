@@ -10,17 +10,24 @@ public class Vec2<T extends Number> implements java.io.Serializable
         this.y = y;
     }
 
-    public void set(T x, T y)
+    public Vec2(Vec2<T> other)
+    {
+        this.x = other.x;
+        this.y = other.y;
+    }
+
+    public Vec2<T> set(T x, T y)
     {
         this.x = x;
         this.y = y;
+        return this;
     }
 
-    public void set(Vec2<T> a)
+    public Vec2<T> set(Vec2<T> a)
     {
         x = a.x;
         y = a.y;
-
+        return this;
     }
 
     public static float distSq(Vec2<Float> a, Vec2<Float> b)

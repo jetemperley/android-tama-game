@@ -1,6 +1,5 @@
 package com.game.android.gesture;
 
-import com.game.tama.core.Input;
 import com.game.tama.util.Vec2;
 
 public class Scale extends GestureEvent

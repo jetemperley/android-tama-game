@@ -64,6 +64,8 @@ public class Node implements Updateable, Drawable
             return;
         }
 
+        display.push();
+        display.preConcat(transform);
         for (Behaviour b : behaviours)
         {
             b.engine_draw(display);
@@ -72,6 +74,7 @@ public class Node implements Updateable, Drawable
         {
             node.engine_draw(display);
         }
+        display.pop();
     }
 
     public void setParent(Node newParent)
@@ -99,13 +102,14 @@ public class Node implements Updateable, Drawable
         parent = null;
     }
 
-    public void getTransform(Matrix out)
+    public void getWorldTransform(Matrix out)
     {
         if (parent == null)
         {
             out.set(transform);
             return;
         }
+        parent.getWorldTransform(out);
         out.preConcat(transform);
         return;
     }

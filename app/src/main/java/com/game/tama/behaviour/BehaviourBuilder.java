@@ -32,6 +32,7 @@ public class BehaviourBuilder
             3,
             "Ayee this is some text that is gonna be in a text box and " +
                 "hopefullly its just gonna work the first time.!!"));
+        parent.transform.setScale(6, 6);
         return pauseMenu;
     }
 
@@ -39,10 +40,11 @@ public class BehaviourBuilder
     {
         Menu hud = new Menu(parent);
         hud.add(new Button(
-            50,
-            50,
+            0,
+            0,
             Assets.Names.static_poop.name(),
             () -> GameManager.INST.pause()));
+        parent.transform.setScale(6, 6);
         return hud;
     }
 }

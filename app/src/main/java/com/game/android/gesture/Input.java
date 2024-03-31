@@ -1,4 +1,4 @@
-package com.game.tama.core;
+package com.game.android.gesture;
 
 import com.game.tama.util.Vec2;
 

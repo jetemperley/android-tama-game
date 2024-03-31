@@ -4,6 +4,7 @@ import android.graphics.Matrix;
 
 import com.game.android.DepthDisplay;
 import com.game.android.DisplayAdapter;
+import com.game.android.gesture.Input;
 import com.game.tama.behaviour.PetGameBehaviour;
 import com.game.tama.command.CommandFactory;
 import com.game.tama.command.CommandQueue;
@@ -17,7 +18,7 @@ import com.game.tama.util.MatrixUtil;
 import com.game.tama.util.Vec2;
 
 public class PetGame implements java.io.Serializable, Input,
-                                             GestureEventHandler
+                                GestureEventHandler
 {
     public Thing held = null;
     public Matrix worldMat;
@@ -82,7 +83,7 @@ public class PetGame implements java.io.Serializable, Input,
     {
         if (selected != null)
         {
-            d.display(
+            d.displayArr(
                 Assets.getSprite(Assets.Names.static_inv.name()),
                 selected.loc.getWorldArrPos().x,
                 selected.loc.getWorldArrPos().y);
@@ -93,7 +94,7 @@ public class PetGame implements java.io.Serializable, Input,
         }
         if (held != null)
         {
-            d.display(
+            d.displayArr(
                 held.loc.sprite,
                 heldPos.x - heldOffset.x,
                 heldPos.y - heldOffset.y);

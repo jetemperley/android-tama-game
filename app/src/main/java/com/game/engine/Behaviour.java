@@ -8,7 +8,7 @@ import com.game.tama.core.Updateable;
 
 public abstract class Behaviour implements Updateable, Drawable, GestureEventHandler
 {
-    final public Node parent;
+    final public Node node;
     private boolean enabled = true;
 
     public Behaviour(Node parent)
@@ -17,18 +17,18 @@ public abstract class Behaviour implements Updateable, Drawable, GestureEventHan
         {
             throw new RuntimeException("A behaviours parent cannot be null.");
         }
-        this.parent = parent;
+        this.node = parent;
         parent.addBehaviour(this);
     }
 
     public final <T extends Behaviour> T getBehaviour(Class<T> clazz)
     {
-        return parent.getBehaviour(clazz);
+        return node.getBehaviour(clazz);
     }
 
     public final void removeBehaviour(Behaviour b)
     {
-        parent.removeBehaviour(b);
+        node.removeBehaviour(b);
     }
 
     void engine_draw(DisplayAdapter display)
@@ -80,6 +80,6 @@ public abstract class Behaviour implements Updateable, Drawable, GestureEventHan
 
     public boolean isEnabled()
     {
-        return enabled && parent.isEnabled();
+        return enabled && node.isEnabled();
     }
 }

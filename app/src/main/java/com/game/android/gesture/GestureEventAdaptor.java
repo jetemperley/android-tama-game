@@ -2,13 +2,10 @@ package com.game.android.gesture;
 
 import com.game.tama.util.Vec2;
 
-import java.util.Set;
-import java.util.TreeSet;
-
-public class GesturePrioritySubscriber extends Gesture
+public class GestureEventAdaptor implements Input, GestureEventPipe
 {
-    private static GesturePrioritySubscriber instance;
-    private Set<InputPriority> subscribers = new TreeSet<>();
+    public GestureEvent currentEvent = null;
+
     private final SingleTap singleTap = new SingleTap();
     private final DoubleTap doubleTap = new DoubleTap();
     private final DoubleTapRelease doubleTapRelease = new DoubleTapRelease();
@@ -21,50 +18,38 @@ public class GesturePrioritySubscriber extends Gesture
     private final Scale scale = new Scale();
     private final Scroll scroll = new Scroll();
 
-    private GesturePrioritySubscriber()
-    {
-        super();
-        if (instance != null)
-        {
-            throw new RuntimeException(
-                "2 instances of Gesture Subscriber were attempted to be created" +
-                    ".");
-        }
-        instance = this;
-    }
-
     @Override
     public void singleTapConfirmed(float x, float y)
     {
-        singleTap.set(x, y);
+        singleTap.setTouch(x, y);
         handleEvent(singleTap);
     }
 
     @Override
     public void singleDown(float x, float y)
     {
-        down.set(x, y);
+        down.setTouch(x, y);
         handleEvent(down);
     }
 
     @Override
     public void longPressConfirmed(float x, float y)
     {
-        longPress.set(x, y);
+        longPress.setTouch(x, y);
         handleEvent(longPress);
     }
 
     @Override
     public void doubleTapConfirmed(float x, float y)
     {
-        doubleTap.set(x, y);
+        doubleTap.setTouch(x, y);
         handleEvent(doubleTap);
     }
 
     @Override
     public void doubleTapRelease(float x, float y)
     {
-        doubleTapRelease.set(x, y);
+        doubleTapRelease.setTouch(x, y);
         handleEvent(doubleTapRelease);
     }
 
@@ -74,7 +59,7 @@ public class GesturePrioritySubscriber extends Gesture
                                    float currentX,
                                    float currentY)
     {
-        doubleTapDragStart.set(startX, startY);
+        doubleTapDragStart.setTouch(startX, startY);
         doubleTapDragStart.set(
             startX,
             startY,
@@ -96,7 +81,7 @@ public class GesturePrioritySubscriber extends Gesture
     @Override
     public void doubleTapDragEnd(float x, float y)
     {
-        doubleTapDragEnd.set(x, y);
+        doubleTapDragEnd.setTouch(x, y);
         handleEvent(doubleTapDragEnd);
     }
 
@@ -113,59 +98,21 @@ public class GesturePrioritySubscriber extends Gesture
     @Override
     public void scroll(Vec2<Float> prev, Vec2<Float> next)
     {
-        scroll.set(prev.x, prev.y);
-        scroll.set(prev, next);
+        scroll.setTouch(prev.x, prev.y);
+        scroll.setPrevNext(prev, next);
         handleEvent(scroll);
-    }
-
-    public static void subscribe(GestureEventHandler handler,  int priority)
-    {
-        if (instance == null)
-        {
-            instance = new GesturePrioritySubscriber();
-        }
-        instance.subscribe(new InputPriority(handler, priority));
-    }
-
-    private void subscribe(InputPriority ip)
-    {
-        subscribers.add(ip);
     }
 
     private void handleEvent(GestureEvent event)
     {
-        for (InputPriority ip : subscribers)
-        {
-            if (ip.handler.handleEvent(event))
-            {
-                return;
-            }
-        }
+        currentEvent = event;
     }
 
-    private static class InputPriority implements Comparable<InputPriority>
+    @Override
+    public GestureEvent getCurrentEvent()
     {
-        public int priority = 0;
-        public GestureEventHandler handler;
-
-        InputPriority(GestureEventHandler handler, int priority)
-        {
-            this.priority = priority;
-            this.handler = handler;
-        }
-        @Override
-        public int compareTo(InputPriority input)
-        {
-            return priority - input.priority;
-        }
-    }
-
-    public static GesturePrioritySubscriber instance()
-    {
-        if (instance == null)
-        {
-            instance = new GesturePrioritySubscriber();
-        }
-        return instance;
+        GestureEvent e = currentEvent;
+        currentEvent = null;
+        return e;
     }
 }

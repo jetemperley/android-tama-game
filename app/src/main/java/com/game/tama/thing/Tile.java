@@ -40,7 +40,7 @@ public abstract class Tile implements java.io.Serializable
     {
         if (visible)
         {
-            d.display(loc);
+            d.displayArr(loc);
         }
         if (thing != null)
         {

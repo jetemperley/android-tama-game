@@ -6,14 +6,16 @@ import com.game.android.DisplayAdapter;
 import com.game.android.gesture.Down;
 import com.game.android.gesture.GestureEvent;
 import com.game.tama.core.Assets;
+import com.game.tama.core.Drawable;
 import com.game.tama.core.Loadable;
 import com.game.tama.core.Sprite;
 import com.game.tama.core.SpriteSheet;
+import com.game.tama.core.Updateable;
 import com.game.tama.util.MatrixUtil;
 import com.game.tama.util.Vec2;
 import com.game.android.gesture.GestureEventHandler;
 
-public class Button implements Loadable, GestureEventHandler
+public class Button implements Loadable, GestureEventHandler, Drawable, Updateable
 {
     protected String asset;
     protected Vec2<Float> pos;
@@ -103,12 +105,13 @@ public class Button implements Loadable, GestureEventHandler
         SQUARE = sheet.getSprite(1, 1);
     }
 
-    void draw(DisplayAdapter display)
+    @Override
+    public void draw(DisplayAdapter display)
     {
         display.drawRect(pos.x, pos.y, size.x * 16, size.y * 16);
         if (size.x == 1 && size.y == 1)
         {
-            display.displayAbsolute(SQUARE, pos.x, pos.y);
+            display.displayAt(SQUARE, pos.x, pos.y);
         }
         else if (size.x == 1)
         {
@@ -122,10 +125,11 @@ public class Button implements Loadable, GestureEventHandler
         {
             drawRect(display);
         }
-        display.displayAbsolute(sprite, pos.x, pos.y);
+        display.displayAt(sprite, pos.x, pos.y);
     }
 
-    void update()
+    @Override
+    public void update()
     {
         updateMethod.run();
     }
@@ -158,36 +162,36 @@ public class Button implements Loadable, GestureEventHandler
 
     private void drawCol(DisplayAdapter display)
     {
-        display.displayAbsolute(TOP_CAP, pos.x, pos.y);
+        display.displayAt(TOP_CAP, pos.x, pos.y);
 
         float y = pos.y + 16;
         for (int i = 1; i < size.y - 1; i++)
         {
-            display.displayAbsolute(VERT_PIPE, pos.x, y);
+            display.displayAt(VERT_PIPE, pos.x, y);
             y += 16;
         }
-        display.displayAbsolute(BOT_CAP, pos.x, y);
+        display.displayAt(BOT_CAP, pos.x, y);
     }
 
     private void drawRow(DisplayAdapter display)
     {
-        display.displayAbsolute(LEFT_CAP, pos.x, pos.y);
+        display.displayAt(LEFT_CAP, pos.x, pos.y);
 
         float x = pos.x + 16;
         for (int i = 1; i < size.x - 1; i++)
         {
-            display.displayAbsolute(VERT_PIPE, x, pos.y);
+            display.displayAt(VERT_PIPE, x, pos.y);
             x += 16;
         }
-        display.displayAbsolute(BOT_CAP, x, pos.y);
+        display.displayAt(BOT_CAP, x, pos.y);
     }
 
     private void drawRect(DisplayAdapter display)
     {
-        display.displayAbsolute(TOP_LEFT, pos.x, pos.y);
-        display.displayAbsolute(TOP_RIGHT, pos.x + (size.x - 1) * 16, pos.y);
-        display.displayAbsolute(BOT_LEFT, pos.x, pos.y + (size.y - 1) * 16);
-        display.displayAbsolute(
+        display.displayAt(TOP_LEFT, pos.x, pos.y);
+        display.displayAt(TOP_RIGHT, pos.x + (size.x - 1) * 16, pos.y);
+        display.displayAt(BOT_LEFT, pos.x, pos.y + (size.y - 1) * 16);
+        display.displayAt(
             BOT_RIGHT,
             pos.x + (size.x - 1) * 16,
             pos.y + (size.y - 1) * 16);
@@ -195,16 +199,16 @@ public class Button implements Loadable, GestureEventHandler
         float x = pos.x + 16;
         for (int i = 1; i < size.x - 1; i++)
         {
-            display.displayAbsolute(TOP, x, pos.y);
-            display.displayAbsolute(BOT, x, pos.y + (size.y - 1) * 16);
+            display.displayAt(TOP, x, pos.y);
+            display.displayAt(BOT, x, pos.y + (size.y - 1) * 16);
             x += 16;
         }
 
         float y = pos.y + 16;
         for (int i = 1; i < size.y - 1; i++)
         {
-            display.displayAbsolute(LEFT, pos.x, y);
-            display.displayAbsolute(RIGHT, pos.x + (size.x - 1) * 16, y);
+            display.displayAt(LEFT, pos.x, y);
+            display.displayAt(RIGHT, pos.x + (size.x - 1) * 16, y);
             y += 16;
         }
     }

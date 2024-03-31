@@ -12,7 +12,7 @@ public interface DisplayAdapter
      *
      * @param t
      */
-    public void display(WorldObject t);
+    public void displayArr(WorldObject t);
 
     /**
      * Dispay the sprite relative to the world array
@@ -21,7 +21,7 @@ public interface DisplayAdapter
      * @param ax array position x
      * @param ay array position y
      */
-    public void display(Sprite d, float ax, float ay);
+    public void displayArr(Sprite d, float ax, float ay);
 
     /**
      * Display at the povided pixel location, with respect to the current
@@ -31,7 +31,7 @@ public interface DisplayAdapter
      * @param x Pixel x
      * @param y Pixel y
      */
-    public void displayAbsolute(Sprite d, float x, float y);
+    public void displayAt(Sprite d, float x, float y);
 
     public void setMatrix(Matrix mat);
 

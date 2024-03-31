@@ -1,7 +1,5 @@
 package com.game.android.gesture;
 
-import com.game.tama.core.Input;
-
 public class DoubleTapDragStart extends GestureEvent
 {
     public float startX;

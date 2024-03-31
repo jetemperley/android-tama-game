@@ -32,7 +32,7 @@ public abstract class Thing implements java.io.Serializable, Loadable
 
     public void draw(DisplayAdapter d)
     {
-        d.display(loc);
+        d.displayArr(loc);
         for (Thing thing : children)
         {
             thing.draw(d);

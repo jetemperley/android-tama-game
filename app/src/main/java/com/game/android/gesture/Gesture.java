@@ -2,7 +2,6 @@ package com.game.android.gesture;
 
 import android.view.MotionEvent;
 
-import com.game.tama.core.Input;
 import com.game.tama.util.Log;
 import com.game.tama.util.Vec2;
 
@@ -11,13 +10,12 @@ import java.time.temporal.ChronoUnit;
 
 public class Gesture implements Input
 {
-
     private GState[] state;
     private int stateidx = 0;
 
     int error = -1, wait = 0, down = 1, doubleTapDrag = 2,
-            scale = 3, singleTap = 4, scroll = 5,
-            doubleTap = 6;
+        scale = 3, singleTap = 4, scroll = 5,
+        doubleTap = 6;
 
     // pointer ids, (primary pointer is always at index 0)
     private int id2 = -1;
@@ -27,9 +25,12 @@ public class Gesture implements Input
     private int singleTapConfirmDelay = 200;
     private int dragConfirmSensitivity = 2000;
 
+    public Input gestureTarget;
+
+    public float topOffset = 0;
+
     public Gesture()
     {
-
         state = new GState[7];
         state[0] = new Wait();
         state[1] = new Down();
@@ -48,62 +49,92 @@ public class Gesture implements Input
 
     public boolean onTouchEvent(MotionEvent e)
     {
-
-        // Log.log("Game Gesture", "event " + e.getAction());
         stateidx = state[stateidx].onMotion(e);
-        // Log.log("Game Gesture", "state " + stateidx);
-
         return true;
     }
 
     public void singleTapConfirmed(float x, float y)
     {
         Log.log(this, "single tap confirm");
+        gestureTarget.singleTapConfirmed(x, y - topOffset);
     }
 
     public void singleDown(float x, float y)
     {
         Log.log(this, "long press confirm");
+        gestureTarget.singleDown(x, y - topOffset);
     }
 
     public void longPressConfirmed(float x, float y)
     {
         Log.log(this, "long press confirm");
+        gestureTarget.longPressConfirmed(x, y - topOffset);
     }
 
     public void doubleTapConfirmed(float x, float y)
     {
         Log.log(this, "double tap confirm");
+        gestureTarget.doubleTapConfirmed(x, y - topOffset);
     }
 
     public void doubleTapRelease(float x, float y)
     {
         Log.log(this, "double tap release");
+        gestureTarget.doubleTapRelease(x, y - topOffset);
     }
 
-    public void doubleTapDragStart(float startX, float startY, float currentX, float currentY)
+    public void doubleTapDragStart(float startX,
+                                   float startY,
+                                   float currentX,
+                                   float currentY)
     {
         Log.log(this, "drag start");
+        gestureTarget.doubleTapDragStart(
+            startX,
+            startY - topOffset,
+            currentX,
+            currentY - topOffset);
     }
 
-    public void doubleTapDrag(float prevX, float prevY, float nextX, float nextY)
+    public void doubleTapDrag(float prevX,
+                              float prevY,
+                              float nextX,
+                              float nextY)
     {
         Log.log(this, "drag confirm");
+        gestureTarget.doubleTapDrag(
+            prevX,
+            prevY - topOffset,
+            nextX,
+            nextY - topOffset);
     }
 
     public void doubleTapDragEnd(float x, float y)
     {
         Log.log(this, "drag end");
+        gestureTarget.doubleTapDragEnd(x, y - topOffset);
     }
 
-    public void scale(Vec2<Float> p1, Vec2<Float> p2, Vec2<Float> n1, Vec2<Float> n2)
+    public void scale(Vec2<Float> p1,
+                      Vec2<Float> p2,
+                      Vec2<Float> n1,
+                      Vec2<Float> n2)
     {
         Log.log(this, "scale confirm");
+        p1.y -= topOffset;
+        p2.y -= topOffset;
+        n1.y -= topOffset;
+        n2.y -= topOffset;
+
+        gestureTarget.scale(p1, p2, n1, n2);
     }
 
     public void scroll(Vec2<Float> prev, Vec2<Float> next)
     {
         Log.log(this, "scroll confirm");
+        prev.y -= topOffset;
+        next.y -= topOffset;
+        gestureTarget.scroll(prev, next);
     }
 
     abstract class GState
@@ -158,7 +189,7 @@ public class Gesture implements Input
         void update()
         {
             if (ChronoUnit.MILLIS.between(downTime, LocalTime.now()) >
-                    singleTapConfirmDelay)
+                singleTapConfirmDelay)
             {
                 longPressConfirmed(initialPos.x, initialPos.y);
                 // stateidx = wait;
@@ -173,7 +204,7 @@ public class Gesture implements Input
 
                 case MotionEvent.ACTION_MOVE:
                     if (Vec2.distSq(initialPos, new Vec2(e.getX(), e.getY())) >
-                            dragConfirmSensitivity)
+                        dragConfirmSensitivity)
                     {
                         state[scroll].start(e);
                         return scroll;
@@ -182,7 +213,7 @@ public class Gesture implements Input
 
                 case MotionEvent.ACTION_UP:
                     if (ChronoUnit.MILLIS.between(downTime, LocalTime.now()) <
-                            singleTapConfirmDelay)
+                        singleTapConfirmDelay)
                     {
                         state[singleTap].start(e);
                         return singleTap;
@@ -218,7 +249,8 @@ public class Gesture implements Input
 
         void update()
         {
-            if (ChronoUnit.MILLIS.between(upTime, LocalTime.now()) > singleTapConfirmDelay)
+            if (ChronoUnit.MILLIS.between(upTime, LocalTime.now()) >
+                singleTapConfirmDelay)
             {
                 singleTapConfirmed(loc.x, loc.y);
                 stateidx = wait;
@@ -233,7 +265,7 @@ public class Gesture implements Input
 
                 case MotionEvent.ACTION_DOWN:
                     if (ChronoUnit.MILLIS.between(upTime, LocalTime.now()) <
-                            singleTapConfirmDelay)
+                        singleTapConfirmDelay)
                     {
                         state[doubleTap].start(e);
                         return doubleTap;
@@ -296,7 +328,7 @@ public class Gesture implements Input
 
                 case MotionEvent.ACTION_MOVE:
                     if (Vec2.distSq(loc, new Vec2(e.getX(), e.getY())) >
-                            dragConfirmSensitivity)
+                        dragConfirmSensitivity)
                     {
                         doubleTapDragStart(loc.x, loc.y, e.getX(), e.getY());
                         state[doubleTapDrag].start(e);
@@ -348,7 +380,7 @@ public class Gesture implements Input
 
                 case MotionEvent.ACTION_MOVE:
                     start(e);
-                    scroll(prev, next);
+                    scroll(new Vec2<>(prev), new Vec2<>(next));
                     return scroll;
 
                 case MotionEvent.ACTION_UP:
@@ -402,7 +434,11 @@ public class Gesture implements Input
                 case MotionEvent.ACTION_MOVE:
 
                     start(e);
-                    scale(prev1, prev2, next1, next2);
+                    scale(
+                        new Vec2<>(prev1),
+                        new Vec2<>(prev2),
+                        new Vec2<>(next1),
+                        new Vec2<>(next2));
                     return scale;
 
                 case MotionEvent.ACTION_UP:

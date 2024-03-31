@@ -1,7 +1,5 @@
 package com.game.android.gesture;
 
-import com.game.tama.core.Input;
-
 public class DoubleTapDragEnd extends GestureEvent
 {
     @Override

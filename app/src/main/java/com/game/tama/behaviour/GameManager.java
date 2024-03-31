@@ -1,6 +1,7 @@
 package com.game.tama.behaviour;
 
-import com.game.android.gesture.GesturePrioritySubscriber;
+import com.game.android.gesture.EventPrioritySubscriber;
+import com.game.android.gesture.GestureEventPipe;
 import com.game.engine.Behaviour;
 import com.game.engine.Node;
 import com.game.tama.core.PetGame;
@@ -13,16 +14,24 @@ public class GameManager extends Behaviour
     private Menu pauseMenu;
     private Menu hudMenu;
 
-    public GameManager(Node parent)
+    private GestureEventPipe mainInput;
+    private EventPrioritySubscriber prioritySubscriber;
+
+    public GameManager(Node parent, GestureEventPipe input)
     {
         super(parent);
         INST = this;
+        mainInput = input;
+        prioritySubscriber = new EventPrioritySubscriber(mainInput);
+
+        gameBehaviour = new PetGameBehaviour(new Node(parent));
         pauseMenu = BehaviourBuilder.buildPauseMenu(new Node(parent));
         hudMenu = BehaviourBuilder.buildHUD(new Node(parent));
-        gameBehaviour = new PetGameBehaviour(new Node(parent));
-        GesturePrioritySubscriber.subscribe(pauseMenu, 1);
-        GesturePrioritySubscriber.subscribe(hudMenu, 1);
-        GesturePrioritySubscriber.subscribe(gameBehaviour, 2);
+
+        prioritySubscriber.subscribe(pauseMenu, 1);
+        prioritySubscriber.subscribe(hudMenu, 1);
+        prioritySubscriber.subscribe(gameBehaviour, 2);
+
         play();
     }
 
@@ -48,6 +57,7 @@ public class GameManager extends Behaviour
     @Override
     public void update()
     {
+        prioritySubscriber.update();
         Log.log(this, "updateing");
     }
 

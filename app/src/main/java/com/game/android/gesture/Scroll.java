@@ -1,6 +1,5 @@
 package com.game.android.gesture;
 
-import com.game.tama.core.Input;
 import com.game.tama.util.Vec2;
 
 public class Scroll extends GestureEvent
@@ -14,7 +13,7 @@ public class Scroll extends GestureEvent
         handler.scroll(prev, next);
     }
 
-    public void set(Vec2<Float> prev, Vec2<Float> next)
+    public void setPrevNext(Vec2<Float> prev, Vec2<Float> next)
     {
         this.prev = prev;
         this.next = next;

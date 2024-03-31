@@ -14,7 +14,7 @@ public class MatrixUtil
         mat.getValues(f2);
 
         points[0] = (f[0] - f2[2]) / 16;
-        points[1] = (f[1] - f2[5] - GameActivity.TOP_OFFSET) / 16;
+        points[1] = (f[1] - f2[5]) / 16;
 
         temp.reset();
         mat.invert(temp);
@@ -27,7 +27,7 @@ public class MatrixUtil
         mat.getValues(f2);
         float[] f = {
             (x - f2[2]),
-            (y - f2[5] - GameActivity.TOP_OFFSET)};
+            (y - f2[5])};
 
         Matrix inv = new Matrix();
         mat.invert(inv);
@@ -45,7 +45,7 @@ public class MatrixUtil
         mat.getValues(f2);
         float[] f = {
             (x - f2[2]) / 16,
-            (y - f2[5] - GameActivity.TOP_OFFSET) / 16};
+            (y - f2[5]) / 16};
 
         temp.reset();
         mat.invert(temp);
@@ -59,7 +59,7 @@ public class MatrixUtil
         mat.getValues(f2);
         float[] f = {
             (x - f2[2]),
-            (y - f2[5] - GameActivity.TOP_OFFSET)};
+            (y - f2[5])};
 
         temp.reset();
         mat.invert(temp);

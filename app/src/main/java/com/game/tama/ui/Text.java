@@ -44,7 +44,7 @@ public class Text implements Updateable, Drawable, Loadable
         {
             if (d != null)
             {
-                display.displayAbsolute(d, xPos + x, yPos);
+                display.displayAt(d, xPos + x, yPos);
             }
             x+=8;
         }
@@ -58,7 +58,7 @@ public class Text implements Updateable, Drawable, Loadable
             Sprite d = letters[i];
             if (d != null)
             {
-                display.displayAbsolute(d, xPos + x, yPos);
+                display.displayAt(d, xPos + x, yPos);
             }
             x+=8;
         }

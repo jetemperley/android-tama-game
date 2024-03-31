@@ -18,8 +18,9 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import com.game.android.gesture.Gesture;
+import com.game.android.gesture.GestureEventAdaptor;
 import com.game.engine.Node;
-import com.game.android.gesture.GesturePrioritySubscriber;
 import com.game.tama.core.Assets;
 import com.game.tama.core.GameLoop;
 import com.game.tama.behaviour.GameManager;
@@ -32,17 +33,15 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.Timer;
 
 public class GameActivity extends Activity
 {
     final static String DATA_FILE_NAME = "gameData.ser";
-    public static float TOP_OFFSET = 0;
+    private static float TOP_OFFSET = 0;
 
     ConstraintLayout lay;
     static Paint red, black, white;
     CustomView view;
-    Timer timer;
     public static Rect screenSize;
     final String
         CHANNEL_ID = "01",
@@ -56,7 +55,7 @@ public class GameActivity extends Activity
 
     Node root;
     GameManager gameManager;
-    GesturePrioritySubscriber gesture;
+    Gesture gesture;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -65,7 +64,7 @@ public class GameActivity extends Activity
 
         view = new CustomView(this);
         setContentView(view);
-        TOP_OFFSET = view.getTop();
+        // TOP_OFFSET = view.getTop();
 
         display = getWindowManager().getDefaultDisplay();
         screenSize = new Rect();
@@ -123,8 +122,10 @@ public class GameActivity extends Activity
         displayAdapter = new AndroidDisplay(16);
 
         root = new Node();
-        gameManager = new GameManager(root);
-        gesture = GesturePrioritySubscriber.instance();
+        gesture = new Gesture();
+        GestureEventAdaptor gestureEventAdaptor = new GestureEventAdaptor();
+        gesture.gestureTarget = gestureEventAdaptor;
+        gameManager = new GameManager(root, gestureEventAdaptor);
         // TODO load the game somewhere
         gameManager.play();
 
@@ -133,11 +134,12 @@ public class GameActivity extends Activity
 
     public void updateAndDraw()
     {
-        gesture.update();
-        // update the view bounds
         this.getWindow().getDecorView().getWindowVisibleDisplayFrame(
                 displayAdapter.view);
         TOP_OFFSET = displayAdapter.view.top;
+        gesture.topOffset = TOP_OFFSET;
+        gesture.update();
+        // update the view bounds
 
         if (view.surface.getSurface().isValid())
         {
