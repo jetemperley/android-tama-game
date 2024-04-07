@@ -1,20 +1,17 @@
 package com.game.tama.behaviour;
 
 import com.game.android.gesture.EventPrioritySubscriber;
-import com.game.android.gesture.GestureEventHandler;
-import com.game.android.gesture.GestureEventPipe;
 import com.game.android.gesture.GestureEventSource;
 import com.game.engine.Behaviour;
 import com.game.engine.Node;
 import com.game.tama.core.PetGame;
-import com.game.tama.util.Log;
 
 public class GameManager extends Behaviour
 {
     public static GameManager INST;
-    private PetGameBehaviour gameBehaviour;
-    private Menu pauseMenu;
-    private Menu hudMenu;
+    public PetGameBehaviour gameBehaviour;
+    public MenuBehaviour pauseMenu;
+    public MenuBehaviour hudMenu;
 
     private GestureEventSource mainInput;
     private EventPrioritySubscriber prioritySubscriber;

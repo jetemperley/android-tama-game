@@ -5,6 +5,7 @@ import android.graphics.Matrix;
 import com.game.android.DepthDisplay;
 import com.game.android.DisplayAdapter;
 import com.game.android.gesture.Input;
+import com.game.tama.behaviour.GameManager;
 import com.game.tama.behaviour.PetGameBehaviour;
 import com.game.tama.command.CommandFactory;
 import com.game.tama.command.CommandQueue;
@@ -65,7 +66,7 @@ public class PetGame implements java.io.Serializable, Input,
 
         if (selected != null)
         {
-            display.displayArr(
+            display.drawArr(
                 Assets.getSprite(Assets.Names.static_inv.name()),
                 selected.loc.getWorldArrPos().x,
                 selected.loc.getWorldArrPos().y);
@@ -79,6 +80,7 @@ public class PetGame implements java.io.Serializable, Input,
         {
             //backpackSlot.draw(display);
         }
+        containerManager.draw(display);
         heldThing.drawHeld(display);
 
     }
@@ -181,16 +183,21 @@ public class PetGame implements java.io.Serializable, Input,
         heldThing.held = null;
     }
 
+    public Thing getThing(float x, float y)
+    {
+        return world.checkCollision(x, y);
+    }
+
     public void select(float x, float y)
     {
-        Thing t = world.checkCollision(x, y);
-        if (selected == t)
+        Thing t = getThing(x, y);
+        if (t == null || selected == t)
         {
             selected = null;
         }
         else
         {
-            selected = t;
+            GameManager.INST.hudMenu.add();
         }
     }
 
@@ -212,11 +219,10 @@ public class PetGame implements java.io.Serializable, Input,
     public void use(float x, float y)
     {
         Thing t = world.checkCollision(x, y);
-        if (t == null)
+        if (t != null)
         {
-            return;
+            t.use();
         }
-        t.apply(world, t.loc.x, t.loc.y);
     }
 
     /**
@@ -257,10 +263,18 @@ public class PetGame implements java.io.Serializable, Input,
         float[] f =
             MatrixUtil.convertScreenToWorldArray(behaviour.getWorldTransform(
                 tempMat), x, y);
-//        Log.log(this, "tapped " + f[0] + " " + f[1]);
 
-        select(f[0], f[1]);
-        poke(f[0], f[1]);
+        Thing t = getThing(f[0], f[1]);
+        if (selected == null || selected != t)
+        {
+            select(f[0], f[1]);
+        }
+        else
+        {
+            poke(f[0], f[1]);
+            selected = null;
+        }
+
     }
 
     @Override
@@ -276,62 +290,6 @@ public class PetGame implements java.io.Serializable, Input,
             MatrixUtil.convertScreenToWorldArray(
                 getTempWorldTransform(), x, y);
         use(f[0], f[1]);
-    }
-
-    @Override
-    public void doubleTapConfirmed(float x, float y)
-    {
-        Log.log(this, "double tap confirmed");
-        float[] f = MatrixUtil.convertScreenToWorldArray(
-            getTempWorldTransform(),
-            x,
-            y);
-        doubleSelect(f[0], f[1]);
-    }
-
-    @Override
-    public void doubleTapDragStart(float startX,
-                                   float startY,
-                                   float currentX,
-                                   float currentY)
-    {
-
-    }
-
-    @Override
-    public void doubleTapDrag(float prevX,
-                              float prevY,
-                              float nextX,
-                              float nextY)
-    {
-        //        if (backpackSlot.isTouchInside(nextX, nextY))
-        //        {
-        //            heldMatrix = backpackSlot.mat;
-        //            float[] f =
-        //                MatrixUtil.convertScreenToWorldArray(heldMatrix,
-        //                nextX, nextY);
-        //            setHeldPosition(f[0], f[1]);
-        //        }
-        //        else
-        //        {
-//        heldMatrix = behaviour.getWorldTransform(new Matrix());
-//        float[] f =
-//            MatrixUtil.convertScreenToWorldArray(heldMatrix, nextX, nextY);
-//        setHeldPosition(f[0], f[1]);
-        //        }
-    }
-
-    @Override
-    public void doubleTapRelease(float x, float y)
-    {
-    }
-
-    @Override
-    public void doubleTapDragEnd(float x, float y)
-    {
-        float[] f = MatrixUtil.convertScreenToWorldArray(
-            getTempWorldTransform(), x, y);
-        dropHeld(f[0], f[1]);
     }
 
     @Override
@@ -423,8 +381,6 @@ public class PetGame implements java.io.Serializable, Input,
         return true;
     }
 
-    public void toggle(Container container) {}
-
     public Matrix getTempWorldTransform()
     {
         return behaviour.getWorldTransform(tempMat);
@@ -442,7 +398,7 @@ public class PetGame implements java.io.Serializable, Input,
             //display.setMatrix(heldThing.heldMatrix);
             if (held != null)
             {
-                d.displayArr(
+                d.drawArr(
                     held.loc.sprite,
                     heldPos.x - heldOffset.x,
                     heldPos.y - heldOffset.y);

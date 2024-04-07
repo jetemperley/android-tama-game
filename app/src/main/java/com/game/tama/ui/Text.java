@@ -8,6 +8,7 @@ import com.game.tama.core.Sprite;
 import com.game.tama.core.SpriteSheet;
 import com.game.tama.core.Updateable;
 
+// TODO maybe make this a UINode
 public class Text implements Updateable, Drawable, Loadable
 {
     private String text;
@@ -44,7 +45,7 @@ public class Text implements Updateable, Drawable, Loadable
         {
             if (d != null)
             {
-                display.displayAt(d, xPos + x, yPos);
+                display.drawSprite(d, xPos + x, yPos);
             }
             x+=8;
         }
@@ -58,7 +59,7 @@ public class Text implements Updateable, Drawable, Loadable
             Sprite d = letters[i];
             if (d != null)
             {
-                display.displayAt(d, xPos + x, yPos);
+                display.drawSprite(d, xPos + x, yPos);
             }
             x+=8;
         }

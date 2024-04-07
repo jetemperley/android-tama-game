@@ -32,7 +32,7 @@ public abstract class Thing implements java.io.Serializable, Loadable
 
     public void draw(DisplayAdapter d)
     {
-        d.displayArr(loc);
+        d.drawArr(loc);
         for (Thing thing : children)
         {
             thing.draw(d);
@@ -62,7 +62,6 @@ public abstract class Thing implements java.io.Serializable, Loadable
         }
     }
 
-
     public boolean canSwim()
     {
         return false;
@@ -75,14 +74,16 @@ public abstract class Thing implements java.io.Serializable, Loadable
 
     /**
      * Checks whether the point x,y is inside the bounding box for this object
+     *
      * @param x
      * @param y
      * @return
      */
     public boolean contains(float x, float y)
     {
-        if (x > loc.x + (loc.xoff / 100f) && x < loc.x + (loc.xoff / 100f) + 1 &&
-                y > loc.y + (loc.yoff / 100f) && y < loc.y + (loc.yoff / 100f) + 1)
+        if (x > loc.x + (loc.xoff / 100f) &&
+            x < loc.x + (loc.xoff / 100f) + 1 &&
+            y > loc.y + (loc.yoff / 100f) && y < loc.y + (loc.yoff / 100f) + 1)
         {
             return true;
         }
@@ -94,9 +95,8 @@ public abstract class Thing implements java.io.Serializable, Loadable
         return Type.undefined;
     }
 
-    public Thing apply(World m, int x, int y)
+    public void use()
     {
-        return this;
     }
 
     public void poke()
@@ -119,7 +119,7 @@ public abstract class Thing implements java.io.Serializable, Loadable
         {
             if (component.getClass().isInstance(clazz))
             {
-                return (T)component;
+                return (T) component;
             }
         }
         return null;
@@ -141,7 +141,6 @@ public abstract class Thing implements java.io.Serializable, Loadable
     {
         components.add(component);
     }
-
 }
 
 

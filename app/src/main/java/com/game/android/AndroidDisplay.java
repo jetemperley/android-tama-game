@@ -24,7 +24,7 @@ public class AndroidDisplay implements DisplayAdapter
         idMatrix.reset();
     }
 
-    public void displayArr(WorldObject t)
+    public void drawArr(WorldObject t)
     {
         if (t.sprite == null)
         {
@@ -40,7 +40,7 @@ public class AndroidDisplay implements DisplayAdapter
             GameActivity.black);
     }
 
-    public void displayAt(Sprite d, float x, float y)
+    public void drawSprite(Sprite d, float x, float y)
     {
         canvas.drawBitmap(d.getSprite(), x, y, GameActivity.black);
     }
@@ -57,7 +57,7 @@ public class AndroidDisplay implements DisplayAdapter
         canvas.drawRect(x, y, x + width, y + height, GameActivity.red);
     }
 
-    public void displayArr(Sprite d, float x, float y)
+    public void drawArr(Sprite d, float x, float y)
     {
         canvas.drawBitmap(d.getSprite(), x * 16, y * 16, GameActivity.black);
     }

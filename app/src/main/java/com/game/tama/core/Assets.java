@@ -71,6 +71,10 @@ public class Assets
         static_menu,
         static_backpack,
         static_empty,
+        static_circle_16,
+        static_circle_14,
+        static_x,
+        static_o
     }
 
     public static Map<Integer, StaticSprite> sprites;

@@ -21,7 +21,7 @@ public class MatrixUtil
         temp.mapVectors(f);
     }
 
-    public static float[] convertScreenToMatrix(Matrix mat, float x, float y)
+    public static float[] convertInvScreenToMatrix(Matrix mat, float x, float y)
     {
         float[] f2 = new float[9];
         mat.getValues(f2);

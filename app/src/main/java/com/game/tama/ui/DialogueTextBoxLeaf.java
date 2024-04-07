@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class DialogueTextBox extends Button
+public class DialogueTextBoxLeaf extends SquareCellButtonLeaf
 {
     private String text;
     private List<Text> lines;
@@ -24,11 +24,11 @@ public class DialogueTextBox extends Button
      * @param height size (in 16 bit cells) of button
      * @param text   the text to be displayed
      */
-    public DialogueTextBox(float xPos,
-                           float yPos,
-                           int width,
-                           int height,
-                           String text)
+    public DialogueTextBoxLeaf(float xPos,
+                               float yPos,
+                               int width,
+                               int height,
+                               String text)
     {
         super(xPos, yPos, width, height, null);
         this.text = text;

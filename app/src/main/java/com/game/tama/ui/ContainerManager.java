@@ -1,8 +1,6 @@
 package com.game.tama.ui;
 
 import com.game.android.DisplayAdapter;
-import com.game.engine.Behaviour;
-import com.game.engine.Node;
 import com.game.tama.core.Container;
 
 import java.util.ArrayList;
@@ -21,8 +19,18 @@ public class ContainerManager
     {
         for (Container container : containers)
         {
-            container.drawWorld(display);
+            container.drawContainer(display);
         }
+    }
+
+    public void toggle(Container container)
+    {
+        if (containers.contains(container))
+        {
+            containers.remove(container);
+            return;
+        }
+        containers.add(container);
     }
 
     public void update()

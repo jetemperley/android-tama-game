@@ -5,22 +5,23 @@ import com.game.android.gesture.GestureEvent;
 import com.game.engine.Behaviour;
 import com.game.engine.Node;
 import com.game.tama.core.PetGame;
-import com.game.tama.util.Log;
 
 public class PetGameBehaviour extends Behaviour
 {
     public PetGame petGame;
+    public MenuBehaviour thingMenu;
+
     public PetGameBehaviour(Node parent)
     {
         super(parent);
         petGame = new PetGame(this);
-//        parent.transform.setScale(6, 6);
+        parent.transform.setScale(6, 6);
+        thingMenu = new MenuBehaviour(parent);
     }
 
     @Override
     public void draw(DisplayAdapter display)
     {
-        Log.log(this, "drawing");
         petGame.draw(display);
     }
 

@@ -29,7 +29,7 @@ public class Container extends Thing implements GestureEventHandler
         load();
     }
 
-    public void drawWorld(DisplayAdapter display)
+    public void drawContainer(DisplayAdapter display)
     {
         display.push();
         Vec2<Float> pos = loc.getWorldBitPos();
@@ -48,7 +48,13 @@ public class Container extends Thing implements GestureEventHandler
     @Override
     public void poke()
     {
-        parent.toggle(this);
+        parent.containerManager.toggle(this);
+    }
+
+    @Override
+    public void use()
+    {
+
     }
 
     public void doubleTapDragStart(float startX,

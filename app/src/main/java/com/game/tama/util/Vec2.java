@@ -35,7 +35,7 @@ public class Vec2<T extends Number> implements java.io.Serializable
         float x = a.x - b.x;
         float y = a.y - b.y;
 
-        return x * x + y * y;
+        return Math.abs(x * x + y * y);
     }
 
     @Override

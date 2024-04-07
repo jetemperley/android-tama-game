@@ -20,18 +20,18 @@ public class DepthDisplay implements DisplayAdapter
         draws = new PriorityQueue<>(200, new DepthComp());
     }
 
-    public void displayArr(WorldObject t)
+    public void drawArr(WorldObject t)
     {
         draws.add(t);
     }
 
     @Override
-    public void displayArr(Sprite d, float x, float y)
+    public void drawArr(Sprite d, float x, float y)
     {
         throw new RuntimeException("Operation not supported");
     }
 
-    public void displayAt(Sprite d, float x, float y)
+    public void drawSprite(Sprite d, float x, float y)
     {
         throw new RuntimeException("Operation not supported");
     }
@@ -56,7 +56,7 @@ public class DepthDisplay implements DisplayAdapter
             while (!draws.isEmpty())
             {
                 b = draws.poll();
-                display.displayArr(b);
+                display.drawArr(b);
             }
         }
         check = false;

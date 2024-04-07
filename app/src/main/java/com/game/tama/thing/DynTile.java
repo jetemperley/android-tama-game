@@ -68,7 +68,7 @@ public class DynTile extends Tile
             {
                 if (parts[a][b].sprite != null)
                 {
-                    d.displayArr(parts[a][b]);
+                    d.drawArr(parts[a][b]);
                 }
             }
         }

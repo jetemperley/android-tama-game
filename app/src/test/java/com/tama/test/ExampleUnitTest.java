@@ -3,7 +3,7 @@ package com.tama.test;
 import com.game.tama.anim.KeyFrame;
 import com.game.tama.anim.KeyFrameAnim;
 import com.game.tama.anim.KeyFrameAssets;
-import com.game.tama.ui.DialogueTextBox;
+import com.game.tama.ui.DialogueTextBoxLeaf;
 import com.game.tama.util.Vec2;
 
 import org.junit.Assert;
@@ -68,7 +68,7 @@ public class ExampleUnitTest
     {
         String text =
             "This is some text that should be split into smaller lines";
-        List<String> actual = DialogueTextBox.splitIntoLines(text, 10);
+        List<String> actual = DialogueTextBoxLeaf.splitIntoLines(text, 10);
         Assert.assertEquals(7, actual.size());
         Assert.assertEquals("This is", actual.get(0));
         Assert.assertEquals("some text", actual.get(1));
@@ -84,7 +84,7 @@ public class ExampleUnitTest
     {
         String text =
             "123456789";
-        List<String> actual = DialogueTextBox.splitIntoLines(text, 6);
+        List<String> actual = DialogueTextBoxLeaf.splitIntoLines(text, 6);
         Assert.assertEquals(2, actual.size());
         Assert.assertEquals("12345-", actual.get(0));
         Assert.assertEquals("6789", actual.get(1));

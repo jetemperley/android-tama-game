@@ -62,7 +62,7 @@ public class Gesture implements Input
 
     public void singleDown(float x, float y)
     {
-        Log.log(this, "long press confirm");
+        Log.log(this, "single down");
         gestureTarget.singleDown(x, y - topOffset);
     }
 
@@ -102,7 +102,7 @@ public class Gesture implements Input
                               float nextX,
                               float nextY)
     {
-        Log.log(this, "drag confirm");
+        Log.log(this, "double drag confirm");
         gestureTarget.doubleTapDrag(
             prevX,
             prevY - topOffset,
@@ -112,7 +112,7 @@ public class Gesture implements Input
 
     public void doubleTapDragEnd(float x, float y)
     {
-        Log.log(this, "drag end");
+        Log.log(this, "double drag end");
         gestureTarget.doubleTapDragEnd(x, y - topOffset);
     }
 
@@ -133,13 +133,13 @@ public class Gesture implements Input
     @Override
     public void dragStart(float x, float y)
     {
+        Log.log(this, "drag start");
         y -= topOffset;
         gestureTarget.dragStart(x, y);
     }
 
     public void drag(Vec2<Float> prev, Vec2<Float> next)
     {
-        Log.log(this, "scroll confirm");
         prev.y -= topOffset;
         next.y -= topOffset;
         gestureTarget.drag(prev, next);
@@ -148,6 +148,7 @@ public class Gesture implements Input
     @Override
     public void dragEnd(float x, float y)
     {
+        Log.log(this, "drag end");
         y -= topOffset;
         gestureTarget.dragEnd(x, y);
     }
@@ -174,12 +175,20 @@ public class Gesture implements Input
 
         Class onMotion(MotionEvent e)
         {
-            if (e.getAction() == MotionEvent.ACTION_DOWN)
+            switch (e.getAction())
             {
-                singleDown(e.getX(), e.getY());
-                states.get(Down.class).start(e);
-                return Down.class;
+
+                case MotionEvent.ACTION_POINTER_2_DOWN:
+                case MotionEvent.ACTION_DOWN:
+                    singleDown(e.getX(), e.getY());
+                    states.get(Down.class).start(e);
+                    return Down.class;
+
+                case MotionEvent.ACTION_MOVE:
+                    ((Drag)states.get(Drag.class)).start(e.getX(), e.getY());
+                    return Drag.class;
             }
+            Log.log(this, "Unexpected starting motion event was: " + e.getAction());
             return Wait.class;
         }
     }
@@ -226,6 +235,7 @@ public class Gesture implements Input
                             initialPos.y);
                         return Drag.class;
                     }
+                    return Down.class;
 
                 case MotionEvent.ACTION_UP:
 
@@ -236,6 +246,9 @@ public class Gesture implements Input
                     states.get(Scale.class).start(e);
                     return Scale.class;
             }
+            Log.log(
+                this,
+                "Unexpected starting motion event was: " + e.getAction());
             return Down.class;
         }
     }
@@ -321,7 +334,7 @@ public class Gesture implements Input
                     doubleTapRelease(e.getX(), e.getY());
                     return Wait.class;
             }
-            return DoubleTap.class;
+            return Wait.class;
         }
     }
 
@@ -375,7 +388,7 @@ public class Gesture implements Input
                     states.get(Scale.class).start(e);
                     return Scale.class;
             }
-            return Drag.class;
+            return Wait.class;
         }
     }
 

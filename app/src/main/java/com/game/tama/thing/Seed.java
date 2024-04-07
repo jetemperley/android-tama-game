@@ -20,7 +20,7 @@ class Seed extends Thing
         return true;
     }
 
-    public Thing apply(World world, int ax, int ay)
+    public Thing use(World world, int ax, int ay)
     {
         Thing t = world.getThing(ax, ay);
         if (t == null || t == this)

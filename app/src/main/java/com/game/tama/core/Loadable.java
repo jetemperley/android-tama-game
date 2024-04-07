@@ -2,5 +2,5 @@ package com.game.tama.core;
 
 public interface Loadable
 {
-    public void load();
+    default public void load(){}
 }
