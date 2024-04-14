@@ -316,9 +316,9 @@ public class World implements java.io.Serializable
         return false;
     }
 
-    public Thing pickupThing(int x, int y)
+    public Thing pickupThing(int ax, int ay)
     {
-        Thing thing = removeThing(x, y);
+        Thing thing = removeThing(ax, ay);
         return thing.pickup();
     }
 
@@ -326,8 +326,7 @@ public class World implements java.io.Serializable
     {
         int xDiff = Math.abs(a.x - b.x);
         int yDiff = Math.abs(a.y - b.y);
-        boolean bool = (xDiff == 1) ^ (yDiff == 1);
-        return bool;
+        return (xDiff == 1) ^ (yDiff == 1);
     }
 }
 

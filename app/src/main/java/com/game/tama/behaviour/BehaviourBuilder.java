@@ -5,27 +5,24 @@ import com.game.tama.core.Assets;
 import com.game.tama.ui.CircleCellButtonLeaf;
 import com.game.tama.ui.SquareCellButtonLeaf;
 import com.game.tama.ui.DialogueTextBoxLeaf;
-import com.game.tama.ui.Text;
+import com.game.tama.ui.TextLeaf;
+import com.game.tama.ui.UINode;
 
 public class BehaviourBuilder
 {
 
-    public static Node buildPetGameNode()
-    {
-        return null;
-    }
-
     public static MenuBehaviour buildPauseMenu(Node parent)
     {
-        MenuBehaviour pauseMenu = new MenuBehaviour(parent);
-        pauseMenu.add(new SquareCellButtonLeaf(
+        MenuBehaviour pauseMenuBehaviour = new MenuBehaviour(parent);
+        UINode pauseMenu = new UINode();
+        pauseMenu.add("play button", new SquareCellButtonLeaf(
             50,
             50,
             Assets.Names.static_poop.name(),
             () -> GameManager.INST.play()));
-        pauseMenu.add(new Text("a hello z", 0, 0));
-        pauseMenu.add(new Text("aBz, cool.", 0, 8));
-        pauseMenu.add(new DialogueTextBoxLeaf(
+        pauseMenu.add("test text", new TextLeaf("a hello z", 0, 0));
+        pauseMenu.add("test text 2", new TextLeaf("aBz, cool.", 0, 8));
+        pauseMenu.add("text box", new DialogueTextBoxLeaf(
             0,
             70,
             10,
@@ -33,24 +30,26 @@ public class BehaviourBuilder
             "Ayee this is some text that is gonna be in a text box and " +
                 "hopefullly its just gonna work the first time.!!"));
         parent.transform.setScale(6, 6);
-        pauseMenu.add(new CircleCellButtonLeaf(
+        pauseMenu.add("circle button", new CircleCellButtonLeaf(
             0,
             0,
             Assets.Names.static_x.toString(),
             CircleCellButtonLeaf.Size.p14));
-
-        return pauseMenu;
+        pauseMenuBehaviour.root = pauseMenu;
+        return pauseMenuBehaviour;
     }
 
     public static MenuBehaviour buildHUD(Node parent)
     {
         MenuBehaviour hud = new MenuBehaviour(parent);
-        hud.add(new SquareCellButtonLeaf(
+        UINode hudRoot = new UINode();
+        hudRoot.add("pause", new SquareCellButtonLeaf(
             0,
             0,
             Assets.Names.static_poop.name(),
             () -> GameManager.INST.pause()));
         parent.transform.setScale(6, 6);
+        hud.root = hudRoot;
         return hud;
     }
 }

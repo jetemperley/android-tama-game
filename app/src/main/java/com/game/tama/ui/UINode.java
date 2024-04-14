@@ -16,12 +16,12 @@ public class UINode extends UIComposite
 {
     private Map<Object, UIComposite> childMap = new LinkedHashMap<>();
 
-    public void addChild(Object key, UIComposite child)
+    public void add(Object key, UIComposite child)
     {
         childMap.put(key, child);
     }
 
-    public void removeChild(Object key)
+    public void remove(Object key)
     {
         childMap.remove(key);
     }

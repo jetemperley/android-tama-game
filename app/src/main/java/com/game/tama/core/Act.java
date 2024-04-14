@@ -2,6 +2,7 @@ package com.game.tama.core;
 
 import android.util.Log;
 
+import com.game.tama.behaviour.GameManager;
 import com.game.tama.util.Path;
 import com.game.tama.util.Vec2;
 import com.game.tama.thing.Pet;
@@ -124,7 +125,7 @@ class DoPoop implements Act
 
     DoPoop()
     {
-        startTime = PetGame.time;
+        startTime = GameManager.time;
     }
 
     public ActState update(World m, Pet p)
@@ -165,7 +166,7 @@ class DoPoop implements Act
         if (state == ActState.failed)
         {
 
-            long now = PetGame.time;
+            long now = GameManager.time;
             long time = startTime - now;
             startTime = now;
             // p.sickness += time;

@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 public class DialogueTextBoxLeaf extends SquareCellButtonLeaf
 {
     private String text;
-    private List<Text> lines;
+    private List<TextLeaf> lines;
     private final int lettersPerLine;
     private final int linesPerBox;
     private float currentLetter = 0;
@@ -38,7 +38,7 @@ public class DialogueTextBoxLeaf extends SquareCellButtonLeaf
         lines = splitIntoLines(
             text,
             lettersPerLine).stream()
-            .map((s) -> new Text(s))
+            .map(TextLeaf::new)
             .collect(Collectors.toList());
     }
 
@@ -54,7 +54,7 @@ public class DialogueTextBoxLeaf extends SquareCellButtonLeaf
         {
             int lineNum = (currentLine + i) % lines.size();
             int lettersToDraw = (int) currentLetter - lettersPerLine * lineNum;
-            Text line = lines.get(lineNum);
+            TextLeaf line = lines.get(lineNum);
             line.setPos(pos.x + 4, pos.y + 4 + i * 16);
             line.draw(d, lettersToDraw);
         }

@@ -1,6 +1,7 @@
 package com.game.tama.ui;
 
 import com.game.android.DisplayAdapter;
+import com.game.android.gesture.GestureEvent;
 import com.game.tama.core.Assets;
 import com.game.tama.core.Drawable;
 import com.game.tama.core.Loadable;
@@ -8,15 +9,19 @@ import com.game.tama.core.Sprite;
 import com.game.tama.core.SpriteSheet;
 import com.game.tama.core.Updateable;
 
-// TODO maybe make this a UINode
-public class Text implements Updateable, Drawable, Loadable
+public class TextLeaf extends UIComposite
 {
     private String text;
     private transient Sprite[] letters;
     float xPos;
     float yPos;
 
-    public Text(String text, float x, float y)
+    public TextLeaf(String text)
+    {
+        this(text, 0, 0);
+    }
+
+    public TextLeaf(String text, float x, float y)
     {
         this.xPos = x;
         this.yPos = y;
@@ -24,17 +29,6 @@ public class Text implements Updateable, Drawable, Loadable
             throw new RuntimeException("Text string must be non-null.");
         this.text = text;
         load();
-    }
-
-    public Text(String text)
-    {
-        this(text, 0, 0);
-    }
-
-    @Override
-    public void update()
-    {
-
     }
 
     @Override
@@ -98,5 +92,11 @@ public class Text implements Updateable, Drawable, Loadable
     {
         this.xPos = xPos;
         this.yPos = yPos;
+    }
+
+    @Override
+    public boolean handleEvent(GestureEvent event)
+    {
+        return false;
     }
 }

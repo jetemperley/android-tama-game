@@ -1,6 +1,9 @@
 package com.game.tama.ui;
 
+import android.graphics.Matrix;
+
 import com.game.android.DisplayAdapter;
+import com.game.android.gesture.GestureEvent;
 import com.game.tama.core.Container;
 
 import java.util.ArrayList;
@@ -36,5 +39,17 @@ public class ContainerManager
     public void update()
     {
 
+    }
+
+    public boolean handleEvent(GestureEvent e, Matrix mat)
+    {
+        for (int i = containers.size() - 1; i >= 0; i--)
+        {
+            if (containers.get(i).handleEvent(e, mat))
+            {
+                return true;
+            }
+        }
+        return false;
     }
 }

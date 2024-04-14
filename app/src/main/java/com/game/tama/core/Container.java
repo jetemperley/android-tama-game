@@ -3,27 +3,27 @@ package com.game.tama.core;
 import android.graphics.Matrix;
 
 import com.game.android.DisplayAdapter;
+import com.game.android.gesture.DragEnd;
+import com.game.android.gesture.DragStart;
+import com.game.tama.behaviour.GameManager;
+import com.game.tama.behaviour.PetGameBehaviour;
 import com.game.tama.thing.Thing;
 import com.game.tama.util.Bounds;
 import com.game.tama.util.MatrixUtil;
 import com.game.tama.util.Vec2;
-import com.game.android.gesture.DoubleTapDragEnd;
-import com.game.android.gesture.DoubleTapDragStart;
 import com.game.android.gesture.GestureEvent;
 import com.game.android.gesture.GestureEventHandler;
 import com.game.tama.util.Log;
 
-public class Container extends Thing implements GestureEventHandler
+public class Container extends Thing
 {
     private World world;
-    private PetGame parent;
 
     Matrix mat;
 
-    public Container(PetGame parent, int size)
+    public Container(int size)
     {
         this.mat = new Matrix();
-        this.parent = parent;
         world = WorldFactory.makeBackpack(size, size);
         asset = Assets.Names.static_backpack.name();
         load();
@@ -48,7 +48,7 @@ public class Container extends Thing implements GestureEventHandler
     @Override
     public void poke()
     {
-        parent.containerManager.toggle(this);
+        GameManager.INST.gameBehaviour.containerManager.toggle(this);
     }
 
     @Override
@@ -57,35 +57,35 @@ public class Container extends Thing implements GestureEventHandler
 
     }
 
-    public void doubleTapDragStart(float startX,
-                                   float startY,
-                                   float currX,
-                                   float currY)
+    public void dragStart(float startX,
+                          float startY, Matrix mat)
     {
         float[] f = MatrixUtil.convertScreenToWorldArray(
-            parent.getTempWorldTransform(), startX, startY);
-        f[0] -= loc.x;
-        f[1] -= loc.y +1;
-        Thing t = world.checkCollision(f[0], f[1]);
+            mat, startX, startY);
+        float invTapX = f[0] - loc.x;
+        float invTapY = f[1] - loc.y - 1;
+        Thing t = world.checkCollision(invTapX, invTapY);
         if (t != null)
         {
             world.pickupThing(t.loc.x, t.loc.y);
-            parent.transferFromContainer(t, mat);
+            t.loc.setPos((int)f[0], (int)f[1]);
+            GameManager.INST.gameBehaviour.setHeld(t, f[0], f[1]);
         }
     }
 
-    public void doubleTapDragEnd(float x, float y)
+    public void dragEnd(float x, float y, Matrix mat)
     {
-        float[] arrPos = MatrixUtil.convertScreenToWorldArray(parent.getTempWorldTransform(), x, y);
+        float[] arrPos = MatrixUtil.convertScreenToWorldArray(mat, x, y);
         arrPos[0] -= loc.x;
         arrPos[1] -= loc.y +1;
         Log.log(this, "doubleTapDragEnd drop loc " + arrPos[0] + " " + arrPos[1]);
-        if (world.addOrClosest(parent.heldThing.held, (int) arrPos[0], (int) arrPos[1]))
+        PetGameBehaviour.HeldThing held = GameManager.INST.gameBehaviour.heldThing;
+        if (world.addOrClosest(held.held, (int) arrPos[0], (int) arrPos[1]))
         {
-            parent.heldThing.held = null;
+            held.held = null;
             return;
         }
-        parent.dropHeld(x, y);
+        GameManager.INST.gameBehaviour.dropHeld(x, y);
     }
 
     /**
@@ -93,38 +93,39 @@ public class Container extends Thing implements GestureEventHandler
      * @param y Screen space y
      * @return
      */
-    public boolean isTouchInside(float x, float y)
+    public boolean isTouchInside(float x, float y, Matrix mat)
     {
         mat.setTranslate(0, 16);
-        mat.preConcat(parent.getTempWorldTransform());
-        float[] f = MatrixUtil.convertScreenToWorldBits(mat, x, y);
+        mat.preConcat(mat);
+        Vec2<Float> locv = loc.getWorldBitPos();
+        float[] pos = {locv.x, locv.y+16};
+        float[] size = {world.celln*16, world.celln*16};
+        mat.mapPoints(pos);
+        mat.mapVectors(size);
 
-        Vec2<Float> pos = loc.getWorldBitPos();
-        return Bounds.isInside(f[0], f[1],
-            pos.x,
-            pos.y + 16,
-            world.celln*16,
-            world.celln*16);
+        return Bounds.isInside(x, y,
+            pos[0],
+            pos[1],
+            size[0],
+            size[1]);
     }
 
-    @Override
-    public boolean handleEvent(GestureEvent e)
+    public boolean handleEvent(GestureEvent e, Matrix mat)
     {
-        if (!isTouchInside(e.x, e.y))
+        if (!isTouchInside(e.x, e.y, mat))
         {
             return false;
         }
         Log.log(this, "Touch was inside.");
         Class clazz = e.getClass();
-        if (clazz == DoubleTapDragEnd.class)
+        if (clazz == DragEnd.class)
         {
-            doubleTapDragEnd(e.x, e.y);
+            dragEnd(e.x, e.y, mat);
             return true;
         }
-        if (clazz == DoubleTapDragStart.class)
+        else if (clazz == DragStart.class)
         {
-            DoubleTapDragStart es = (DoubleTapDragStart) e;
-            doubleTapDragStart(es.startX, es.startY, es.currentX, es.currentY);
+            dragStart(e.x, e.y, mat);
             return true;
         }
         return e.type() == GestureEvent.Type.press;

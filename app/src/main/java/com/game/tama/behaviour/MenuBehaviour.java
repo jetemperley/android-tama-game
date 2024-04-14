@@ -42,8 +42,7 @@ public class MenuBehaviour extends Behaviour implements Loadable
     {
         Matrix matrix = new Matrix();
         node.getWorldTransform(matrix);
-        // TODO: pass the transformed event
-
+        root.setMatrix(matrix);
         return root.handleEvent(e);
     }
 

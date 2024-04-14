@@ -24,7 +24,7 @@ import com.game.engine.Node;
 import com.game.tama.core.Assets;
 import com.game.tama.core.GameLoop;
 import com.game.tama.behaviour.GameManager;
-import com.game.tama.core.PetGame;
+import com.game.tama.core.World;
 import com.game.tama.util.Log;
 
 import java.io.File;
@@ -204,9 +204,9 @@ public class GameActivity extends Activity
         return true;
     }
 
-    private PetGame loadGame()
+    private World loadGame()
     {
-        PetGame game;
+        World game;
         Context context = getApplicationContext();
         File dir = context.getFilesDir();
         File[] content = dir.listFiles();
@@ -218,7 +218,7 @@ public class GameActivity extends Activity
             {
                 ObjectInputStream in =
                         new ObjectInputStream(new FileInputStream(data));
-                game = (PetGame) in.readObject();
+                game = (World) in.readObject();
                 game.reLoadAllAssets();
                 in.close();
                 Log.log(this, "deserialization complete");

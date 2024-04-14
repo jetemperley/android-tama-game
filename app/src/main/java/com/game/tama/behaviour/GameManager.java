@@ -4,7 +4,7 @@ import com.game.android.gesture.EventPrioritySubscriber;
 import com.game.android.gesture.GestureEventSource;
 import com.game.engine.Behaviour;
 import com.game.engine.Node;
-import com.game.tama.core.PetGame;
+import com.game.tama.core.GameLoop;
 
 public class GameManager extends Behaviour
 {
@@ -15,6 +15,9 @@ public class GameManager extends Behaviour
 
     private GestureEventSource mainInput;
     private EventPrioritySubscriber prioritySubscriber;
+
+    /** The amount of ms this game has been running for. */
+    public static long time = 0;
 
     public GameManager(Node parent, GestureEventSource input)
     {
@@ -49,11 +52,10 @@ public class GameManager extends Behaviour
         pauseMenu.setEnabled(true);
     }
 
-    public void setGame(PetGame game)
-    {
-        this.gameBehaviour.petGame = game;
-    }
-
     @Override
-    public void update() {}
+    public void update()
+    {
+        // TODO fix this time unit mismatch
+        time += GameLoop.deltaTime;
+    }
 }

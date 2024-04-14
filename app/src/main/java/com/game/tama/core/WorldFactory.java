@@ -14,7 +14,7 @@ import com.game.tama.thing.Tree;
 public class WorldFactory
 {
 
-    static World makeWorld()
+    public static World makeWorld()
     {
         World w = new World(15);
 

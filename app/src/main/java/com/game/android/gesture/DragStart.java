@@ -11,6 +11,6 @@ public class DragStart extends GestureEvent
     @Override
     public Type type()
     {
-        return null;
+        return Type.dragStart;
     }
 }

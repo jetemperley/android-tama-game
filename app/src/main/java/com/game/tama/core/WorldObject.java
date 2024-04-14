@@ -42,6 +42,11 @@ public class WorldObject implements java.io.Serializable
         return new Vec2<Float>(x*16 + xoff/100f*16, y*16 + yoff/100f*16);
     }
 
+    public float[] getWorldBitPosAsArray()
+    {
+        return new float[] {x*16 + xoff/100f*16, y*16 + yoff/100f*16};
+    }
+
     public void setOffset(int xoff, int yoff)
     {
         this.xoff = xoff;

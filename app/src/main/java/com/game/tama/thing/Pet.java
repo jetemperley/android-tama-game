@@ -2,8 +2,8 @@ package com.game.tama.thing;
 
 import android.util.Log;
 
+import com.game.tama.behaviour.GameManager;
 import com.game.tama.core.Animator;
-import com.game.tama.core.PetGame;
 import com.game.tama.core.Stats;
 import com.game.tama.core.Type;
 import com.game.tama.util.Vec2;
@@ -80,7 +80,7 @@ public abstract class Pet extends Thing
     @Override
     public void update(World world)
     {
-        if (time == PetGame.time)
+        if (time == GameManager.time)
             Log.d("PET", "doubled up");
         stats.updateStats(this);
         if (currentCommand != null)
@@ -89,7 +89,7 @@ public abstract class Pet extends Thing
         }
         anim.update(this);
         state.update(world, this);
-        time = PetGame.time;
+        time = GameManager.time;
     }
 
     public boolean consume(Thing t)
