@@ -33,10 +33,4 @@ public class Scale extends GestureEvent
         this.next1 = next1;
         this.next2 = next2;
     }
-
-    @Override
-    public Type type()
-    {
-        return Type.drag;
-    }
 }

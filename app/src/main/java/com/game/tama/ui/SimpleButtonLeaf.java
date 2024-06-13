@@ -58,9 +58,9 @@ public class SimpleButtonLeaf extends UIComposite
     }
 
     @Override
-    public boolean handleEvent(GestureEvent e)
+    public boolean handleEvent(GestureEvent e, Matrix mat)
     {
-        if (e instanceof Down && isInside(e.x, e.y, matrix))
+        if (e instanceof Down && isInside(e.x, e.y, mat))
         {
             activate();
             return true;

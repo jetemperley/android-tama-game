@@ -269,7 +269,7 @@ public class World implements java.io.Serializable
      * @param t The thing to add
      * @param x x position in the tiles array
      * @param y y position in the tiles array
-     * @return added successfully
+     * @return has added successfully
      */
     public boolean addOrClosest(Thing t, int x, int y)
     {

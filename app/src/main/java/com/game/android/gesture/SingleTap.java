@@ -7,10 +7,5 @@ public class SingleTap extends GestureEvent
     {
         handler.singleTapConfirmed(x, y);
     }
-    @Override
-    public Type type()
-    {
-        return Type.press;
-    }
 
 }

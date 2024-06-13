@@ -7,10 +7,4 @@ public class LongPress extends GestureEvent
     {
         handler.longPressConfirmed(x, y);
     }
-
-    @Override
-    public Type type()
-    {
-        return Type.press;
-    }
 }

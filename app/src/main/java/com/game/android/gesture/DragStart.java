@@ -7,10 +7,4 @@ public class DragStart extends GestureEvent
     {
         handler.dragStart(x, y);
     }
-
-    @Override
-    public Type type()
-    {
-        return Type.dragStart;
-    }
 }

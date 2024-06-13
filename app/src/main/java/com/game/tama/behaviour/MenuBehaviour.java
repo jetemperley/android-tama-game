@@ -6,6 +6,7 @@ import com.game.android.DisplayAdapter;
 import com.game.android.gesture.GestureEvent;
 import com.game.engine.Behaviour;
 import com.game.engine.Node;
+import com.game.tama.core.Contains;
 import com.game.tama.core.Drawable;
 import com.game.tama.core.Loadable;
 import com.game.tama.core.Updateable;
@@ -40,14 +41,20 @@ public class MenuBehaviour extends Behaviour implements Loadable
     @Override
     public boolean handle(GestureEvent e)
     {
-        Matrix matrix = new Matrix();
-        node.getWorldTransform(matrix);
-        root.setMatrix(matrix);
-        return root.handleEvent(e);
+        return root.handleEvent(e, node.worldTransform);
     }
 
     public void load()
     {
         root.load();
+    }
+
+    public boolean isInside(float x, float y)
+    {
+        if (!isEnabled())
+        {
+            return false;
+        }
+        return root.isInside(x, y, node.worldTransform);
     }
 }

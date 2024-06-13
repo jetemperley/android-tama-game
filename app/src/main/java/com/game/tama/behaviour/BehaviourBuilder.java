@@ -29,7 +29,7 @@ public class BehaviourBuilder
             3,
             "Ayee this is some text that is gonna be in a text box and " +
                 "hopefullly its just gonna work the first time.!!"));
-        parent.transform.setScale(6, 6);
+        parent.localTransform.setScale(6, 6);
         pauseMenu.add("circle button", new CircleCellButtonLeaf(
             0,
             0,
@@ -48,7 +48,7 @@ public class BehaviourBuilder
             0,
             Assets.Names.static_poop.name(),
             () -> GameManager.INST.pause()));
-        parent.transform.setScale(6, 6);
+        parent.localTransform.setScale(6, 6);
         hud.root = hudRoot;
         return hud;
     }

@@ -3,8 +3,10 @@ package com.game.tama.core;
 import android.graphics.Matrix;
 
 import com.game.android.DisplayAdapter;
+import com.game.android.gesture.Down;
 import com.game.android.gesture.DragEnd;
 import com.game.android.gesture.DragStart;
+import com.game.android.gesture.LongPress;
 import com.game.tama.behaviour.GameManager;
 import com.game.tama.behaviour.PetGameBehaviour;
 import com.game.tama.thing.Thing;
@@ -69,7 +71,7 @@ public class Container extends Thing
         {
             world.pickupThing(t.loc.x, t.loc.y);
             t.loc.setPos((int)f[0], (int)f[1]);
-            GameManager.INST.gameBehaviour.setHeld(t, f[0], f[1]);
+            GameManager.getHeld().setHeld(t, f[0], f[1]);
         }
     }
 
@@ -79,13 +81,13 @@ public class Container extends Thing
         arrPos[0] -= loc.x;
         arrPos[1] -= loc.y +1;
         Log.log(this, "doubleTapDragEnd drop loc " + arrPos[0] + " " + arrPos[1]);
-        PetGameBehaviour.HeldThing held = GameManager.INST.gameBehaviour.heldThing;
-        if (world.addOrClosest(held.held, (int) arrPos[0], (int) arrPos[1]))
+        Thing held = GameManager.getHeld().held;
+        if (world.addOrClosest(held, (int) arrPos[0], (int) arrPos[1]))
         {
-            held.held = null;
+            GameManager.getHeld().held = null;
             return;
         }
-        GameManager.INST.gameBehaviour.dropHeld(x, y);
+        GameManager.getHeld().dropHeld(x, y);
     }
 
     /**
@@ -110,6 +112,12 @@ public class Container extends Thing
             size[1]);
     }
 
+    /**
+     * Call when the containes inventory has been pressed
+     * @param e
+     * @param mat
+     * @return
+     */
     public boolean handleEvent(GestureEvent e, Matrix mat)
     {
         if (!isTouchInside(e.x, e.y, mat))
@@ -128,6 +136,6 @@ public class Container extends Thing
             dragStart(e.x, e.y, mat);
             return true;
         }
-        return e.type() == GestureEvent.Type.press;
+        return clazz == Down.class || clazz == LongPress.class;
     }
 }

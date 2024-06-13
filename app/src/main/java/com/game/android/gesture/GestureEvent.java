@@ -2,13 +2,6 @@ package com.game.android.gesture;
 
 public abstract class GestureEvent
 {
-    public enum Type
-    {
-        press,
-        drag,
-        dragStart,
-        dragEnd,
-    }
 
     public float x, y;
 
@@ -20,6 +13,5 @@ public abstract class GestureEvent
         this.y = y;
     }
 
-    abstract public Type type();
 }
 

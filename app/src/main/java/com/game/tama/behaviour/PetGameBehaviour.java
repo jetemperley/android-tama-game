@@ -12,7 +12,6 @@ import com.game.tama.command.CommandFactory;
 import com.game.tama.command.CommandQueue;
 import com.game.tama.core.Assets;
 import com.game.tama.core.Container;
-import com.game.tama.core.GameLoop;
 import com.game.tama.core.World;
 import com.game.tama.core.WorldFactory;
 import com.game.tama.thing.Pet;
@@ -31,17 +30,15 @@ public class PetGameBehaviour extends Behaviour implements Input
 
     boolean showBackpack = true;
 
-    private World world;
+    World world;
     private Thing selected = null;
     private DepthDisplay depthDisplay = new DepthDisplay();
     private Container backpackSlot;
-    private Matrix identity = new Matrix();
-    public HeldThing heldThing = new HeldThing();
 
     public PetGameBehaviour(Node parent)
     {
         super(parent);
-        parent.transform.setScale(6, 6);
+        parent.localTransform.setScale(6, 6);
         // thingMenu = new MenuBehaviour(parent);
         world = WorldFactory.makeWorld();
         world.addOrClosest(new Container(2), 2, 2);
@@ -84,16 +81,11 @@ public class PetGameBehaviour extends Behaviour implements Input
             //backpackSlot.draw(display);
         }
         containerManager.draw(display);
-        heldThing.drawHeld(display);
     }
 
     public void reLoadAllAssets()
     {
         world.reLoadAllAssets();
-        if (heldThing.held != null)
-        {
-            heldThing.held.load();
-        }
     }
 
     /**
@@ -111,12 +103,7 @@ public class PetGameBehaviour extends Behaviour implements Input
         }
         Log.log(this, thing.getClass().getCanonicalName() + " set as held");
         thing = world.pickupThing(thing.loc.x, thing.loc.y);
-        heldThing.setHeld(thing, ax, ay);
-    }
-
-    public void setHeld(Thing thing, float x, float y)
-    {
-        heldThing.setHeld(thing, x, y);
+        GameManager.INST.heldBehaviour.setHeld(thing, ax, ay);
     }
 
     public float[] transferFromContainer(Thing t, Matrix containerMat)
@@ -142,7 +129,7 @@ public class PetGameBehaviour extends Behaviour implements Input
 
         t.loc.x = (int) f[0];
         t.loc.y = (int) f[1];
-        heldThing.setHeld(t, f[0], f[1]);
+        // heldThing.setHeld(t, f[0], f[1]);
         return f;
     }
 
@@ -153,33 +140,22 @@ public class PetGameBehaviour extends Behaviour implements Input
 
     public void pickup(float x, float y)
     {
-        if (heldThing.held != null)
-        {
-            heldThing.setPos(x, y);
-            return;
-        }
-        Thing t = world.checkCollision(x, y);
-        if (t != null)
-        {
-            heldThing.held = world.pickupThing(t.loc.x, t.loc.y);
-            heldThing.setPos(x, y);
-            Vec2<Float> pos = heldThing.held.loc.getWorldArrPos();
-            heldThing.setHeldOffset(x - pos.x, y - pos.y);
-        }
+//        if (heldThing.held != null)
+//        {
+//            heldThing.setPos(x, y);
+//            return;
+//        }
+//        Thing t = world.checkCollision(x, y);
+//        if (t != null)
+//        {
+//            heldThing.held = world.pickupThing(t.loc.x, t.loc.y);
+//            heldThing.setPos(x, y);
+//            Vec2<Float> pos = heldThing.held.loc.getWorldArrPos();
+//            heldThing.setHeldOffset(x - pos.x, y - pos.y);
+//        }
     }
 
-    void dropHeld()
-    {
-        //TODO make this drop properly
-        dropHeld(heldThing.heldPos.x, heldThing.heldPos.y);
-    }
 
-    public void dropHeld(float x, float y)
-    {
-        Log.log(this, "dropping");
-        world.addOrClosest(heldThing.held, (int) x, (int) y);
-        heldThing.held = null;
-    }
 
     public Thing getThing(float x, float y)
     {
@@ -317,10 +293,10 @@ public class PetGameBehaviour extends Behaviour implements Input
         float scale = nsize / psize;
 
         // apply changes
-        node.transform.postTranslate(-nmid.x, -nmid.y);
-        node.transform.postScale(scale, scale);
-        node.transform.postTranslate(nmid.x, nmid.y);
-        node.transform.postTranslate(
+        node.localTransform.postTranslate(-nmid.x, -nmid.y);
+        node.localTransform.postScale(scale, scale);
+        node.localTransform.postTranslate(nmid.x, nmid.y);
+        node.localTransform.postTranslate(
             nmid.x - pmid.x,
             nmid.y - pmid.y);
     }
@@ -341,29 +317,9 @@ public class PetGameBehaviour extends Behaviour implements Input
     @Override
     public void drag(Vec2<Float> prev, Vec2<Float> next)
     {
-        if (heldThing.held != null)
-        {
-            float[] f =
-                MatrixUtil.convertScreenToWorldArray(
-                    getTempWorldTransform(), next.x, next.y);
-            heldThing.setPos(f[0], f[1]);
-            return;
-        }
-        node.transform.postTranslate(
+        node.localTransform.postTranslate(
             next.x - prev.x,
             next.y - prev.y);
-    }
-
-    @Override
-    public void dragEnd(float x, float y)
-    {
-        float[] f =
-            MatrixUtil.convertScreenToWorldArray(
-                getTempWorldTransform(), x, y);
-        if (heldThing.held != null)
-        {
-            this.dropHeld(f[0], f[1]);
-        }
     }
 
     @Override
@@ -380,49 +336,5 @@ public class PetGameBehaviour extends Behaviour implements Input
     public Matrix getTempWorldTransform()
     {
         return getWorldTransform(tempMat);
-    }
-
-    public static class HeldThing
-    {
-        public Thing held = null;
-        public Vec2<Float> heldPos = new Vec2<>(0f, 0f);
-        public Vec2<Float> heldOffset = new Vec2<>(0f, 0f);
-        public Matrix heldMatrix = null;
-
-        public void drawHeld(DisplayAdapter d)
-        {
-            //display.setMatrix(heldThing.heldMatrix);
-            if (held != null)
-            {
-                d.drawArr(
-                    held.loc.sprite,
-                    heldPos.x - heldOffset.x,
-                    heldPos.y - heldOffset.y);
-            }
-        }
-
-        /**
-         * @param thing The thing to hold.
-         * @param x     array position of tap
-         * @param y     array position of tap
-         */
-        public void setHeld(Thing thing, float x, float y)
-        {
-            held = thing;
-            heldPos.set(x, y);
-            Vec2<Float> pos = held.loc.getWorldArrPos();
-            heldOffset.x = x - pos.x;
-            heldOffset.y = y - pos.y;
-        }
-
-        public void setPos(float x, float y)
-        {
-            heldPos.set(x, y);
-        }
-
-        public void setHeldOffset(float x, float y)
-        {
-            heldOffset.set(x, y);
-        }
     }
 }

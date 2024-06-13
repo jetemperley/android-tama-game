@@ -40,8 +40,6 @@ public class SquareCellButtonLeaf extends SimpleButtonLeaf
     /**
      * @param xPos   pixel x position of the button
      * @param yPos   pixel y position of the button
-     * @param width  size (in 16 bit cells) of button
-     * @param height size (in 16 bit cells) of button
      */
     public SquareCellButtonLeaf(float xPos, float yPos, String asset, Runnable activate)
     {

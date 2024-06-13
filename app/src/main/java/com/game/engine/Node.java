@@ -13,9 +13,10 @@ public class Node implements Updateable, Drawable
 {
     Node parent = null;
     List<Node> children = new ArrayList<>();
-    public Matrix transform = new Matrix();
     private List<Behaviour> behaviours = new ArrayList<>();
     private boolean enabled = true;
+    public Matrix localTransform = new Matrix();
+    public Matrix worldTransform = new Matrix();
 
     public Node()
     {
@@ -33,6 +34,8 @@ public class Node implements Updateable, Drawable
         {
             return;
         }
+
+        getWorldTransform(worldTransform);
 
         for (Behaviour b : behaviours)
         {
@@ -65,7 +68,7 @@ public class Node implements Updateable, Drawable
         }
 
         display.push();
-        display.preConcat(transform);
+        display.preConcat(localTransform);
         for (Behaviour b : behaviours)
         {
             b.engine_draw(display);
@@ -111,11 +114,11 @@ public class Node implements Updateable, Drawable
     {
         if (parent == null)
         {
-            out.set(transform);
+            out.set(localTransform);
             return out;
         }
         parent.getWorldTransform(out);
-        out.preConcat(transform);
+        out.preConcat(localTransform);
         return out;
     }
 

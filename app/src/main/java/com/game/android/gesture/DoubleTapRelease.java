@@ -7,10 +7,4 @@ public class DoubleTapRelease extends GestureEvent
     {
         handler.doubleTapRelease(x, y);
     }
-
-    @Override
-    public Type type()
-    {
-        return Type.press;
-    }
 }

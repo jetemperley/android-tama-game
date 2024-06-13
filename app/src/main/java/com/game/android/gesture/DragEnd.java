@@ -7,10 +7,4 @@ public class DragEnd extends GestureEvent
     {
         handler.dragEnd(x, y);
     }
-
-    @Override
-    public Type type()
-    {
-        return null;
-    }
 }

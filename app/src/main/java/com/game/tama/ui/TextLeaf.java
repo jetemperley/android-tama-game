@@ -1,5 +1,7 @@
 package com.game.tama.ui;
 
+import android.graphics.Matrix;
+
 import com.game.android.DisplayAdapter;
 import com.game.android.gesture.GestureEvent;
 import com.game.tama.core.Assets;
@@ -95,7 +97,13 @@ public class TextLeaf extends UIComposite
     }
 
     @Override
-    public boolean handleEvent(GestureEvent event)
+    public boolean handleEvent(GestureEvent event, Matrix mat)
+    {
+        return false;
+    }
+
+    @Override
+    public boolean isInside(float x, float y, Matrix matrix)
     {
         return false;
     }

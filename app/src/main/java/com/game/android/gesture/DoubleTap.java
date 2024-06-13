@@ -7,10 +7,4 @@ public class DoubleTap extends GestureEvent
     {
         handler.doubleTapConfirmed(x, y);
     }
-
-    @Override
-    public Type type()
-    {
-        return Type.press;
-    }
 }
