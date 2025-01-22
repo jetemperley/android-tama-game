@@ -2,7 +2,7 @@ package com.game.tama.thing;
 
 import android.util.Log;
 
-import com.game.tama.behaviour.GameManager;
+import com.game.tama.engine.behaviour.GameManager;
 import com.game.tama.core.Animator;
 import com.game.tama.core.Stats;
 import com.game.tama.core.Type;
@@ -32,7 +32,7 @@ public abstract class Pet extends Thing
 
     final public CommandReplacer currentCommand;
 
-    // this pet animator is the same object as Displayable.sprite;
+    /** this pet animator is the same object as Displayable.sprite */
     public Animator anim;
 
     public enum Movement
@@ -42,10 +42,10 @@ public abstract class Pet extends Thing
 
     // Movement moves;
     public static Vec2<Integer>[] steps = new Vec2[]{
-            new Vec2(0, 1),
-            new Vec2(0, -1),
-            new Vec2(1, 0),
-            new Vec2(-1, 0)};
+            new Vec2<>(0, 1),
+            new Vec2<>(0, -1),
+            new Vec2<>(1, 0),
+            new Vec2<>(-1, 0)};
 
     public int speed = 1;
 
@@ -82,7 +82,7 @@ public abstract class Pet extends Thing
     {
         if (time == GameManager.time)
             Log.d("PET", "doubled up");
-        stats.updateStats(this);
+        stats.update();
         if (currentCommand != null)
         {
             currentCommand.getUpdate().invoke(this, world);

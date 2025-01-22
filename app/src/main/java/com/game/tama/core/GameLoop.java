@@ -31,7 +31,7 @@ public class GameLoop extends Thread
             end = LocalTime.now();
             long frameTime =  ChronoUnit.MILLIS.between(start, end);
             deltaTime =  frameTime/1000f;
-            Log.log(this,  "deltaTime: " + deltaTime);
+//            Log.log(this,  "deltaTime: " + deltaTime);
         }
     }
 }

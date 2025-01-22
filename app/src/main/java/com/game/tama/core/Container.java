@@ -7,25 +7,24 @@ import com.game.android.gesture.Down;
 import com.game.android.gesture.DragEnd;
 import com.game.android.gesture.DragStart;
 import com.game.android.gesture.LongPress;
-import com.game.tama.behaviour.GameManager;
-import com.game.tama.behaviour.PetGameBehaviour;
+import com.game.tama.engine.behaviour.GameManager;
 import com.game.tama.thing.Thing;
 import com.game.tama.util.Bounds;
 import com.game.tama.util.MatrixUtil;
 import com.game.tama.util.Vec2;
 import com.game.android.gesture.GestureEvent;
-import com.game.android.gesture.GestureEventHandler;
 import com.game.tama.util.Log;
 
-public class Container extends Thing
+import java.io.IOException;
+import java.io.Serializable;
+
+public class Container extends Thing implements Serializable
 {
     private World world;
-
-    Matrix mat;
+    private transient Matrix mat = new Matrix();
 
     public Container(int size)
     {
-        this.mat = new Matrix();
         world = WorldFactory.makeBackpack(size, size);
         asset = Assets.Names.static_backpack.name();
         load();
@@ -137,5 +136,13 @@ public class Container extends Thing
             return true;
         }
         return clazz == Down.class || clazz == LongPress.class;
+    }
+
+    private void readObject(java.io.ObjectInputStream in)
+        throws IOException, ClassNotFoundException
+    {
+        in.defaultReadObject();
+        mat = new Matrix();
+        world.reLoadAllAssets();
     }
 }

@@ -14,10 +14,15 @@ import com.game.tama.thing.Tree;
 public class WorldFactory
 {
 
-    public static World makeWorld()
+    public static World makeTestWorld()
     {
         World w = new World(15);
+        populateTestWorld(w);
+        return w;
+    }
 
+    public static void populateTestWorld(World w)
+    {
         Noise n = new Noise((int) (Math.random() * 100000), 5, 0.05f);
 
         for (int x = 0; x < w.width(); x++)
@@ -56,8 +61,8 @@ public class WorldFactory
         }
         w.addOrClosest(new Walker(), 0, 0);
         w.addOrClosest(new Food(R.drawable.static_meat), 1, 1);
+        w.addOrClosest(new Container(2), 2, 2);
 
-        return w;
     }
 
     public static World makeBackpack(int xSize, int ySize)
@@ -71,7 +76,6 @@ public class WorldFactory
                 world.setTile(x, y, new BackpackSlot());
             }
         }
-
         return world;
     }
 }

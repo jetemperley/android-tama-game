@@ -1,4 +1,4 @@
-package com.game.tama.behaviour;
+package com.game.tama.engine.behaviour;
 
 import com.game.engine.Node;
 import com.game.tama.core.Assets;

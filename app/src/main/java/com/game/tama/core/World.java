@@ -1,5 +1,7 @@
 package com.game.tama.core;
 
+import android.graphics.Matrix;
+
 import com.game.android.DisplayAdapter;
 import com.game.tama.thing.DynTile;
 import com.game.tama.thing.Grass;
@@ -8,6 +10,8 @@ import com.game.tama.thing.Tile;
 import com.game.tama.thing.TileType;
 import com.game.tama.util.A;
 import com.game.tama.util.Log;
+
+import java.io.IOException;
 
 public class World implements java.io.Serializable
 {
@@ -156,7 +160,7 @@ public class World implements java.io.Serializable
             for (int j = -1; j < 2; j++)
             {
                 if (A.inRange(tiles, x + i, y + j) &&
-                        tiles[x + i][y + j] != null)
+                    tiles[x + i][y + j] != null)
                 {
                     tiles[x + i][y + j].updateDetails(this);
                 }
@@ -275,7 +279,7 @@ public class World implements java.io.Serializable
     {
         int dist = 0;
         int maxDist =
-                tiles.length > tiles[0].length ? tiles.length : tiles[0].length;
+            tiles.length > tiles[0].length ? tiles.length : tiles[0].length;
         while (dist < maxDist)
         {
             if (addAnywhereOnBorder(t, x, y, dist))
@@ -327,6 +331,13 @@ public class World implements java.io.Serializable
         int xDiff = Math.abs(a.x - b.x);
         int yDiff = Math.abs(a.y - b.y);
         return (xDiff == 1) ^ (yDiff == 1);
+    }
+
+    private void readObject(java.io.ObjectInputStream in)
+        throws IOException, ClassNotFoundException
+    {
+        in.defaultReadObject();
+        reLoadAllAssets();
     }
 }
 

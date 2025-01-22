@@ -23,16 +23,15 @@ import com.game.android.gesture.GestureEventAdaptor;
 import com.game.engine.Node;
 import com.game.tama.core.Assets;
 import com.game.tama.core.GameLoop;
-import com.game.tama.behaviour.GameManager;
-import com.game.tama.core.World;
+import com.game.tama.engine.behaviour.GameManager;
 import com.game.tama.util.Log;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.nio.file.Files;
 
 public class GameActivity extends Activity
 {
@@ -173,27 +172,15 @@ public class GameActivity extends Activity
             Log.log(this, "could not join gameloop");
         }
         super.onStop();
-        Context context = getApplicationContext();
-
-        try
-        {
-            FileOutputStream fos =
-                    context.openFileOutput(DATA_FILE_NAME, Context.MODE_PRIVATE);
-            ObjectOutputStream oos = new ObjectOutputStream(fos);
-            // TODO: this should go somewhere: oos.writeObject(gameManager.game);
-            oos.close();
-            Log.log(this, "serialization complete");
-        }
-        catch (IOException e)
-        {
-            Log.log(this, "serialization failed" + e.getMessage());
-        }
+        saveGame();
     }
 
     @Override
     public void onStart()
     {
         super.onStart();
+        loadGame();
+        gameLoop = new GameLoop(this);
         gameLoop.start();
     }
 
@@ -204,12 +191,28 @@ public class GameActivity extends Activity
         return true;
     }
 
-    private World loadGame()
+    private void saveGame()
     {
-        World game;
+        Context context = getApplicationContext();
+        try
+        {
+            FileOutputStream fos =
+                context.openFileOutput(DATA_FILE_NAME, Context.MODE_PRIVATE);
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
+            gameManager.save(oos);
+            oos.close();
+            Log.log(this, "Serialization complete");
+        }
+        catch (IOException e)
+        {
+            Log.error(this, "Serialization failed.", e);
+        }
+    }
+
+    private void loadGame()
+    {
         Context context = getApplicationContext();
         File dir = context.getFilesDir();
-        File[] content = dir.listFiles();
         File data = new File(dir.getPath() + "/" + DATA_FILE_NAME);
         Log.log(this, "data path is " + data.getAbsolutePath());
         if (data.exists())
@@ -217,24 +220,22 @@ public class GameActivity extends Activity
             try
             {
                 ObjectInputStream in =
-                        new ObjectInputStream(new FileInputStream(data));
-                game = (World) in.readObject();
-                game.reLoadAllAssets();
+                        new ObjectInputStream(Files.newInputStream(data.toPath()));
+                gameManager.load(in);
                 in.close();
                 Log.log(this, "deserialization complete");
             }
             catch (Exception e)
             {
-                //game = new PetGame();
-                Log.log(this, "deserialization failed, " + e.getMessage());
+                gameManager.newGame();
+                Log.error(this, "deserialization failed", e);
             }
         }
         else
         {
+            gameManager.newGame();
             Log.log(this, "data file did not exist");
-//            game = new PetGame();
         }
-        return null;
     }
 
     public class CustomView extends SurfaceView

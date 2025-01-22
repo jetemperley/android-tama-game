@@ -1,4 +1,4 @@
-package com.game.tama.behaviour;
+package com.game.tama.engine.behaviour;
 
 import android.graphics.Matrix;
 
@@ -20,7 +20,6 @@ public class HeldThingBehaviour extends Behaviour implements Input
     public Vec2<Float> heldOffset = new Vec2<>(0f, 0f);
 
     private Matrix heldMat = new Matrix();
-    private Matrix targetMat = null;
 
     public HeldThingBehaviour(Node parent)
     {
@@ -64,7 +63,7 @@ public class HeldThingBehaviour extends Behaviour implements Input
     @Override
     public void drag(Vec2<Float> prev, Vec2<Float> next)
     {
-        targetMat = GameManager.INST.getContainingNode(
+        Matrix targetMat = GameManager.INST.getContainingNode(
             next.x,
             next.y).worldTransform;
         float scale = MatrixUtil.getScale(targetMat);
@@ -77,9 +76,11 @@ public class HeldThingBehaviour extends Behaviour implements Input
 
     public void dragEnd(float x, float y)
     {
+        Matrix targetMat = GameManager.INST.getContainingNode(
+            x, y).worldTransform;
         float[] f =
             MatrixUtil.convertScreenToWorldArray(
-                heldMat, x, y);
+                targetMat, x, y);
         dropHeld(f[0], f[1]);
     }
 
@@ -96,7 +97,6 @@ public class HeldThingBehaviour extends Behaviour implements Input
 
     void dropHeld()
     {
-        //TODO make this drop properly
         dropHeld(heldPos.x, heldPos.y);
     }
 

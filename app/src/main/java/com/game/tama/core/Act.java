@@ -2,7 +2,7 @@ package com.game.tama.core;
 
 import android.util.Log;
 
-import com.game.tama.behaviour.GameManager;
+import com.game.tama.engine.behaviour.GameManager;
 import com.game.tama.util.Path;
 import com.game.tama.util.Vec2;
 import com.game.tama.thing.Pet;

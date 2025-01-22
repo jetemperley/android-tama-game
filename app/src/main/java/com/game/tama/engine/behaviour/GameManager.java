@@ -1,20 +1,25 @@
-package com.game.tama.behaviour;
-
-import android.graphics.Matrix;
+package com.game.tama.engine.behaviour;
 
 import com.game.android.gesture.EventPrioritySubscriber;
 import com.game.android.gesture.GestureEventSource;
 import com.game.engine.Behaviour;
 import com.game.engine.Node;
 import com.game.tama.core.GameLoop;
+import com.game.tama.core.World;
+import com.game.tama.core.WorldFactory;
+
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 
 public class GameManager extends Behaviour
 {
     public static GameManager INST;
+
     public PetGameBehaviour gameBehaviour;
+    public HeldThingBehaviour heldBehaviour;
     public MenuBehaviour pauseMenu;
     public MenuBehaviour hudMenu;
-    public HeldThingBehaviour heldBehaviour;
 
     private GestureEventSource mainInput;
     private EventPrioritySubscriber prioritySubscriber;
@@ -91,5 +96,21 @@ public class GameManager extends Behaviour
             return hudMenu.node;
         }
         return gameBehaviour.node;
+    }
+
+    public void save(ObjectOutputStream oos) throws IOException
+    {
+        oos.writeObject(gameBehaviour.world);
+    }
+
+    public void load(ObjectInputStream in)
+        throws IOException, ClassNotFoundException
+    {
+        gameBehaviour.world = (World) in.readObject();
+    }
+
+    public void newGame ()
+    {
+        gameBehaviour.world = WorldFactory.makeTestWorld();
     }
 }

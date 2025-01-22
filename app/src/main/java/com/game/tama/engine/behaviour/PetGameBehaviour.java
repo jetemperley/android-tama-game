@@ -1,4 +1,4 @@
-package com.game.tama.behaviour;
+package com.game.tama.engine.behaviour;
 
 import android.graphics.Matrix;
 
@@ -11,9 +11,7 @@ import com.game.engine.Node;
 import com.game.tama.command.CommandFactory;
 import com.game.tama.command.CommandQueue;
 import com.game.tama.core.Assets;
-import com.game.tama.core.Container;
 import com.game.tama.core.World;
-import com.game.tama.core.WorldFactory;
 import com.game.tama.thing.Pet;
 import com.game.tama.thing.Thing;
 import com.game.tama.ui.ContainerManager;
@@ -25,31 +23,19 @@ public class PetGameBehaviour extends Behaviour implements Input
 {
     public MenuBehaviour thingMenu;
 
+    public World world;
     public Matrix tempMat = new Matrix();
     public ContainerManager containerManager = new ContainerManager();
 
     boolean showBackpack = true;
 
-    World world;
     private Thing selected = null;
     private DepthDisplay depthDisplay = new DepthDisplay();
-    private Container backpackSlot;
 
     public PetGameBehaviour(Node parent)
     {
         super(parent);
-        parent.localTransform.setScale(6, 6);
-        // thingMenu = new MenuBehaviour(parent);
-        world = WorldFactory.makeWorld();
-        world.addOrClosest(new Container(2), 2, 2);
-
-        Matrix uiMat = new Matrix();
-        uiMat.setScale(6, 6);
-
-        Matrix backpackMat = new Matrix();
-        backpackMat.set(uiMat);
-        backpackMat.preTranslate(16, 0);
-        backpackSlot = null;//= new Container(this, 1);
+        PetGameBehaviourConfigurer.testConfiguration(this);
     }
 
     public void update()
@@ -81,11 +67,6 @@ public class PetGameBehaviour extends Behaviour implements Input
             //backpackSlot.draw(display);
         }
         containerManager.draw(display);
-    }
-
-    public void reLoadAllAssets()
-    {
-        world.reLoadAllAssets();
     }
 
     /**

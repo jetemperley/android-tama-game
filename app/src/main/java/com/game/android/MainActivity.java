@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 
+import com.game.tama.util.Log;
 import com.tama.R;
 
 import java.io.File;
@@ -35,6 +36,7 @@ public class MainActivity extends AppCompatActivity
 
     public void reset(View view)
     {
+        Log.log(this, "Resetting game.");
         Context context = getApplicationContext();
         File dir = context.getFilesDir();
         File[] content = dir.listFiles();
@@ -42,9 +44,21 @@ public class MainActivity extends AppCompatActivity
         {
             if (f.getName().equals(GameActivity.DATA_FILE_NAME))
             {
-                f.delete();
+                Log.log(this, "Deleting save file...");
+                if (f.delete())
+                {
+                    Log.log(this, "Delete successful.");
+                }
+                else
+                {
+                    Log.log(this, "Save file present but could not be deleted.");
+
+                }
+                return;
             }
         }
+        Log.log(this, "Could not find save file. Delete not necessary.");
+
     }
 
     public void startGame(View view)

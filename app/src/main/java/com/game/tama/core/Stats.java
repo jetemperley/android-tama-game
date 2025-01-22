@@ -5,7 +5,7 @@ import com.game.tama.thing.Pet;
 import java.io.Serializable;
 
 // TODO factor this into component
-public class Stats implements Serializable
+public class Stats implements Serializable, Updateable
 {
     final static int
             health = 0,
@@ -32,7 +32,8 @@ public class Stats implements Serializable
 
     }
 
-    public void updateStats(Pet p)
+    @Override
+    public void update()
     {
         stats[hunger].add(-GameLoop.deltaTime);
         if (stats[energy].getProp() < 1)
