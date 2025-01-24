@@ -66,7 +66,7 @@ public class GameManager extends Behaviour
     public void update()
     {
         // TODO fix this time unit mismatch
-        time += GameLoop.deltaTime;
+        time += GameLoop.deltaTimeMs;
     }
 
     public static HeldThingBehaviour getHeld()

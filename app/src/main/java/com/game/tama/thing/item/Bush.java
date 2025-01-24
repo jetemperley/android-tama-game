@@ -1,9 +1,10 @@
-package com.game.tama.thing;
+package com.game.tama.thing.item;
 
 import com.game.tama.core.Animator;
 import com.game.tama.core.World;
 import com.game.tama.core.Assets;
 import com.game.tama.core.Sprite;
+import com.game.tama.thing.Thing;
 
 public class Bush extends Thing
 {
@@ -17,7 +18,7 @@ public class Bush extends Thing
     }
 
     @Override
-    Sprite getAsset()
+    public Sprite getAsset()
     {
         if (anim == null)
         {

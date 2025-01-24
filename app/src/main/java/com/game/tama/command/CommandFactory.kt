@@ -3,8 +3,8 @@ package com.game.tama.command
 import android.util.Log
 import com.game.tama.core.World
 import com.game.tama.core.WorldObject
-import com.game.tama.thing.Direction
-import com.game.tama.thing.Pet
+import com.game.tama.core.Direction
+import com.game.tama.thing.pet.Pet
 import com.game.tama.thing.Thing
 import com.game.tama.util.Path
 import com.game.tama.util.Vec2

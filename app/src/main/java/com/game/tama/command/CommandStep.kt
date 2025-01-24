@@ -4,8 +4,8 @@ import android.util.Log
 import com.game.tama.anim.KeyFrameAssets
 import com.game.android.DisplayAdapter
 import com.game.tama.core.GameLoop
-import com.game.tama.thing.Direction
-import com.game.tama.thing.Pet
+import com.game.tama.core.Direction
+import com.game.tama.thing.pet.Pet
 import com.game.tama.core.World
 import com.game.tama.util.Vec2
 
@@ -34,7 +34,7 @@ public class CommandStep(var dir: Direction) : Command()
 
     public override fun doing(pet: Pet, world: World)
     {
-        time += GameLoop.deltaTime;
+        time += GameLoop.deltaTimeS;
         if (time >= stepTime)
         {
             pet.setMovementPose(Pet.Movement.stand)

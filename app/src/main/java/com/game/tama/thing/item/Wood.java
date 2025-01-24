@@ -1,6 +1,7 @@
-package com.game.tama.thing;
+package com.game.tama.thing.item;
 
 import com.game.tama.core.Assets;
+import com.game.tama.thing.Thing;
 
 class Wood extends Thing
 {

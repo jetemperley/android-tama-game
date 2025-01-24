@@ -1,4 +1,4 @@
-package com.game.tama.thing;
+package com.game.tama.thing.tile;
 
 import com.tama.R;
 import com.game.tama.core.Assets;

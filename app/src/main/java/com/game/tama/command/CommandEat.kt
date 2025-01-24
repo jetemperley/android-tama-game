@@ -3,7 +3,7 @@ package com.game.tama.command
 import com.game.android.DisplayAdapter
 import com.game.tama.core.GameLoop
 import com.game.tama.core.World
-import com.game.tama.thing.Pet
+import com.game.tama.thing.pet.Pet
 import com.game.tama.thing.Thing
 
 class CommandEat(targetToEat: Thing) : Command()
@@ -21,7 +21,7 @@ class CommandEat(targetToEat: Thing) : Command()
 
     override fun doing(pet: Pet, world: World)
     {
-        currentTime += GameLoop.deltaTime;
+        currentTime += GameLoop.deltaTimeS;
 
         if (currentTime > totalTime)
         {

@@ -12,7 +12,7 @@ import com.game.tama.command.CommandFactory;
 import com.game.tama.command.CommandQueue;
 import com.game.tama.core.Assets;
 import com.game.tama.core.World;
-import com.game.tama.thing.Pet;
+import com.game.tama.thing.pet.Pet;
 import com.game.tama.thing.Thing;
 import com.game.tama.ui.ContainerManager;
 import com.game.tama.util.Log;

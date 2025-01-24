@@ -1,8 +1,9 @@
-package com.game.tama.thing;
+package com.game.tama.thing.pet;
 
 import com.game.tama.core.Animator;
 import com.game.tama.core.GameLoop;
 import com.game.tama.core.World;
+import com.game.tama.thing.Thing;
 import com.game.tama.util.Rand;
 import com.game.tama.core.Assets;
 import com.game.tama.core.Sprite;
@@ -26,7 +27,7 @@ class Egg extends Thing
 
     }
 
-    Sprite getAsset()
+    public Sprite getAsset()
     {
 
         if (anim == null)
@@ -45,11 +46,11 @@ class Egg extends Thing
     public void update(World map)
     {
         anim.update(this);
-        if (!anim.play && Rand.RandInt(0, 100) < 20 * GameLoop.deltaTime)
+        if (!anim.play && Rand.RandInt(0, 100) < 20 * GameLoop.deltaTimeS)
         {
             anim.play();
         }
-        age += GameLoop.deltaTime;
+        age += GameLoop.deltaTimeS;
         if (age > hatchAge)
         {
             // hatch

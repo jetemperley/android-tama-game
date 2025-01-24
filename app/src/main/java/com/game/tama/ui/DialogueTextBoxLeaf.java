@@ -63,7 +63,7 @@ public class DialogueTextBoxLeaf extends SquareCellButtonLeaf
     @Override
     public void update()
     {
-        currentLetter += GameLoop.deltaTime * 15;
+        currentLetter += GameLoop.deltaTimeS * 15;
         int letterLimit =
             currentLine * lettersPerLine + lettersPerLine * linesPerBox;
         if (currentLetter > letterLimit)

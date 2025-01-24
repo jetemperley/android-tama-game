@@ -1,6 +1,6 @@
 package com.game.tama.thing;
 
-import com.game.tama.component.Component;
+import com.game.tama.thing.component.Component;
 import com.game.tama.core.Assets;
 import com.game.android.DisplayAdapter;
 import com.game.tama.core.Sprite;
@@ -16,11 +16,12 @@ import java.util.List;
 
 public abstract class Thing implements java.io.Serializable, Loadable
 {
-    @NotNull
-    final public WorldObject loc;
     protected String asset = Assets.Names.static_poop.name();
+    @NotNull
+    public final WorldObject loc;
     public final List<Thing> children;
-    public final List<Component> components;
+    private final List<Component> components;
+    public String name = "Unnamed-thing";
 
     public Thing()
     {
@@ -39,7 +40,7 @@ public abstract class Thing implements java.io.Serializable, Loadable
         }
     }
 
-    Sprite getAsset()
+    public Sprite getAsset()
     {
         return Assets.getSprite(asset);
     }
@@ -90,7 +91,7 @@ public abstract class Thing implements java.io.Serializable, Loadable
         return false;
     }
 
-    Type type()
+    public Type type()
     {
         return Type.undefined;
     }
@@ -105,7 +106,7 @@ public abstract class Thing implements java.io.Serializable, Loadable
 
     public String getDescription()
     {
-        return "Loc: " + loc.x + ", " + loc.y + ". ";
+        return "Name: " + name + ", Loc: " + loc.x + ", " + loc.y + ". ";
     }
 
     public Thing pickup()
@@ -139,6 +140,7 @@ public abstract class Thing implements java.io.Serializable, Loadable
 
     public void addComponent(Component component)
     {
+        component.setParent(this);
         components.add(component);
     }
 }

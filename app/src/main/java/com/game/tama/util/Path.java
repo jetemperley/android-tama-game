@@ -1,7 +1,7 @@
 package com.game.tama.util;
 
 import com.game.tama.core.World;
-import com.game.tama.thing.Pet;
+import com.game.tama.thing.pet.Pet;
 
 import java.util.Comparator;
 import java.util.PriorityQueue;
@@ -21,7 +21,7 @@ public class Path
     public Path(int aimDist)
     {
 
-        step = Pet.steps;
+        step = Pet.stepsVec;
         dist = aimDist;
     }
 

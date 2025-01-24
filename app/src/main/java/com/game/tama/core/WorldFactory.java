@@ -1,15 +1,15 @@
 package com.game.tama.core;
 
-import com.game.tama.thing.DynTile;
-import com.game.tama.thing.Food;
-import com.game.tama.thing.Grass;
-import com.game.tama.thing.Sand;
-import com.game.tama.thing.Walker;
+import com.game.tama.thing.tile.DynTile;
+import com.game.tama.thing.item.Food;
+import com.game.tama.thing.tile.Grass;
+import com.game.tama.thing.tile.Sand;
+import com.game.tama.thing.pet.Walker;
 import com.tama.R;
-import com.game.tama.thing.BackpackSlot;
-import com.game.tama.thing.Bush;
-import com.game.tama.thing.Tile;
-import com.game.tama.thing.Tree;
+import com.game.tama.thing.tile.BackpackSlot;
+import com.game.tama.thing.item.Bush;
+import com.game.tama.thing.tile.Tile;
+import com.game.tama.thing.item.Tree;
 
 public class WorldFactory
 {

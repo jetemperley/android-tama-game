@@ -1,21 +1,18 @@
-package com.game.tama.component;
-
-import com.game.tama.thing.Thing;
+package com.game.tama.thing.component;
 
 public class Health extends Component
 {
     private int maxHealth;
     private int currentHealth;
-    public Health(Thing parent, int maxHealth)
+    public Health(int maxHealth)
     {
-        super(parent);
         this.maxHealth = maxHealth;
         currentHealth = maxHealth;
     }
 
-    public Health(Thing parent)
+    public Health()
     {
-        this(parent, 100);
+        this(100);
     }
 
     public void addHealth(int dam)

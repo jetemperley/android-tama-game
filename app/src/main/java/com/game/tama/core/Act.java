@@ -5,16 +5,14 @@ import android.util.Log;
 import com.game.tama.engine.behaviour.GameManager;
 import com.game.tama.util.Path;
 import com.game.tama.util.Vec2;
-import com.game.tama.thing.Pet;
-import com.game.tama.thing.Poop;
+import com.game.tama.thing.pet.Pet;
+import com.game.tama.thing.item.Poop;
 
 import java.util.ArrayList;
 
 interface Act
 {
-
     ActState update(World m, Pet p);
-
 }
 
 enum ActState

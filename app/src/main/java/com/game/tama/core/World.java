@@ -1,13 +1,11 @@
 package com.game.tama.core;
 
-import android.graphics.Matrix;
-
 import com.game.android.DisplayAdapter;
-import com.game.tama.thing.DynTile;
-import com.game.tama.thing.Grass;
+import com.game.tama.thing.tile.DynTile;
+import com.game.tama.thing.tile.Grass;
 import com.game.tama.thing.Thing;
-import com.game.tama.thing.Tile;
-import com.game.tama.thing.TileType;
+import com.game.tama.thing.tile.Tile;
+import com.game.tama.thing.tile.TileType;
 import com.game.tama.util.A;
 import com.game.tama.util.Log;
 
@@ -87,12 +85,12 @@ public class World implements java.io.Serializable
 
     public void reLoadAllAssets()
     {
-        for (int x = 0; x < tiles.length; x++)
+        for (Tile[] tileLine : tiles)
         {
-            for (int y = 0; y < tiles[x].length; y++)
+            for (Tile tile : tileLine)
             {
-                tiles[x][y].load();
-                tiles[x][y].updateDetails(this);
+                tile.load();
+                tile.updateDetails(this);
             }
         }
     }

@@ -1,7 +1,6 @@
 package com.game.tama.core;
 
 import com.game.android.GameActivity;
-import com.game.tama.util.Log;
 
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
@@ -11,8 +10,9 @@ public class GameLoop extends Thread
     GameActivity activity;
     public boolean play = true;
 
-    /** The time (ms) which the last frame took. */
-    public static float deltaTime = 0;
+    /** The time (seconds) which the last frame took. */
+    public static float deltaTimeS = 0;
+    public static long deltaTimeMs = 0;
 
     public GameLoop(GameActivity activity)
     {
@@ -30,7 +30,8 @@ public class GameLoop extends Thread
             activity.updateAndDraw();
             end = LocalTime.now();
             long frameTime =  ChronoUnit.MILLIS.between(start, end);
-            deltaTime =  frameTime/1000f;
+            deltaTimeS =  frameTime/1000f;
+            deltaTimeMs =  frameTime;
 //            Log.log(this,  "deltaTime: " + deltaTime);
         }
     }

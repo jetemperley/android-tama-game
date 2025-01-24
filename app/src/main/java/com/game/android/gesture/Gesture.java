@@ -14,15 +14,6 @@ public class Gesture implements Input
     private HashMap<Class<? extends GState>, GState> states;
     private Class<? extends GState> stateidx = null;
 
-    int error = -1, wait = 0, down = 1, doubleTapDrag = 2,
-        scale = 3, singleTap = 4, drag = 5,
-        doubleTap = 6;
-
-    // pointer ids, (primary pointer is always at index 0)
-    private int id2 = -1;
-    // locations of the pointers
-    // private Vec2<Float> prev1, prev2, new1, new2;
-
     private int singleTapConfirmDelay = 200;
     private int dragConfirmSensitivity = 10;
 
@@ -54,30 +45,59 @@ public class Gesture implements Input
         return true;
     }
 
+    /**
+     * Triggers after the users finger is removed from the screen and
+     * the finger has not moved
+     * @param x
+     * @param y
+     */
     public void singleTapConfirmed(float x, float y)
     {
         Log.log(this, "single tap confirm");
         gestureTarget.singleTapConfirmed(x, y - topOffset);
     }
 
+    /**
+     * Triggers when a finger is first touched to the screen
+     * @param x
+     * @param y
+     */
     public void singleDown(float x, float y)
     {
         Log.log(this, "single down");
         gestureTarget.singleDown(x, y - topOffset);
     }
 
+    /**
+     * Triggers after the long press duration has elapsed and the finger has
+     * not moved
+     * @param x
+     * @param y
+     */
     public void longPressConfirmed(float x, float y)
     {
         Log.log(this, "long press confirm");
         gestureTarget.longPressConfirmed(x, y - topOffset);
     }
 
+    /**
+     * Triggers after 2 taps have been confirmed (singleTapConfirmed)
+     * within a specified period
+     * @param x
+     * @param y
+     */
     public void doubleTapConfirmed(float x, float y)
     {
         Log.log(this, "double tap confirm");
         gestureTarget.doubleTapConfirmed(x, y - topOffset);
     }
 
+    /**
+     * Triggers on when the finger is released from the screen after
+     * doubleTapConfirmed() (i think, double check that)
+     * @param x
+     * @param y
+     */
     public void doubleTapRelease(float x, float y)
     {
         Log.log(this, "double tap release");

@@ -3,7 +3,7 @@ package com.game.tama.command
 import android.util.Log
 import com.game.android.DisplayAdapter
 import com.game.tama.core.World
-import com.game.tama.thing.Pet
+import com.game.tama.thing.pet.Pet
 
 class CommandReplacer : Command()
 {
@@ -24,6 +24,7 @@ class CommandReplacer : Command()
             if (currentCommand == null || currentCommand!!.isReplaceable())
             {
                 currentCommand = replaceWith;
+                replaceWith = null;
 
             }
         }
@@ -71,6 +72,11 @@ class CommandReplacer : Command()
     override fun draw(d: DisplayAdapter)
     {
         currentCommand?.draw(d);
+    }
+
+    fun hasCommand() : Boolean
+    {
+        return currentCommand != null && replaceWith != null;
     }
 
 }

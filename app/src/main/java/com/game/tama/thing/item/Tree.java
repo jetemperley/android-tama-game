@@ -1,9 +1,10 @@
-package com.game.tama.thing;
+package com.game.tama.thing.item;
 
 import com.game.tama.core.Animator;
 import com.game.tama.core.Assets;
 import com.game.tama.core.Type;
 import com.game.tama.core.World;
+import com.game.tama.thing.Thing;
 import com.tama.R;
 import com.game.tama.core.Sprite;
 
@@ -37,7 +38,7 @@ public class Tree extends Thing implements java.io.Serializable
 
     }
 
-    Sprite getAsset()
+    public Sprite getAsset()
     {
         if (anim == null)
         {
@@ -69,7 +70,7 @@ public class Tree extends Thing implements java.io.Serializable
         anim.play();
     }
 
-    Type type()
+    public Type type()
     {
         return Type.tree;
     }

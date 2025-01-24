@@ -1,8 +1,9 @@
-package com.game.tama.thing;
+package com.game.tama.thing.item;
 
-import com.game.tama.core.Type;
 import com.game.tama.core.Assets;
 import com.game.tama.core.World;
+import com.game.tama.thing.Thing;
+import com.game.tama.thing.pet.Pet;
 
 class Seed extends Thing
 {

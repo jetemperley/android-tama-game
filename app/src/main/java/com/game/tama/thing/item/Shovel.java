@@ -1,9 +1,11 @@
-package com.game.tama.thing;
+package com.game.tama.thing.item;
 
 import android.util.Log;
 
 import com.game.tama.core.Assets;
 import com.game.tama.core.World;
+import com.game.tama.thing.Thing;
+import com.game.tama.thing.tile.TileType;
 
 class Shovel extends Thing
 {
