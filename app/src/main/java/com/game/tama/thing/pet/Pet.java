@@ -9,6 +9,7 @@ import com.game.tama.state.Wander;
 import com.game.tama.thing.item.Food;
 import com.game.tama.thing.Thing;
 import com.game.tama.thing.tile.Tile;
+import com.game.tama.util.Log;
 import com.game.tama.util.Vec2;
 import com.game.tama.command.Command;
 import com.game.tama.command.CommandAttack;
@@ -87,7 +88,7 @@ public abstract class Pet extends Thing
     {
         if (time == GameManager.time)
         {
-            throw new RuntimeException(
+            Log.error(this,
                 "Pet doubled up on an update. Does this matter?");
         }
         currentCommand.getUpdate().invoke(this, world);

@@ -12,7 +12,7 @@ import java.util.HashMap;
 public class Gesture implements Input
 {
     private HashMap<Class<? extends GState>, GState> states;
-    private Class<? extends GState> stateidx = null;
+    private Class<? extends GState> stateKey = null;
 
     private int singleTapConfirmDelay = 200;
     private int dragConfirmSensitivity = 10;
@@ -30,18 +30,18 @@ public class Gesture implements Input
         states.put(SingleTap.class, new SingleTap());
         states.put(Drag.class, new Drag());
         states.put(DoubleTap.class, new DoubleTap());
-        stateidx = Wait.class;
+        stateKey = Wait.class;
     }
 
     public void update()
     {
         // Log.log("Game Gesture", "update");
-        states.get(stateidx).update();
+        states.get(stateKey).update();
     }
 
     public boolean onTouchEvent(MotionEvent e)
     {
-        stateidx = states.get(stateidx).onMotion(e);
+        stateKey = states.get(stateKey).onMotion(e);
         return true;
     }
 
@@ -236,7 +236,7 @@ public class Gesture implements Input
                 singleTapConfirmDelay)
             {
                 longPressConfirmed(initialPos.x, initialPos.y);
-                stateidx = Wait.class;
+                stateKey = Wait.class;
             }
         }
 
@@ -298,7 +298,7 @@ public class Gesture implements Input
                 singleTapConfirmDelay)
             {
                 singleTapConfirmed(loc.x, loc.y);
-                stateidx = Wait.class;
+                stateKey = Wait.class;
             }
         }
 

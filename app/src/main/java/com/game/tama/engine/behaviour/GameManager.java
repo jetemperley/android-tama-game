@@ -1,5 +1,6 @@
 package com.game.tama.engine.behaviour;
 
+import com.game.android.GameActivity;
 import com.game.android.gesture.EventPrioritySubscriber;
 import com.game.android.gesture.GestureEventSource;
 import com.game.engine.Behaviour;
@@ -38,14 +39,16 @@ public class GameManager extends Behaviour
         gameBehaviour = new PetGameBehaviour(new Node(mainGameNode));
         heldBehaviour = new HeldThingBehaviour(new Node(mainGameNode));
         hudMenu = BehaviourBuilder.buildHUD(new Node(mainGameNode));
+        // translate the game down below the hud button
+        gameBehaviour.node.localTransform.preTranslate(0, 16);
         pauseMenu = BehaviourBuilder.buildPauseMenu(new Node(parent));
 
         prioritySubscriber = new EventPrioritySubscriber();
-        mainInput.setTarget(prioritySubscriber);
         prioritySubscriber.subscribe(heldBehaviour, 0);
         prioritySubscriber.subscribe(pauseMenu, 1);
         prioritySubscriber.subscribe(hudMenu, 1);
         prioritySubscriber.subscribe(gameBehaviour, 2);
+        mainInput.setTarget(prioritySubscriber);
 
         play();
     }

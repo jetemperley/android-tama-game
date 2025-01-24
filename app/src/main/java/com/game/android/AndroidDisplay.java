@@ -15,6 +15,9 @@ public class AndroidDisplay implements DisplayAdapter
 
     Canvas canvas;
     int cellSize;
+    /**
+     * The rect bounds of the game activity
+     */
     public Rect view = new Rect();
 
     public AndroidDisplay(int cellSize)

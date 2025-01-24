@@ -7,7 +7,9 @@ public class WorldObject implements java.io.Serializable
 
     public transient Sprite sprite;
     protected String asset;
+    /** Position of this thing in the array */
     public int x, y;
+    /** Offsets in percentage of 1 array square */
     public int xoff, yoff;
     // flat indicates if the sprite is displayed as a ground base layer
     public boolean flat = false;

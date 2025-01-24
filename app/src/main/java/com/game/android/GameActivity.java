@@ -36,7 +36,11 @@ import java.nio.file.Files;
 public class GameActivity extends Activity
 {
     final static String DATA_FILE_NAME = "gameData.ser";
-    private static float TOP_OFFSET = 0;
+    /**
+     * The screen bounds for this particular game application taking into
+     * account the navbar and such.
+     */
+    private static Rect SCREEN_RECT = new Rect();
 
     ConstraintLayout lay;
     static Paint red, black, white;
@@ -52,7 +56,7 @@ public class GameActivity extends Activity
     Display display;
     AndroidDisplay displayAdapter;
 
-    Node root;
+    Node rootNode;
     GameManager gameManager;
     Gesture gesture;
 
@@ -90,24 +94,25 @@ public class GameActivity extends Activity
             String description = channel_desc;
             int importance = NotificationManager.IMPORTANCE_DEFAULT;
             NotificationChannel channel =
-                    new NotificationChannel(CHANNEL_ID, name, importance);
+                new NotificationChannel(CHANNEL_ID, name, importance);
             channel.setDescription(description);
-            // Register the channel with the system; you can't change the importance
+            // Register the channel with the system; you can't change the
+            // importance
             // or other notification behaviors after this
             NotificationManager notificationManager =
-                    getSystemService(NotificationManager.class);
+                getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(channel);
         }
 
         NotificationCompat.Builder builder =
-                new NotificationCompat.Builder(
-                        this,
-                        CHANNEL_ID).setContentTitle(
-                        "My notification").setContentText("Hello World!").setPriority(
-                        NotificationCompat.PRIORITY_DEFAULT).setAutoCancel(true);
+            new NotificationCompat.Builder(
+                this,
+                CHANNEL_ID).setContentTitle(
+                "My notification").setContentText("Hello World!").setPriority(
+                NotificationCompat.PRIORITY_DEFAULT).setAutoCancel(true);
         int ID = 0;
         NotificationManagerCompat notificationManager =
-                NotificationManagerCompat.from(this);
+            NotificationManagerCompat.from(this);
         // notificationManager.notify(ID, builder.build());
 
         Log.log(this, "staring setup");
@@ -120,11 +125,11 @@ public class GameActivity extends Activity
 
         displayAdapter = new AndroidDisplay(16);
 
-        root = new Node();
+        rootNode = new Node();
         gesture = new Gesture();
         GestureEventAdaptor gestureEventAdaptor = new GestureEventAdaptor();
         gesture.gestureTarget = gestureEventAdaptor;
-        gameManager = new GameManager(root, gestureEventAdaptor);
+        gameManager = new GameManager(rootNode, gestureEventAdaptor);
         // TODO load the game somewhere
         gameManager.play();
 
@@ -133,12 +138,15 @@ public class GameActivity extends Activity
 
     public void updateAndDraw()
     {
-        this.getWindow().getDecorView().getWindowVisibleDisplayFrame(
-                displayAdapter.view);
-        TOP_OFFSET = displayAdapter.view.top;
-        gesture.topOffset = TOP_OFFSET;
+
+        // update the view bounds, incase the screen changed
+        this.getWindow()
+            .getDecorView()
+            .getWindowVisibleDisplayFrame(SCREEN_RECT);
+        // rootNode.localTransform.setTranslate(0, SCREEN_RECT.top);
+        displayAdapter.view = SCREEN_RECT;
+        gesture.topOffset = SCREEN_RECT.top;
         gesture.update();
-        // update the view bounds
 
         if (view.surface.getSurface().isValid())
         {
@@ -146,11 +154,10 @@ public class GameActivity extends Activity
 
             if (canvas != null)
             {
-                Log.log(this, "UpdateAndDraw");
                 displayAdapter.canvas = canvas;
                 canvas.drawColor(Color.BLACK);
-                root.engine_update();
-                root.engine_draw(displayAdapter);
+                rootNode.engine_update();
+                rootNode.engine_draw(displayAdapter);
                 if (view.surface.getSurface().isValid())
                 {
                     view.surface.unlockCanvasAndPost(canvas);
@@ -166,8 +173,7 @@ public class GameActivity extends Activity
         try
         {
             gameLoop.join();
-        }
-        catch (InterruptedException e)
+        } catch (InterruptedException e)
         {
             Log.log(this, "could not join gameloop");
         }
@@ -202,8 +208,7 @@ public class GameActivity extends Activity
             gameManager.save(oos);
             oos.close();
             Log.log(this, "Serialization complete");
-        }
-        catch (IOException e)
+        } catch (IOException e)
         {
             Log.error(this, "Serialization failed.", e);
         }
@@ -220,12 +225,11 @@ public class GameActivity extends Activity
             try
             {
                 ObjectInputStream in =
-                        new ObjectInputStream(Files.newInputStream(data.toPath()));
+                    new ObjectInputStream(Files.newInputStream(data.toPath()));
                 gameManager.load(in);
                 in.close();
                 Log.log(this, "deserialization complete");
-            }
-            catch (Exception e)
+            } catch (Exception e)
             {
                 gameManager.newGame();
                 Log.error(this, "deserialization failed", e);

@@ -1,18 +1,21 @@
 package com.game.android.gesture;
 
-import com.game.tama.core.Updateable;
-
 import java.util.PriorityQueue;
 
+/**
+ * Manages a list of input handlers, which each have a priority (lowest first).
+ * If a handler returns true, then the event is considered consumed and will not
+ * be passed to sequential input handlers.
+ */
 public class EventPrioritySubscriber implements GestureEventHandler
 {
     private PriorityQueue<InputPriority> subscribers = new PriorityQueue<>();
 
     public boolean handleEvent(GestureEvent event)
     {
-        for (InputPriority ip : subscribers)
+        for (InputPriority input : subscribers)
         {
-            if (ip.handler.handleEvent(event))
+            if (input.handleEvent(event))
             {
                 return true;
             }
@@ -32,8 +35,8 @@ public class EventPrioritySubscriber implements GestureEventHandler
 
     private static class InputPriority implements Comparable<InputPriority>
     {
-        public int priority = 0;
-        public GestureEventHandler handler;
+        public int priority;
+        private final GestureEventHandler handler;
 
         InputPriority(GestureEventHandler handler, int priority)
         {
@@ -45,6 +48,12 @@ public class EventPrioritySubscriber implements GestureEventHandler
         public int compareTo(InputPriority input)
         {
             return priority - input.priority;
+        }
+
+
+        public boolean handleEvent(GestureEvent event)
+        {
+            return handler.handleEvent(event);
         }
     }
 }

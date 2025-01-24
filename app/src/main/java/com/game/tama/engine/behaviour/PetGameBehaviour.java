@@ -121,22 +121,20 @@ public class PetGameBehaviour extends Behaviour implements Input
 
     public void pickup(float x, float y)
     {
-//        if (heldThing.held != null)
-//        {
-//            heldThing.setPos(x, y);
-//            return;
-//        }
-//        Thing t = world.checkCollision(x, y);
-//        if (t != null)
-//        {
-//            heldThing.held = world.pickupThing(t.loc.x, t.loc.y);
-//            heldThing.setPos(x, y);
-//            Vec2<Float> pos = heldThing.held.loc.getWorldArrPos();
-//            heldThing.setHeldOffset(x - pos.x, y - pos.y);
-//        }
+        //        if (heldThing.held != null)
+        //        {
+        //            heldThing.setPos(x, y);
+        //            return;
+        //        }
+        //        Thing t = world.checkCollision(x, y);
+        //        if (t != null)
+        //        {
+        //            heldThing.held = world.pickupThing(t.loc.x, t.loc.y);
+        //            heldThing.setPos(x, y);
+        //            Vec2<Float> pos = heldThing.held.loc.getWorldArrPos();
+        //            heldThing.setHeldOffset(x - pos.x, y - pos.y);
+        //        }
     }
-
-
 
     public Thing getThing(float x, float y)
     {
@@ -146,6 +144,11 @@ public class PetGameBehaviour extends Behaviour implements Input
     public void select(float x, float y)
     {
         Thing t = getThing(x, y);
+        select(t);
+    }
+
+    public void select(Thing t)
+    {
         if (t == null || selected == t)
         {
             selected = null;
@@ -218,17 +221,17 @@ public class PetGameBehaviour extends Behaviour implements Input
     public void singleTapConfirmed(float x, float y)
     {
         float[] f =
-            MatrixUtil.convertScreenToWorldArray(getWorldTransform(
-                tempMat), x, y);
+            MatrixUtil.convertScreenToWorldArray(
+                getWorldTransform(tempMat), x, y);
 
         Thing t = getThing(f[0], f[1]);
         if (selected == null || selected != t)
         {
-            select(f[0], f[1]);
+            select(t);
         }
         else
         {
-            poke(f[0], f[1]);
+            t.poke();
             selected = null;
         }
     }

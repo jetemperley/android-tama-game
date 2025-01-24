@@ -21,6 +21,11 @@ public class Log
         android.util.Log.e(obj.getCanonicalName(), msg);
     }
 
+    public static void error(Object obj, String msg)
+    {
+        android.util.Log.e(obj.getClass().getCanonicalName(), msg);
+    }
+
     public static void error(Object obj, String msg, Throwable throwable)
     {
         error(obj.getClass(), msg, throwable);
