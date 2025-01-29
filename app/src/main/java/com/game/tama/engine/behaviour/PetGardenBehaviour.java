@@ -12,14 +12,17 @@ import com.game.tama.command.CommandFactory;
 import com.game.tama.command.CommandQueue;
 import com.game.tama.core.Assets;
 import com.game.tama.core.World;
+import com.game.tama.thing.ThingControl;
 import com.game.tama.thing.pet.Pet;
 import com.game.tama.thing.Thing;
 import com.game.tama.ui.ContainerManager;
+import com.game.tama.ui.SquareCellButtonLeaf;
+import com.game.tama.ui.UINode;
 import com.game.tama.util.Log;
 import com.game.tama.util.MatrixUtil;
 import com.game.tama.util.Vec2;
 
-public class PetGameBehaviour extends Behaviour implements Input
+public class PetGardenBehaviour extends Behaviour implements Input
 {
     public MenuBehaviour thingMenu;
 
@@ -32,10 +35,10 @@ public class PetGameBehaviour extends Behaviour implements Input
     private Thing selected = null;
     private DepthDisplay depthDisplay = new DepthDisplay();
 
-    public PetGameBehaviour(Node parent)
+    public PetGardenBehaviour(Node parent)
     {
         super(parent);
-        PetGameBehaviourConfigurer.testConfiguration(this);
+        PetGardenBehaviourConfigurer.testConfiguration(this);
     }
 
     public void update()
@@ -155,8 +158,14 @@ public class PetGameBehaviour extends Behaviour implements Input
         }
         else
         {
-            // TODO: add the things menu items
-            //GameManager.INST.hudMenu.add();
+            // add the things menu items
+            UINode controlNode = new UINode();
+            ThingControl[] controls = t.getControls();
+//            for (ThingControl tc : controls)
+//            {
+//                //controlNode.add(tc, new SquareCellButtonLeaf());
+//            }
+            GameManager.INST.hudMenu.root.add("controls", controlNode);
             selected = t;
         }
     }

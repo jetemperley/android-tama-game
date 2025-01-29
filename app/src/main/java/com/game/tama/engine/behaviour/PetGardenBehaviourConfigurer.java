@@ -4,9 +4,9 @@ import android.graphics.Matrix;
 
 import com.game.tama.core.WorldFactory;
 
-public class PetGameBehaviourConfigurer
+public class PetGardenBehaviourConfigurer
 {
-    public static void testConfiguration(PetGameBehaviour behaviour) {
+    public static void testConfiguration(PetGardenBehaviour behaviour) {
         behaviour.node.localTransform.setScale(6, 6);
         // thingMenu = new MenuBehaviour(parent);
         behaviour.world = WorldFactory.makeTestWorld();

@@ -6,10 +6,11 @@ import com.game.engine.Behaviour;
 import com.game.engine.Node;
 import com.game.tama.core.Loadable;
 import com.game.tama.ui.UIComposite;
+import com.game.tama.ui.UINode;
 
 public class MenuBehaviour extends Behaviour implements Loadable
 {
-    public UIComposite root;
+    public UINode root;
 
     public MenuBehaviour(Node parent)
     {

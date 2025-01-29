@@ -67,6 +67,13 @@ public abstract class Pet extends Thing
         addComponent(new Health());
     }
 
+    /**
+     * Gets (or creates) the animator associated with this particular pet. This
+     * should also be passed to the WorldObject for rendering (currently handled
+     * by Thing.load())
+     *
+     * @return
+     */
     @Override
     public Sprite getAsset()
     {
@@ -88,7 +95,8 @@ public abstract class Pet extends Thing
     {
         if (time == GameManager.time)
         {
-            Log.error(this,
+            Log.error(
+                this,
                 "Pet doubled up on an update. Does this matter?");
         }
         currentCommand.getUpdate().invoke(this, world);

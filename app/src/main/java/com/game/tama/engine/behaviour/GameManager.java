@@ -1,6 +1,5 @@
 package com.game.tama.engine.behaviour;
 
-import com.game.android.GameActivity;
 import com.game.android.gesture.EventPrioritySubscriber;
 import com.game.android.gesture.GestureEventSource;
 import com.game.engine.Behaviour;
@@ -17,7 +16,7 @@ public class GameManager extends Behaviour
 {
     public static GameManager INST;
 
-    public PetGameBehaviour gameBehaviour;
+    public PetGardenBehaviour gameBehaviour;
     public HeldThingBehaviour heldBehaviour;
     public MenuBehaviour pauseMenu;
     public MenuBehaviour hudMenu;
@@ -36,7 +35,7 @@ public class GameManager extends Behaviour
         mainInput = input;
         mainGameNode = new Node(parent);
 
-        gameBehaviour = new PetGameBehaviour(new Node(mainGameNode));
+        gameBehaviour = new PetGardenBehaviour(new Node(mainGameNode));
         heldBehaviour = new HeldThingBehaviour(new Node(mainGameNode));
         hudMenu = BehaviourBuilder.buildHUD(new Node(mainGameNode));
         // translate the game down below the hud button
@@ -77,7 +76,7 @@ public class GameManager extends Behaviour
         return INST.heldBehaviour;
     }
 
-    public static PetGameBehaviour getGame()
+    public static PetGardenBehaviour getGame()
     {
         return INST.gameBehaviour;
     }

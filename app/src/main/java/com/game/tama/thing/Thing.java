@@ -143,6 +143,11 @@ public abstract class Thing implements java.io.Serializable, Loadable
         component.setParent(this);
         components.add(component);
     }
+
+    public ThingControl[] getControls()
+    {
+        return null;
+    }
 }
 
 
