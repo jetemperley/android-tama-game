@@ -1,6 +1,7 @@
 package com.game.tama.state;
 
 import com.game.tama.command.CommandStep;
+import com.game.tama.command.CommandWait;
 import com.game.tama.core.GameLoop;
 import com.game.tama.core.World;
 import com.game.tama.core.Direction;
@@ -24,6 +25,10 @@ public class Wander extends StateController
             {
                 List<Direction>
                     moves = pet.getPossibleMoves(world, pet.loc.x, pet.loc.y);
+                if (moves.isEmpty()) {
+                    pet.currentCommand.replace(new CommandWait(4000));
+                    return;
+                }
                 Direction randDir = moves.get(Rand.RandInt(0, moves.size()));
                 pet.currentCommand.replace(new CommandStep(randDir));
             }

@@ -26,7 +26,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public abstract class Pet extends Thing
+public class Pet extends Thing
 {
     private long time = 0;
 
@@ -119,8 +119,12 @@ public abstract class Pet extends Thing
 
     public void setDir(Direction dir)
     {
+        // TODO move the pose and direction calc stuff into those enums
+        if (anim == null)
+        {
+            return;
+        }
         int pose = anim.animId / 4;
-
         anim.animId = 4 * pose + dir.ordinal();
     }
 
@@ -194,6 +198,12 @@ public abstract class Pet extends Thing
                 thing,
                 new CommandAttack(thing)));
         }
+    }
+
+    public void setAsset(Assets.Names name)
+    {
+        asset = name.name();
+        load();
     }
 }
 

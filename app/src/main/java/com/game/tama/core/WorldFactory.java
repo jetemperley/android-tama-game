@@ -1,5 +1,6 @@
 package com.game.tama.core;
 
+import com.game.tama.thing.pet.PetFactory;
 import com.game.tama.thing.tile.DynTile;
 import com.game.tama.thing.item.Food;
 import com.game.tama.thing.tile.Grass;
@@ -59,7 +60,10 @@ public class WorldFactory
 
             }
         }
-        w.addOrClosest(new Walker(), 0, 0);
+        w.addOrClosest(PetFactory.cellPet(), 0, 0);
+        w.addOrClosest(PetFactory.cellPet(), 0, 0);
+        w.addOrClosest(PetFactory.cellPet(), 0, 0);
+        w.addOrClosest(PetFactory.cellPet(), 0, 0);
         w.addOrClosest(new Food(R.drawable.static_meat), 1, 1);
         w.addOrClosest(new Container(2), 2, 2);
 

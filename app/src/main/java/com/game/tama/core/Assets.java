@@ -26,6 +26,7 @@ public class Assets
         sheet_16_treeripped,
         sheet_16_walker,
         sheet_16_button,
+        sheet_16_cell_pet,
 
         sheet_5_num,
         sheet_8_water,
