@@ -13,7 +13,10 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public abstract class Thing implements java.io.Serializable, Loadable
 {
@@ -23,6 +26,7 @@ public abstract class Thing implements java.io.Serializable, Loadable
     public final List<Thing> children;
     private final List<Component> components;
     public String name = "Unnamed-thing";
+    private LinkedHashSet<ThingControl.Name> controls = new LinkedHashSet<>();
 
     public Thing()
     {
@@ -145,10 +149,21 @@ public abstract class Thing implements java.io.Serializable, Loadable
         components.add(component);
     }
 
-    public ThingControl[] getControls()
+    public List<ThingControl.Name> getControls()
     {
-        return null;
+        return new ArrayList<>(controls);
     }
+
+    public void addControl(ThingControl.Name controlName)
+    {
+        controls.add(controlName);
+    }
+
+    public void removeControl(ThingControl.Name controlName)
+    {
+        controls.remove(controlName);
+    }
+
 }
 
 

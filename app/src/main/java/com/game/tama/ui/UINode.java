@@ -21,9 +21,14 @@ public class UINode extends UIComposite
         childMap.put(key, child);
     }
 
-    public void remove(Object key)
+    public UIComposite remove(Object key)
     {
-        childMap.remove(key);
+        return childMap.remove(key);
+    }
+
+    public UIComposite get(Object key)
+    {
+        return childMap.get(key);
     }
 
     @Override
@@ -78,4 +83,6 @@ public class UINode extends UIComposite
         }
         return false;
     }
+
+
 }

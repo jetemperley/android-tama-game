@@ -22,7 +22,7 @@ import com.game.android.gesture.Gesture;
 import com.game.android.gesture.GestureEventAdaptor;
 import com.game.engine.Node;
 import com.game.tama.core.Assets;
-import com.game.tama.core.GameLoop;
+import com.game.engine.GameLoop;
 import com.game.tama.engine.behaviour.GameManager;
 import com.game.tama.util.Log;
 
@@ -130,8 +130,6 @@ public class GameActivity extends Activity
         GestureEventAdaptor gestureEventAdaptor = new GestureEventAdaptor();
         gesture.gestureTarget = gestureEventAdaptor;
         gameManager = new GameManager(rootNode, gestureEventAdaptor);
-        // TODO load the game somewhere
-        gameManager.play();
 
         gameLoop = new GameLoop(this);
     }

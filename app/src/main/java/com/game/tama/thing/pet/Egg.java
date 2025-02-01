@@ -1,7 +1,7 @@
 package com.game.tama.thing.pet;
 
 import com.game.tama.core.Animator;
-import com.game.tama.core.GameLoop;
+import com.game.engine.GameLoop;
 import com.game.tama.core.World;
 import com.game.tama.thing.Thing;
 import com.game.tama.util.Rand;

@@ -1,4 +1,4 @@
-package com.game.tama.core;
+package com.game.engine;
 
 import com.game.android.GameActivity;
 
@@ -33,6 +33,7 @@ public class GameLoop extends Thread
             deltaTimeS =  frameTime/1000f;
             deltaTimeMs =  frameTime;
 //            Log.log(this,  "deltaTime: " + deltaTime);
+            BehaviorStarter.alertStart();
         }
     }
 }

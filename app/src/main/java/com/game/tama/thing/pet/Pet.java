@@ -6,6 +6,7 @@ import com.game.tama.core.Animator;
 import com.game.tama.core.Type;
 import com.game.tama.state.StateController;
 import com.game.tama.state.Wander;
+import com.game.tama.thing.ThingControl;
 import com.game.tama.thing.item.Food;
 import com.game.tama.thing.Thing;
 import com.game.tama.thing.tile.Tile;
@@ -65,6 +66,7 @@ public class Pet extends Thing
         asset = Assets.Names.sheet_16_blob.name();
         load();
         addComponent(new Health());
+        addControl(ThingControl.Name.move);
     }
 
     /**

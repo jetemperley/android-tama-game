@@ -30,13 +30,13 @@ public class SimpleButtonLeaf extends UIComposite
                             float yPos,
                             float width,
                             float height,
-                            String asset,
+                            Assets.Names asset,
                             Runnable action)
     {
         this.pos = new Vec2<>(xPos, yPos);
         this.size = new Vec2<>(width, height);
         this.action = action;
-        this.asset = asset;
+        this.asset = asset.name();
         load();
     }
 

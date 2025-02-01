@@ -35,12 +35,22 @@ public class PetGardenBehaviour extends Behaviour implements Input
     private Thing selected = null;
     private DepthDisplay depthDisplay = new DepthDisplay();
 
+    private ThingControlsBehaviour controlsBehaviour;
+
     public PetGardenBehaviour(Node parent)
     {
         super(parent);
         PetGardenBehaviourConfigurer.testConfiguration(this);
+        controlsBehaviour = new ThingControlsBehaviour(parent);
     }
 
+    @Override
+    public void start()
+    {
+        controlsBehaviour.setMenuRoot(GameManager.getHud().root);
+    }
+
+    @Override
     public void update()
     {
         world.update();
@@ -96,8 +106,7 @@ public class PetGardenBehaviour extends Behaviour implements Input
         float[] f = t.loc.getWorldBitPosAsArray();
         Log.log(
             this,
-            "transferFromContainer object loc is " + f[0] + " " +
-                f[1]);
+            "transferFromContainer object loc is " + f[0] + " " + f[1]);
         containerMat.mapPoints(f);
         Log.log(
             this,
@@ -154,18 +163,12 @@ public class PetGardenBehaviour extends Behaviour implements Input
     {
         if (t == null || selected == t)
         {
+            controlsBehaviour.setCurrentControls(null);
             selected = null;
         }
         else
         {
-            // add the things menu items
-            UINode controlNode = new UINode();
-            ThingControl[] controls = t.getControls();
-//            for (ThingControl tc : controls)
-//            {
-//                //controlNode.add(tc, new SquareCellButtonLeaf());
-//            }
-            GameManager.INST.hudMenu.root.add("controls", controlNode);
+            controlsBehaviour.setCurrentControls(t.getControls());
             selected = t;
         }
     }
@@ -217,9 +220,8 @@ public class PetGardenBehaviour extends Behaviour implements Input
         }
         if (thing == null)
         {
-            CommandQueue walk = CommandFactory.Companion.commandPathTo(
-                (int) ax,
-                (int) ay);
+            CommandQueue walk =
+                CommandFactory.Companion.commandPathTo((int) ax, (int) ay);
             pet.currentCommand.replace(walk);
             return;
         }
@@ -231,7 +233,9 @@ public class PetGardenBehaviour extends Behaviour implements Input
     {
         float[] f =
             MatrixUtil.convertScreenToWorldArray(
-                getWorldTransform(tempMat), x, y);
+                getWorldTransform(tempMat),
+                x,
+                y);
 
         Thing t = getThing(f[0], f[1]);
         if (selected == null || selected != t)
@@ -255,8 +259,7 @@ public class PetGardenBehaviour extends Behaviour implements Input
     public void longPressConfirmed(float x, float y)
     {
         float[] f =
-            MatrixUtil.convertScreenToWorldArray(
-                getTempWorldTransform(), x, y);
+            MatrixUtil.convertScreenToWorldArray(getTempWorldTransform(), x, y);
         use(f[0], f[1]);
     }
 
@@ -289,17 +292,14 @@ public class PetGardenBehaviour extends Behaviour implements Input
         node.localTransform.postTranslate(-nmid.x, -nmid.y);
         node.localTransform.postScale(scale, scale);
         node.localTransform.postTranslate(nmid.x, nmid.y);
-        node.localTransform.postTranslate(
-            nmid.x - pmid.x,
-            nmid.y - pmid.y);
+        node.localTransform.postTranslate(nmid.x - pmid.x, nmid.y - pmid.y);
     }
 
     @Override
     public void dragStart(float x, float y)
     {
         float[] f =
-            MatrixUtil.convertScreenToWorldArray(
-                getTempWorldTransform(), x, y);
+            MatrixUtil.convertScreenToWorldArray(getTempWorldTransform(), x, y);
         Thing touched = world.checkCollision(f[0], f[1]);
         if (selected != null && selected == touched)
         {
@@ -310,9 +310,7 @@ public class PetGardenBehaviour extends Behaviour implements Input
     @Override
     public void drag(Vec2<Float> prev, Vec2<Float> next)
     {
-        node.localTransform.postTranslate(
-            next.x - prev.x,
-            next.y - prev.y);
+        node.localTransform.postTranslate(next.x - prev.x, next.y - prev.y);
     }
 
     @Override

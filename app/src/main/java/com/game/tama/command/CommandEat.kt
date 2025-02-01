@@ -1,7 +1,7 @@
 package com.game.tama.command
 
 import com.game.android.DisplayAdapter
-import com.game.tama.core.GameLoop
+import com.game.engine.GameLoop
 import com.game.tama.core.World
 import com.game.tama.thing.pet.Pet
 import com.game.tama.thing.Thing

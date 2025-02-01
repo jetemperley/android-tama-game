@@ -28,6 +28,18 @@ public class Node implements Updateable, Drawable
         setParent(parent);
     }
 
+    public final void engine_start()
+    {
+        for (Behaviour b : behaviours)
+        {
+            b.start();
+        }
+        for (Node n : children)
+        {
+            n.engine_start();
+        }
+    }
+
     public final void engine_update()
     {
         if (!enabled)

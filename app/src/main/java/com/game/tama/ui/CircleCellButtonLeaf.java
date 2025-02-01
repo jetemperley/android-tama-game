@@ -11,12 +11,12 @@ public class CircleCellButtonLeaf extends SimpleButtonLeaf
 {
     public enum Size
     {
-        p16(Assets.Names.static_circle_16.toString()),
-        p14(Assets.Names.static_circle_14.toString());
+        p16(Assets.Names.static_circle_16),
+        p14(Assets.Names.static_circle_14);
 
-        public String asset;
+        public Assets.Names asset;
 
-        Size(String asset)
+        Size(Assets.Names asset)
         {
             this.asset = asset;
         }

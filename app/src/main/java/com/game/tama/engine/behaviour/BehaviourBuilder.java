@@ -18,7 +18,7 @@ public class BehaviourBuilder
         pauseMenu.add("play button", new SquareCellButtonLeaf(
             50,
             50,
-            Assets.Names.static_poop.name(),
+            Assets.Names.static_poop,
             () -> GameManager.INST.play()));
         pauseMenu.add("test text", new TextLeaf("a hello z", 0, 0));
         pauseMenu.add("test text 2", new TextLeaf("aBz, cool.", 0, 8));
@@ -46,7 +46,7 @@ public class BehaviourBuilder
         hudRoot.add("pause", new SquareCellButtonLeaf(
             0,
             0,
-            Assets.Names.static_poop.name(),
+            Assets.Names.static_poop,
             () -> GameManager.INST.pause()));
         parent.localTransform.setScale(6, 6);
         hud.root = hudRoot;

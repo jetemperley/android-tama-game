@@ -22,6 +22,12 @@ public abstract class Behaviour implements Updateable, Drawable, GestureEventHan
         }
         this.node = parent;
         parent.addBehaviour(this);
+        BehaviorStarter.subscribe(this);
+    }
+
+    public void start()
+    {
+
     }
 
     public final <T extends Behaviour> T getBehaviour(Class<T> clazz)

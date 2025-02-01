@@ -4,7 +4,7 @@ import com.game.android.gesture.EventPrioritySubscriber;
 import com.game.android.gesture.GestureEventSource;
 import com.game.engine.Behaviour;
 import com.game.engine.Node;
-import com.game.tama.core.GameLoop;
+import com.game.engine.GameLoop;
 import com.game.tama.core.World;
 import com.game.tama.core.WorldFactory;
 
@@ -36,8 +36,8 @@ public class GameManager extends Behaviour
         mainGameNode = new Node(parent);
 
         gameBehaviour = new PetGardenBehaviour(new Node(mainGameNode));
-        heldBehaviour = new HeldThingBehaviour(new Node(mainGameNode));
         hudMenu = BehaviourBuilder.buildHUD(new Node(mainGameNode));
+        heldBehaviour = new HeldThingBehaviour(new Node(mainGameNode));
         // translate the game down below the hud button
         gameBehaviour.node.localTransform.preTranslate(0, 16);
         pauseMenu = BehaviourBuilder.buildPauseMenu(new Node(parent));

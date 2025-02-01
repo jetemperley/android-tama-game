@@ -3,7 +3,7 @@ package com.game.tama.command
 import android.util.Log
 import com.game.tama.anim.KeyFrameAssets
 import com.game.android.DisplayAdapter
-import com.game.tama.core.GameLoop
+import com.game.engine.GameLoop
 import com.game.tama.core.Direction
 import com.game.tama.thing.pet.Pet
 import com.game.tama.core.World
