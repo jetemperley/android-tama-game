@@ -8,6 +8,8 @@ import com.game.tama.util.Rand;
 import com.game.tama.core.Assets;
 import com.game.tama.core.Sprite;
 
+// TODO move to PetFactory and add functionality as component
+
 class Egg extends Thing
 {
 
