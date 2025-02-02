@@ -22,37 +22,28 @@ public class CircleCellButtonLeaf extends SimpleButtonLeaf
         }
     }
 
-    private String iconAsset;
-    private transient Sprite icon;
+    private Sprite sprite;
 
     /**
      * @param xPos   pixel x position of the button
      * @param yPos   pixel y position of the button
      */
-    public CircleCellButtonLeaf(float xPos, float yPos, String asset, Size size)
+    public CircleCellButtonLeaf(float xPos, float yPos, Sprite sprite, Size size)
     {
-        this(xPos, yPos, asset, ()->{}, size);
+        this(xPos, yPos, sprite, ()->{}, size);
     }
 
-    public CircleCellButtonLeaf(float xPos, float yPos, String asset, Runnable activate, Size size)
+    public CircleCellButtonLeaf(float xPos, float yPos, Sprite sprite, Runnable activate, Size size)
     {
-        super(xPos, yPos, 16, 16, size.asset, activate);
-        iconAsset = asset;
-        load();
+        super(xPos, yPos, 16, 16, Assets.getSprite(size.asset.name()), activate);
+        this.sprite = sprite;
     }
 
     @Override
     public void draw(DisplayAdapter display)
     {
         super.draw(display);
-        display.drawSprite(icon, pos.x, pos.y);
-    }
-
-    @Override
-    public void load()
-    {
-        super.load();
-        icon = Assets.getSprite(iconAsset);
+        display.drawSprite(sprite, pos.x, pos.y);
     }
 
     @Override

@@ -31,7 +31,7 @@ public class DialogueTextBoxLeaf extends SquareCellButtonLeaf
                                int height,
                                String text)
     {
-        super(xPos, yPos, width, height, Assets.Names.static_empty);
+        super(xPos, yPos, width, height, Assets.getSprite(Assets.Names.static_empty.name()));
         this.text = text;
         lettersPerLine =
             width * 2 - 1; // 8 pixels per letter, 16 pixels per cell

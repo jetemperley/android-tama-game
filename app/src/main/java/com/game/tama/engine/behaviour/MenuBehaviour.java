@@ -8,7 +8,7 @@ import com.game.tama.core.Loadable;
 import com.game.tama.ui.UIComposite;
 import com.game.tama.ui.UINode;
 
-public class MenuBehaviour extends Behaviour implements Loadable
+public class MenuBehaviour extends Behaviour
 {
     public UINode root;
 
@@ -33,11 +33,6 @@ public class MenuBehaviour extends Behaviour implements Loadable
     public boolean handle(GestureEvent e)
     {
         return root.handleEvent(e, node.worldTransform);
-    }
-
-    public void load()
-    {
-        root.load();
     }
 
     public boolean isInside(float x, float y)

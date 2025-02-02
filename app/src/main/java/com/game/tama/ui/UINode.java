@@ -54,15 +54,6 @@ public class UINode extends UIComposite
     }
 
     @Override
-    public void load()
-    {
-        for (UIComposite ui : childMap.values())
-        {
-            ui.load();
-        }
-    }
-
-    @Override
     public void update()
     {
         for (UIComposite ui : childMap.values())

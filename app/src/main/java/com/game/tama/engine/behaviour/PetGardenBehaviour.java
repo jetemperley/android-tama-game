@@ -163,12 +163,12 @@ public class PetGardenBehaviour extends Behaviour implements Input
     {
         if (t == null || selected == t)
         {
-            controlsBehaviour.setCurrentControls(null);
+            controlsBehaviour.removeControls();
             selected = null;
         }
         else
         {
-            controlsBehaviour.setCurrentControls(t.getControls());
+            controlsBehaviour.setCurrentControls(t);
             selected = t;
         }
     }
@@ -238,14 +238,17 @@ public class PetGardenBehaviour extends Behaviour implements Input
                 y);
 
         Thing t = getThing(f[0], f[1]);
-        if (selected == null || selected != t)
+        if (selected == null || t == selected)
         {
             select(t);
         }
         else
         {
-            t.poke();
-            selected = null;
+            controlsBehaviour.executeCurrentControl(
+                selected,
+                world,
+                f[0],
+                f[1]);
         }
     }
 
@@ -327,5 +330,11 @@ public class PetGardenBehaviour extends Behaviour implements Input
     public Matrix getTempWorldTransform()
     {
         return getWorldTransform(tempMat);
+    }
+
+    public void deselectThing()
+    {
+        selected = null;
+        controlsBehaviour.removeControls();
     }
 }

@@ -11,7 +11,7 @@ import com.game.tama.core.Updateable;
 
 // TODO make all the composite objects positions relative to one another
 
-public abstract class UIComposite implements Drawable, Loadable, Updateable
+public abstract class UIComposite implements Drawable, Updateable
 {
 
     public abstract boolean isInside(float x, float y, Matrix matrix);

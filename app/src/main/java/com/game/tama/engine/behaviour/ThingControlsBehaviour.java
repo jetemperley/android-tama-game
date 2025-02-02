@@ -3,12 +3,12 @@ package com.game.tama.engine.behaviour;
 import com.game.engine.Behaviour;
 import com.game.engine.Node;
 import com.game.tama.core.Assets;
+import com.game.tama.core.World;
+import com.game.tama.thing.Thing;
 import com.game.tama.thing.ThingControl;
 import com.game.tama.ui.SquareCellButtonLeaf;
 import com.game.tama.ui.UIComposite;
 import com.game.tama.ui.UINode;
-
-import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,6 +19,8 @@ public class ThingControlsBehaviour extends Behaviour
     private UINode menu;
     private List<ThingControl> currentControls;
     private int selectedControl = -1;
+    private Runnable deselectControl;
+    private PetGardenBehaviour petGardenBehaviour;
 
     public ThingControlsBehaviour(Node parent)
     {
@@ -29,35 +31,37 @@ public class ThingControlsBehaviour extends Behaviour
     {
         super(parent);
         this.menu = menu;
+        petGardenBehaviour = parent.getBehaviour(PetGardenBehaviour.class);
+        deselectControl = () -> petGardenBehaviour.deselectThing();
     }
 
-    public void setCurrentControls(List<ThingControl.Name> controls)
+    /**
+     * Set the controls to the list provied, plus a default deselect option.
+     *
+     * @param thing
+     */
+    public void setCurrentControls(Thing thing)
     {
         if (menu == null)
         {
-            throw new RuntimeException("Tried to add controls with no menu " +
-                "set.");
+            throw new RuntimeException(
+                "Tried to add controls with no menu set.");
         }
-        selectedControl = -1;
-        menu.remove(this);
-        if (controls != null)
+        if (thing == null)
         {
-            List<ThingControl> thingControls = controls.stream()
-                .map(name -> ThingControl.controls.get(name))
-                .collect(
-                    Collectors.toList());
-            this.currentControls = thingControls;
-            addNewControls(thingControls);
+            throw new RuntimeException(
+                "Cannot set the controls for a null thing.");
         }
-        else
-        {
-            this.currentControls = null;
-        }
-    }
 
-    private void addNewControls(List<ThingControl> controls)
-    {
+        List<ThingControl> controls = thing.getControls();
+        selectedControl = -1;
+        currentControls = controls;
+
         UINode controlNode = new UINode();
+
+        // add the thing picture
+        controlNode.add(Thing.class, new SquareCellButtonLeaf(0, 16, 1, 1, thing.getAsset()));
+        // set the controls defined by the thing
         for (int i = 0; i < controls.size(); i++)
         {
             final int index = i;
@@ -65,11 +69,11 @@ public class ThingControlsBehaviour extends Behaviour
             controlNode.add(
                 tc,
                 new SquareCellButtonLeaf(
-                    16 * i,
+                    16 * (i+1),
                     16,
                     1,
                     1,
-                    tc.assetName,
+                    Assets.getSprite(tc.assetName.name()),
                     () ->
                     {
                         if (selectedControl == index)
@@ -83,7 +87,23 @@ public class ThingControlsBehaviour extends Behaviour
                     }
                 ));
         }
+        controlNode.add(
+            deselectControl,
+            new SquareCellButtonLeaf(
+                16 * (controls.size()+1),
+                16,
+                1,
+                1,
+                Assets.getSprite(Assets.Names.static_x.name()),
+                deselectControl));
         menu.add(this, controlNode);
+    }
+
+    public void removeControls()
+    {
+        menu.remove(this);
+        this.currentControls = null;
+        selectedControl = -1;
     }
 
     public void setMenuRoot(UINode root)
@@ -97,5 +117,25 @@ public class ThingControlsBehaviour extends Behaviour
             }
         }
         menu = root;
+    }
+
+    /**
+     * The parameters are passed to the current controls ThingControlLambda
+     *
+     * @param thing
+     * @param world
+     * @param x
+     * @param y
+     */
+    public void executeCurrentControl(Thing thing,
+                                      World world,
+                                      float x,
+                                      float y)
+    {
+        if (selectedControl == -1)
+        {
+            return;
+        }
+        currentControls.get(selectedControl).func.execute(thing, world, x, y);
     }
 }

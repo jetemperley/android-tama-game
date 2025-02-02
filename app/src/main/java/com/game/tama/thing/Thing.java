@@ -149,9 +149,11 @@ public abstract class Thing implements java.io.Serializable, Loadable
         components.add(component);
     }
 
-    public List<ThingControl.Name> getControls()
+    public List<ThingControl> getControls()
     {
-        return new ArrayList<>(controls);
+        return controls.stream()
+            .map(name -> ThingControl.controls.get(name))
+            .collect(Collectors.toList());
     }
 
     public void addControl(ThingControl.Name controlName)
@@ -163,7 +165,6 @@ public abstract class Thing implements java.io.Serializable, Loadable
     {
         controls.remove(controlName);
     }
-
 }
 
 

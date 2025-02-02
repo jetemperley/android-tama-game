@@ -6,6 +6,7 @@ import com.game.android.DisplayAdapter;
 import com.game.android.gesture.Down;
 import com.game.android.gesture.GestureEvent;
 import com.game.tama.core.Assets;
+import com.game.tama.core.Sprite;
 import com.game.tama.core.StaticSprite;
 import com.game.tama.util.MatrixUtil;
 import com.game.tama.util.Vec2;
@@ -14,42 +15,35 @@ public class SimpleButtonLeaf extends UIComposite
 {
     public Vec2<Float> pos;
     public Vec2<Float> size;
-    String asset;
-    StaticSprite sprite;
-    Runnable action;
+
+    protected Sprite sprite;
+    protected Runnable action;
 
     /**
      * @param xPos   pixel x position of the button
      * @param yPos   pixel y position of the button
      * @param width  width in pixels of the button
      * @param height height in pixels of the button
-     * @param asset
+     * @param sprite
      * @param action
      */
     public SimpleButtonLeaf(float xPos,
                             float yPos,
                             float width,
                             float height,
-                            Assets.Names asset,
+                            Sprite sprite,
                             Runnable action)
     {
         this.pos = new Vec2<>(xPos, yPos);
         this.size = new Vec2<>(width, height);
         this.action = action;
-        this.asset = asset.name();
-        load();
+        this.sprite = sprite;
     }
 
     @Override
     public void draw(DisplayAdapter display)
     {
         display.drawSprite(sprite, pos.x, pos.y);
-    }
-
-    @Override
-    public void load()
-    {
-        sprite = Assets.getSprite(asset);
     }
 
     public void activate()

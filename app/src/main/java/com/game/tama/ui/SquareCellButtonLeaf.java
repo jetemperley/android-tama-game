@@ -10,21 +10,21 @@ public class SquareCellButtonLeaf extends SimpleButtonLeaf
 {
     public Vec2<Float> sizeInCells;
 
-    private static transient Sprite TOP_LEFT;
-    private static transient Sprite TOP_RIGHT;
-    private static transient Sprite BOT_LEFT;
-    private static transient Sprite BOT_RIGHT;
-    private static transient Sprite HORZ_PIPE;
-    private static transient Sprite VERT_PIPE;
-    private static transient Sprite LEFT_CAP;
-    private static transient Sprite RIGHT_CAP;
-    private static transient Sprite TOP_CAP;
-    private static transient Sprite BOT_CAP;
-    private static transient Sprite TOP;
-    private static transient Sprite LEFT;
-    private static transient Sprite BOT;
-    private static transient Sprite RIGHT;
-    private static transient Sprite SQUARE;
+    private static Sprite TOP_LEFT;
+    private static Sprite TOP_RIGHT;
+    private static Sprite BOT_LEFT;
+    private static Sprite BOT_RIGHT;
+    private static Sprite HORZ_PIPE;
+    private static Sprite VERT_PIPE;
+    private static Sprite LEFT_CAP;
+    private static Sprite RIGHT_CAP;
+    private static Sprite TOP_CAP;
+    private static Sprite BOT_CAP;
+    private static Sprite TOP;
+    private static Sprite LEFT;
+    private static Sprite BOT;
+    private static Sprite RIGHT;
+    private static Sprite SQUARE;
 
     /**
      * @param xPos   pixel x position of the button
@@ -32,18 +32,18 @@ public class SquareCellButtonLeaf extends SimpleButtonLeaf
      * @param width  size (in 16 bit cells) of button
      * @param height size (in 16 bit cells) of button
      */
-    public SquareCellButtonLeaf(float xPos, float yPos, int width, int height, Assets.Names asset)
+    public SquareCellButtonLeaf(float xPos, float yPos, int width, int height, Sprite sprite)
     {
-        this(xPos, yPos, width, height, asset, ()->{});
+        this(xPos, yPos, width, height, sprite, ()->{});
     }
 
     /**
      * @param xPos   pixel x position of the button
      * @param yPos   pixel y position of the button
      */
-    public SquareCellButtonLeaf(float xPos, float yPos, Assets.Names asset, Runnable activate)
+    public SquareCellButtonLeaf(float xPos, float yPos, Sprite sprite, Runnable activate)
     {
-        this(xPos, yPos, 1, 1, asset, activate);
+        this(xPos, yPos, 1, 1, sprite, activate);
     }
 
     /**
@@ -56,11 +56,12 @@ public class SquareCellButtonLeaf extends SimpleButtonLeaf
                                 float yPos,
                                 float width,
                                 float height,
-                                Assets.Names asset,
+                                Sprite sprite,
                                 Runnable activate)
     {
-        super(xPos, yPos, width*16, height*16, asset, activate);
+        super(xPos, yPos, width*16, height*16, sprite, activate);
         sizeInCells = new Vec2<>(width, height);
+        init();
     }
 
     private void init()
@@ -109,17 +110,6 @@ public class SquareCellButtonLeaf extends SimpleButtonLeaf
             drawRect(display);
         }
         display.drawSprite(sprite, pos.x, pos.y);
-    }
-
-    @Override
-    public void load()
-    {
-        super.load();
-        // if top is null, they all are
-        if (TOP == null)
-        {
-            init();
-        }
     }
 
     private void drawCol(DisplayAdapter display)

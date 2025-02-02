@@ -14,7 +14,7 @@ import com.game.tama.core.Updateable;
 public class TextLeaf extends UIComposite
 {
     private String text;
-    private transient Sprite[] letters;
+    private Sprite[] letters;
     float xPos;
     float yPos;
 
@@ -30,7 +30,7 @@ public class TextLeaf extends UIComposite
         if (text == null)
             throw new RuntimeException("Text string must be non-null.");
         this.text = text;
-        load();
+        loadChars();
     }
 
     @Override
@@ -61,8 +61,7 @@ public class TextLeaf extends UIComposite
         }
     }
 
-    @Override
-    public void load()
+    public void loadChars()
     {
         SpriteSheet sheet = Assets.getSheet(Assets.Names.sheet_8_symbols.name());
         letters = new Sprite[text.length()];
