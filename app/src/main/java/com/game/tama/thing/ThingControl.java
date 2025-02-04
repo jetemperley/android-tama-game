@@ -19,7 +19,7 @@ public class ThingControl
         controls.put(
             Name.move,
             new ThingControl(Name.move,
-                Assets.Names.static_arrow_corner,
+                Assets.Names.static_footprints,
                 null));
     }
 

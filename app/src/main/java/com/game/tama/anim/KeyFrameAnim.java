@@ -2,10 +2,11 @@ package com.game.tama.anim;
 
 import com.game.tama.util.Vec2;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class KeyFrameAnim
+public class KeyFrameAnim implements Serializable
 {
     private List<KeyFrame> keyFrames = new ArrayList<>();
 

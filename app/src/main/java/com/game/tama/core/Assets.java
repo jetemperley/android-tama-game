@@ -77,7 +77,8 @@ public class Assets
         static_x,
         static_o,
         static_cell_pet,
-        static_arrow_corner
+        static_arrow_corner,
+        static_footprints
     }
 
     public static Map<Integer, StaticSprite> sprites;

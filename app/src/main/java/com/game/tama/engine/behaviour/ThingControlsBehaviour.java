@@ -18,9 +18,9 @@ public class ThingControlsBehaviour extends Behaviour
 
     private UINode menu;
     private List<ThingControl> currentControls;
-    private int selectedControl = -1;
-    private Runnable deselectControl;
-    private PetGardenBehaviour petGardenBehaviour;
+    private ThingControl selectedControl = null;
+    private final Runnable deselectControl;
+    private final PetGardenBehaviour petGardenBehaviour;
 
     public ThingControlsBehaviour(Node parent)
     {
@@ -32,7 +32,7 @@ public class ThingControlsBehaviour extends Behaviour
         super(parent);
         this.menu = menu;
         petGardenBehaviour = parent.getBehaviour(PetGardenBehaviour.class);
-        deselectControl = () -> petGardenBehaviour.deselectThing();
+        deselectControl = petGardenBehaviour::deselectThing;
     }
 
     /**
@@ -54,35 +54,37 @@ public class ThingControlsBehaviour extends Behaviour
         }
 
         List<ThingControl> controls = thing.getControls();
-        selectedControl = -1;
+        selectedControl = null;
         currentControls = controls;
 
         UINode controlNode = new UINode();
 
         // add the thing picture
-        controlNode.add(Thing.class, new SquareCellButtonLeaf(0, 16, 1, 1, thing.getAsset()));
+        controlNode.add(
+            Thing.class,
+            new SquareCellButtonLeaf(16, 0, 1, 1, thing.getAsset()));
         // set the controls defined by the thing
         for (int i = 0; i < controls.size(); i++)
         {
             final int index = i;
-            ThingControl tc = controls.get(i);
+            final ThingControl tc = controls.get(i);
             controlNode.add(
                 tc,
                 new SquareCellButtonLeaf(
-                    16 * (i+1),
-                    16,
+                    16 * (i + 2),
+                    0,
                     1,
                     1,
                     Assets.getSprite(tc.assetName.name()),
                     () ->
                     {
-                        if (selectedControl == index)
+                        if (selectedControl == tc)
                         {
-                            selectedControl = -1;
+                            selectedControl = null;
                         }
                         else
                         {
-                            selectedControl = index;
+                            selectedControl = tc;
                         }
                     }
                 ));
@@ -90,8 +92,8 @@ public class ThingControlsBehaviour extends Behaviour
         controlNode.add(
             deselectControl,
             new SquareCellButtonLeaf(
-                16 * (controls.size()+1),
-                16,
+                16 * (controls.size() + 2),
+                0,
                 1,
                 1,
                 Assets.getSprite(Assets.Names.static_x.name()),
@@ -103,7 +105,7 @@ public class ThingControlsBehaviour extends Behaviour
     {
         menu.remove(this);
         this.currentControls = null;
-        selectedControl = -1;
+        selectedControl = null;
     }
 
     public void setMenuRoot(UINode root)
@@ -132,10 +134,20 @@ public class ThingControlsBehaviour extends Behaviour
                                       float x,
                                       float y)
     {
-        if (selectedControl == -1)
+        if (selectedControl == null)
         {
             return;
         }
-        currentControls.get(selectedControl).func.execute(thing, world, x, y);
+        selectedControl.func.execute(thing, world, x, y);
+    }
+
+    public void deselectControl()
+    {
+        selectedControl = null;
+    }
+
+    public ThingControl getSelectedControl()
+    {
+        return selectedControl;
     }
 }

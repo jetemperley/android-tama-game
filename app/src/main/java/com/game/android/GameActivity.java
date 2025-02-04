@@ -43,7 +43,7 @@ public class GameActivity extends Activity
     private static Rect SCREEN_RECT = new Rect();
 
     ConstraintLayout lay;
-    static Paint red, black, white;
+    static Paint red, black, white, highlight;
     CustomView view;
     public static Rect screenSize;
     final String
@@ -86,7 +86,11 @@ public class GameActivity extends Activity
         white.setARGB(255, 255, 255, 255);
         white.setDither(false);
         white.setFilterBitmap(false);
-        white.setTextSize(30);
+
+        highlight = new Paint();
+        highlight.setARGB(100, 255, 255, 255);
+        highlight.setDither(false);
+        highlight.setFilterBitmap(false);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
         {

@@ -4,7 +4,9 @@ import com.game.tama.core.Updateable;
 import com.game.tama.core.World;
 import com.game.tama.thing.pet.Pet;
 
-public abstract class StateController implements Updateable
+import java.io.Serializable;
+
+public abstract class StateController implements Updateable, Serializable
 {
 
     public abstract void update(Pet pet, World world);

@@ -238,7 +238,8 @@ public class PetGardenBehaviour extends Behaviour implements Input
                 y);
 
         Thing t = getThing(f[0], f[1]);
-        if (selected == null || t == selected)
+        if (selected == null || t == selected ||
+            controlsBehaviour.getSelectedControl() == null)
         {
             select(t);
         }
