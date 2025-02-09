@@ -8,16 +8,14 @@ import com.game.android.gesture.GestureEvent;
 import com.game.android.gesture.Input;
 import com.game.engine.Behaviour;
 import com.game.engine.Node;
+import com.game.tama.core.AssetName;
 import com.game.tama.command.CommandFactory;
 import com.game.tama.command.CommandQueue;
-import com.game.tama.core.Assets;
+import com.game.android.Assets;
 import com.game.tama.core.World;
-import com.game.tama.thing.ThingControl;
 import com.game.tama.thing.pet.Pet;
 import com.game.tama.thing.Thing;
 import com.game.tama.ui.ContainerManager;
-import com.game.tama.ui.SquareCellButtonLeaf;
-import com.game.tama.ui.UINode;
 import com.game.tama.util.Log;
 import com.game.tama.util.MatrixUtil;
 import com.game.tama.util.Vec2;
@@ -66,7 +64,7 @@ public class PetGardenBehaviour extends Behaviour implements Input
         if (selected != null)
         {
             display.drawArr(
-                Assets.getSprite(Assets.Names.static_inv.name()),
+                Assets.getStaticSprite(AssetName.static_inv),
                 selected.loc.getWorldArrPos().x,
                 selected.loc.getWorldArrPos().y);
             if (selected instanceof Pet)

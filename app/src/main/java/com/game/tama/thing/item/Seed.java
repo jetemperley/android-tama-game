@@ -1,6 +1,6 @@
 package com.game.tama.thing.item;
 
-import com.game.tama.core.Assets;
+import com.game.tama.core.AssetName;
 import com.game.tama.core.World;
 import com.game.tama.thing.Thing;
 import com.game.tama.thing.pet.Pet;
@@ -12,7 +12,7 @@ class Seed extends Thing
     Seed()
     {
         super();
-        asset = Assets.Names.static_seed.name();
+        asset = AssetName.static_seed;
         load();
     }
 

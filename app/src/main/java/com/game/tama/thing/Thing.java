@@ -1,7 +1,8 @@
 package com.game.tama.thing;
 
+import com.game.tama.core.AssetName;
 import com.game.tama.thing.component.Component;
-import com.game.tama.core.Assets;
+import com.game.android.Assets;
 import com.game.android.DisplayAdapter;
 import com.game.tama.core.Sprite;
 import com.game.tama.core.Loadable;
@@ -12,15 +13,13 @@ import com.game.tama.core.WorldObject;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 public abstract class Thing implements java.io.Serializable, Loadable
 {
-    protected String asset = Assets.Names.static_poop.name();
+    protected AssetName asset = AssetName.static_poop;
     @NotNull
     public final WorldObject loc;
     public final List<Thing> children;
@@ -30,7 +29,7 @@ public abstract class Thing implements java.io.Serializable, Loadable
 
     public Thing()
     {
-        loc = new WorldObject(Assets.getSprite(asset));
+        loc = new WorldObject(Assets.getStaticSprite(asset));
         loc.sprite = getAsset();
         children = new ArrayList<>();
         components = new ArrayList<>();
@@ -47,7 +46,7 @@ public abstract class Thing implements java.io.Serializable, Loadable
 
     public Sprite getAsset()
     {
-        return Assets.getSprite(asset);
+        return Assets.getStaticSprite(asset);
     }
 
     @Override

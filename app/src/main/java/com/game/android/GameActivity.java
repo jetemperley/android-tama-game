@@ -5,7 +5,6 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.Build;
@@ -15,13 +14,10 @@ import android.support.v4.app.NotificationManagerCompat;
 import android.os.Bundle;
 import android.view.Display;
 import android.view.MotionEvent;
-import android.view.SurfaceHolder;
-import android.view.SurfaceView;
 
 import com.game.android.gesture.Gesture;
 import com.game.android.gesture.GestureEventAdaptor;
 import com.game.engine.Node;
-import com.game.tama.core.Assets;
 import com.game.engine.GameLoop;
 import com.game.tama.engine.behaviour.GameManager;
 import com.game.tama.util.Log;
@@ -44,7 +40,7 @@ public class GameActivity extends Activity
 
     ConstraintLayout lay;
     static Paint red, black, white, highlight;
-    CustomView view;
+    //    CustomView view;
     public static Rect screenSize;
     final String
         CHANNEL_ID = "01",
@@ -59,20 +55,24 @@ public class GameActivity extends Activity
     Node rootNode;
     GameManager gameManager;
     Gesture gesture;
+    GLSurfaceView gLView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        //        Log.log(this, "staring setup");
+        Assets.init(getResources());
+        //        Log.log(this, "finished loading resources");
 
-        view = new CustomView(this);
-        setContentView(view);
-        // TOP_OFFSET = view.getTop();
+        gLView = new GLSurfaceView(this);
+        setContentView(gLView);
 
-        display = getWindowManager().getDefaultDisplay();
+        //        TOP_OFFSET = view.getTop();
+        //        display = getWindowManager().getDefaultDisplay();
         screenSize = new Rect();
 
-        display.getRectSize(screenSize);
+        //        display.getRectSize(screenSize);
 
         red = new Paint();
         red.setARGB(255, 255, 0, 0);
@@ -119,13 +119,11 @@ public class GameActivity extends Activity
             NotificationManagerCompat.from(this);
         // notificationManager.notify(ID, builder.build());
 
-        Log.log(this, "staring setup");
-        Assets.init(getResources());
-        Log.log(this, "finished loading resources");
-        Rect out = new Rect();
-        this.getWindow().getDecorView().getWindowVisibleDisplayFrame(out);
+        //        Rect out = new Rect();
+        //        this.getWindow().getDecorView()
+        //        .getWindowVisibleDisplayFrame(out);
 
-        display.getRectSize(out);
+        //        display.getRectSize(out);
 
         displayAdapter = new AndroidDisplay(16);
 
@@ -141,7 +139,7 @@ public class GameActivity extends Activity
     public void updateAndDraw()
     {
 
-        // update the view bounds, incase the screen changed
+        //         update the view bounds, incase the screen changed
         this.getWindow()
             .getDecorView()
             .getWindowVisibleDisplayFrame(SCREEN_RECT);
@@ -149,37 +147,25 @@ public class GameActivity extends Activity
         displayAdapter.view = SCREEN_RECT;
         gesture.topOffset = SCREEN_RECT.top;
         gesture.update();
-
-        if (view.surface.getSurface().isValid())
-        {
-            canvas = view.surface.lockCanvas();
-
-            if (canvas != null)
-            {
-                displayAdapter.canvas = canvas;
-                canvas.drawColor(Color.BLACK);
-                rootNode.engine_update();
-                rootNode.engine_draw(displayAdapter);
-                if (view.surface.getSurface().isValid())
-                {
-                    view.surface.unlockCanvasAndPost(canvas);
-                }
-            }
-        }
+        // rootNode.engine_update();
+        // rootNode.engine_draw(displayAdapter);
+        // TODO work out how to trigger engine draw from here
+        gLView.requestRender();
     }
 
     @Override
     public void onStop()
     {
+        super.onStop();
         gameLoop.play = false;
         try
         {
             gameLoop.join();
-        } catch (InterruptedException e)
+        }
+        catch (InterruptedException e)
         {
             Log.log(this, "could not join gameloop");
         }
-        super.onStop();
         saveGame();
     }
 
@@ -210,7 +196,8 @@ public class GameActivity extends Activity
             gameManager.save(oos);
             oos.close();
             Log.log(this, "Serialization complete");
-        } catch (IOException e)
+        }
+        catch (IOException e)
         {
             Log.error(this, "Serialization failed.", e);
         }
@@ -231,7 +218,8 @@ public class GameActivity extends Activity
                 gameManager.load(in);
                 in.close();
                 Log.log(this, "deserialization complete");
-            } catch (Exception e)
+            }
+            catch (Exception e)
             {
                 gameManager.newGame();
                 Log.error(this, "deserialization failed", e);
@@ -241,18 +229,6 @@ public class GameActivity extends Activity
         {
             gameManager.newGame();
             Log.log(this, "data file did not exist");
-        }
-    }
-
-    public class CustomView extends SurfaceView
-    {
-
-        SurfaceHolder surface;
-
-        CustomView(Context context)
-        {
-            super(context);
-            surface = getHolder();
         }
     }
 }

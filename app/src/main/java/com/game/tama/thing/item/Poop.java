@@ -1,6 +1,6 @@
 package com.game.tama.thing.item;
 
-import com.game.tama.core.Assets;
+import com.game.tama.core.AssetName;
 import com.game.tama.thing.Thing;
 
 public class Poop extends Thing
@@ -11,7 +11,7 @@ public class Poop extends Thing
     public Poop()
     {
         super();
-        asset = Assets.Names.static_poop.name();
+        asset = AssetName.static_poop;
         load();
     }
 

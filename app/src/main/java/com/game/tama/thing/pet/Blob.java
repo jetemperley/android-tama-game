@@ -1,7 +1,6 @@
 package com.game.tama.thing.pet;
 
-import com.game.tama.core.Assets;
-import com.game.tama.thing.pet.Pet;
+import com.game.tama.core.AssetName;
 
 // TODO move to PetFactory
 
@@ -11,7 +10,7 @@ class Blob extends Pet
     Blob()
     {
         super();
-        asset = Assets.Names.sheet_16_blob.name();
+        asset = AssetName.sheet_16_blob;
         load();
     }
 }

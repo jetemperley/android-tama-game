@@ -8,7 +8,7 @@ public class SpriteSheet
     // sheet is in [Y][X] coordinates
     StaticSprite[][] sheet;
 
-    SpriteSheet(StaticSprite[][] arr)
+    public SpriteSheet(StaticSprite[][] arr)
     {
         sheet = arr;
 

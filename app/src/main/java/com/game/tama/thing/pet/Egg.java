@@ -1,11 +1,12 @@
 package com.game.tama.thing.pet;
 
+import com.game.tama.core.AssetName;
 import com.game.tama.core.Animator;
 import com.game.engine.GameLoop;
 import com.game.tama.core.World;
 import com.game.tama.thing.Thing;
 import com.game.tama.util.Rand;
-import com.game.tama.core.Assets;
+import com.game.android.Assets;
 import com.game.tama.core.Sprite;
 
 // TODO move to PetFactory and add functionality as component
@@ -24,7 +25,7 @@ class Egg extends Thing
         age = 0;
         hatchAge = 20000;
 
-        asset = Assets.Names.sheet_16_egg.name();
+        asset = AssetName.sheet_16_egg;
         load();
 
     }
@@ -34,13 +35,13 @@ class Egg extends Thing
 
         if (anim == null)
         {
-            anim = new Animator(Assets.getSheet(asset));
+            anim = new Animator(Assets.getSpriteSheet(asset));
             anim.play();
             anim.repeat(true);
         }
         else
         {
-            anim.sheet = Assets.getSheet(asset);
+            anim.sheet = Assets.getSpriteSheet(asset);
         }
         return anim;
     }

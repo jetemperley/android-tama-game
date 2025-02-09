@@ -1,6 +1,6 @@
 package com.game.tama.thing.item;
 
-import com.game.tama.core.Assets;
+import com.game.tama.core.AssetName;
 import com.game.tama.thing.Thing;
 
 class Rock extends Thing
@@ -9,7 +9,7 @@ class Rock extends Thing
     Rock()
     {
         super();
-        asset = Assets.Names.static_rock.name();
+        asset = AssetName.static_rock;
         load();
     }
 

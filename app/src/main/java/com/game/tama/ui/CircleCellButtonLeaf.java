@@ -3,20 +3,20 @@ package com.game.tama.ui;
 import android.graphics.Matrix;
 
 import com.game.android.DisplayAdapter;
-import com.game.tama.core.Assets;
+import com.game.android.Assets;
+import com.game.tama.core.AssetName;
 import com.game.tama.core.Sprite;
-import com.game.tama.util.MatrixUtil;
 
 public class CircleCellButtonLeaf extends SimpleButtonLeaf
 {
     public enum Size
     {
-        p16(Assets.Names.static_circle_16),
-        p14(Assets.Names.static_circle_14);
+        p16(AssetName.static_circle_16),
+        p14(AssetName.static_circle_14);
 
-        public Assets.Names asset;
+        public AssetName asset;
 
-        Size(Assets.Names asset)
+        Size(AssetName asset)
         {
             this.asset = asset;
         }
@@ -35,7 +35,7 @@ public class CircleCellButtonLeaf extends SimpleButtonLeaf
 
     public CircleCellButtonLeaf(float xPos, float yPos, Sprite sprite, Runnable activate, Size size)
     {
-        super(xPos, yPos, 16, 16, Assets.getSprite(size.asset.name()), activate);
+        super(xPos, yPos, 16, 16, Assets.getStaticSprite(size.asset), activate);
         this.sprite = sprite;
     }
 

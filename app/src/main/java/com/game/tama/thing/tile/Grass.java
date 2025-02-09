@@ -1,7 +1,7 @@
 package com.game.tama.thing.tile;
 
 import com.tama.R;
-import com.game.tama.core.Assets;
+import com.game.android.Assets;
 import com.game.tama.core.Sprite;
 
 public class Grass extends Tile

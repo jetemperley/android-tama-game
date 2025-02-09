@@ -1,5 +1,6 @@
 package com.game.tama.thing.pet;
 
+import com.game.tama.core.AssetName;
 import com.game.tama.core.Direction;
 import com.game.tama.engine.behaviour.GameManager;
 import com.game.tama.core.Animator;
@@ -18,7 +19,7 @@ import com.game.tama.command.CommandFactory;
 import com.game.tama.command.CommandReplacer;
 import com.game.tama.command.CommandEat;
 import com.game.tama.thing.component.Health;
-import com.game.tama.core.Assets;
+import com.game.android.Assets;
 import com.game.tama.core.Sprite;
 import com.game.tama.core.World;
 
@@ -63,7 +64,7 @@ public class Pet extends Thing
         super();
         state = new Wander();
         currentCommand = new CommandReplacer();
-        asset = Assets.Names.sheet_16_blob.name();
+        asset = AssetName.sheet_16_blob;
         load();
         addComponent(new Health());
         addControl(ThingControl.Name.move);
@@ -81,13 +82,13 @@ public class Pet extends Thing
     {
         if (anim == null)
         {
-            anim = new Animator(Assets.getSheet(asset));
+            anim = new Animator(Assets.getSpriteSheet(asset));
             anim.play();
             anim.repeat(true);
         }
         else
         {
-            anim.sheet = Assets.getSheet(asset);
+            anim.sheet = Assets.getSpriteSheet(asset);
         }
         return anim;
     }
@@ -202,9 +203,9 @@ public class Pet extends Thing
         }
     }
 
-    public void setAsset(Assets.Names name)
+    public void setAsset(AssetName asset)
     {
-        asset = name.name();
+        this.asset = asset;
         load();
     }
 }

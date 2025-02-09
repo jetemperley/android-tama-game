@@ -1,7 +1,8 @@
 package com.game.tama.thing.item;
 
+import com.game.tama.core.AssetName;
 import com.game.tama.core.Animator;
-import com.game.tama.core.Assets;
+import com.game.android.Assets;
 import com.game.tama.core.Type;
 import com.game.tama.core.World;
 import com.game.tama.thing.Thing;
@@ -26,7 +27,7 @@ public class Tree extends Thing implements java.io.Serializable
     public Tree(GrowthLevel level)
     {
         super();
-        asset = Assets.Names.static_poop.name();
+        asset = AssetName.static_poop;
         load();
 
         lvl = level.ordinal();

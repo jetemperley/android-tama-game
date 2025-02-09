@@ -1,7 +1,6 @@
 package com.game.tama.thing;
 
-import com.game.tama.core.Assets;
-import com.game.tama.core.Sprite;
+import com.game.tama.core.AssetName;
 
 import java.util.HashMap;
 
@@ -19,16 +18,16 @@ public class ThingControl
         controls.put(
             Name.move,
             new ThingControl(Name.move,
-                Assets.Names.static_footprints,
+                AssetName.static_footprints,
                 null));
     }
 
     public final Name controlName;
-    public final Assets.Names assetName;
+    public final AssetName assetName;
     public final ThingControlLambda func;
 
     private ThingControl(Name controlName,
-                         Assets.Names assetName,
+                         AssetName assetName,
                          ThingControlLambda func)
     {
         this.controlName = controlName;

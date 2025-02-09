@@ -5,10 +5,7 @@ import android.graphics.Matrix;
 import com.game.android.DisplayAdapter;
 import com.game.android.gesture.Down;
 import com.game.android.gesture.GestureEvent;
-import com.game.tama.core.Assets;
 import com.game.tama.core.Sprite;
-import com.game.tama.core.StaticSprite;
-import com.game.tama.util.MatrixUtil;
 import com.game.tama.util.Vec2;
 
 public class SimpleButtonLeaf extends UIComposite

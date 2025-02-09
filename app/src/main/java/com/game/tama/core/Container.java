@@ -26,7 +26,7 @@ public class Container extends Thing implements Serializable
     public Container(int size)
     {
         world = WorldFactory.makeBackpack(size, size);
-        asset = Assets.Names.static_backpack.name();
+        asset = AssetName.static_backpack;
         load();
     }
 

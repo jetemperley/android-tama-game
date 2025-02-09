@@ -7,7 +7,7 @@ public class StaticSprite implements Sprite
 
     Bitmap img;
 
-    StaticSprite(Bitmap bm)
+    public StaticSprite(Bitmap bm)
     {
         img = bm;
     }

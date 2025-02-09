@@ -1,8 +1,8 @@
 package com.game.tama.engine.behaviour;
 
 import com.game.engine.Node;
-import com.game.tama.core.Assets;
-import com.game.tama.ui.CircleCellButtonLeaf;
+import com.game.android.Assets;
+import com.game.tama.core.AssetName;
 import com.game.tama.ui.SquareCellButtonLeaf;
 import com.game.tama.ui.DialogueTextBoxLeaf;
 import com.game.tama.ui.TextLeaf;
@@ -18,7 +18,7 @@ public class BehaviourBuilder
         pauseMenu.add("play button", new SquareCellButtonLeaf(
             0,
             0,
-            Assets.getSprite(Assets.Names.static_menu.name()),
+            Assets.getStaticSprite(AssetName.static_menu),
             () -> GameManager.INST.play()));
         pauseMenu.add("test text", new TextLeaf("a hello z", 0, 16));
         pauseMenu.add("test text 2", new TextLeaf("aBz, cool.", 0, 32));
@@ -41,7 +41,7 @@ public class BehaviourBuilder
         hudRoot.add("pause", new SquareCellButtonLeaf(
             0,
             0,
-            Assets.getSprite(Assets.Names.static_menu.name()),
+            Assets.getStaticSprite(AssetName.static_menu),
             () -> GameManager.INST.pause()));
         parent.localTransform.setScale(6, 6);
         hud.root = hudRoot;

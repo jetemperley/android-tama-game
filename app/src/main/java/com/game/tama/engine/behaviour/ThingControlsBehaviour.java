@@ -2,7 +2,8 @@ package com.game.tama.engine.behaviour;
 
 import com.game.engine.Behaviour;
 import com.game.engine.Node;
-import com.game.tama.core.Assets;
+import com.game.android.Assets;
+import com.game.tama.core.AssetName;
 import com.game.tama.core.World;
 import com.game.tama.thing.Thing;
 import com.game.tama.thing.ThingControl;
@@ -11,7 +12,6 @@ import com.game.tama.ui.UIComposite;
 import com.game.tama.ui.UINode;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class ThingControlsBehaviour extends Behaviour
 {
@@ -75,7 +75,7 @@ public class ThingControlsBehaviour extends Behaviour
                     0,
                     1,
                     1,
-                    Assets.getSprite(tc.assetName.name()),
+                    Assets.getStaticSprite(tc.assetName),
                     () ->
                     {
                         if (selectedControl == tc)
@@ -96,7 +96,7 @@ public class ThingControlsBehaviour extends Behaviour
                 0,
                 1,
                 1,
-                Assets.getSprite(Assets.Names.static_x.name()),
+                Assets.getStaticSprite(AssetName.static_x),
                 deselectControl));
         menu.add(this, controlNode);
     }

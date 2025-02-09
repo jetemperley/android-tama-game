@@ -1,13 +1,12 @@
 package com.game.tama.thing.item;
 
 
+import com.game.tama.core.AssetName;
 import com.game.tama.thing.Thing;
-import com.game.tama.thing.pet.Pet;
 import com.tama.R;
-import com.game.tama.core.Assets;
+import com.game.android.Assets;
 import com.game.tama.core.Sprite;
 import com.game.tama.core.Type;
-import com.game.tama.core.World;
 
 public class Food extends Thing implements java.io.Serializable
 {
@@ -19,7 +18,7 @@ public class Food extends Thing implements java.io.Serializable
     {
         super();
         id = ID;
-        loc.sprite=Assets.getSprite(Assets.Names.static_meat.name());
+        loc.sprite=Assets.getStaticSprite(AssetName.static_meat);
 
         switch (id)
         {

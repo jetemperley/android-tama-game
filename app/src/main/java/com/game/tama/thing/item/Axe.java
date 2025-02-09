@@ -1,6 +1,6 @@
 package com.game.tama.thing.item;
 
-import com.game.tama.core.Assets;
+import com.game.tama.core.AssetName;
 import com.game.tama.core.World;
 import com.game.tama.thing.Thing;
 
@@ -10,7 +10,7 @@ public class Axe extends Thing
     Axe()
     {
         super();
-        asset = Assets.Names.static_axe.name();
+        asset = AssetName.static_axe;
         load();
     }
 

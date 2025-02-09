@@ -3,7 +3,7 @@ package com.game.tama.thing.tile;
 import com.game.android.DisplayAdapter;
 import com.game.tama.core.WorldObject;
 import com.tama.R;
-import com.game.tama.core.Assets;
+import com.game.android.Assets;
 import com.game.tama.core.Sprite;
 
 class LongGrass extends Tile

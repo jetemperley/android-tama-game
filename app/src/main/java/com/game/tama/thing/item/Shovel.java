@@ -2,7 +2,7 @@ package com.game.tama.thing.item;
 
 import android.util.Log;
 
-import com.game.tama.core.Assets;
+import com.game.tama.core.AssetName;
 import com.game.tama.core.World;
 import com.game.tama.thing.Thing;
 import com.game.tama.thing.tile.TileType;
@@ -13,7 +13,7 @@ class Shovel extends Thing
     Shovel()
     {
         super();
-        asset = Assets.Names.static_shovel.name();
+        asset = AssetName.static_shovel;
         load();
     }
 

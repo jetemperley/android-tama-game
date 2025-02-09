@@ -1,6 +1,6 @@
 package com.game.tama.thing.item;
 
-import com.game.tama.core.Assets;
+import com.game.tama.core.AssetName;
 import com.game.tama.thing.Thing;
 
 class Wood extends Thing
@@ -8,7 +8,7 @@ class Wood extends Thing
 
     Wood()
     {
-        asset = Assets.Names.static_log.name();
+        asset = AssetName.static_log;
         load();
     }
 

@@ -4,12 +4,10 @@ import android.graphics.Matrix;
 
 import com.game.android.DisplayAdapter;
 import com.game.android.gesture.GestureEvent;
-import com.game.tama.core.Assets;
-import com.game.tama.core.Drawable;
-import com.game.tama.core.Loadable;
+import com.game.android.Assets;
+import com.game.tama.core.AssetName;
 import com.game.tama.core.Sprite;
 import com.game.tama.core.SpriteSheet;
-import com.game.tama.core.Updateable;
 
 public class TextLeaf extends UIComposite
 {
@@ -63,7 +61,7 @@ public class TextLeaf extends UIComposite
 
     public void loadChars()
     {
-        SpriteSheet sheet = Assets.getSheet(Assets.Names.sheet_8_symbols.name());
+        SpriteSheet sheet = Assets.getSpriteSheet(AssetName.sheet_8_symbols);
         letters = new Sprite[text.length()];
         byte[] bytes = text.getBytes();
         for (int i = 0; i < text.length(); i++)
