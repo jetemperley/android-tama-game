@@ -26,9 +26,23 @@ public class SpriteSheet
         return sheet[row][col];
     }
 
-    public int len(int row)
+    public int rowLength(int row)
     {
         return sheet[row].length;
+    }
+
+    public int numRows()
+    {
+        return sheet.length;
+    }
+
+    /**
+     * Counts the total number of sprites in this spriteSheet
+     * @return
+     */
+    public int totalSprites()
+    {
+        return sheet.length * sheet[0].length;
     }
 
     /**

@@ -69,7 +69,7 @@ public class Animator implements Sprite, java.io.Serializable
 
     Bitmap getSlide(int time, int duration, int row)
     {
-        int perSlide = duration / sheet.len(row);
+        int perSlide = duration / sheet.rowLength(row);
         int i = time / perSlide;
         return sheet.get(row, i);
     }

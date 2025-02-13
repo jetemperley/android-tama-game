@@ -2,12 +2,8 @@ package com.game.engine;
 
 import android.graphics.Matrix;
 
-import com.game.android.DisplayAdapter;
 import com.game.android.gesture.GestureEvent;
 import com.game.android.gesture.GestureEventHandler;
-import com.game.tama.core.Drawable;
-import com.game.tama.core.Loadable;
-import com.game.tama.core.Updateable;
 
 public abstract class Behaviour implements Updateable, Drawable, GestureEventHandler
 {

@@ -1,6 +1,8 @@
 package com.game.tama.core;
 
-import com.game.android.DisplayAdapter;
+import com.game.engine.DisplayAdapter;
+import com.game.engine.Drawable;
+import com.game.engine.Updateable;
 import com.game.tama.util.Vec2;
 import com.game.android.gesture.GestureEventHandler;
 

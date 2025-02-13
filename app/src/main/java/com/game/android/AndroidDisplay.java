@@ -4,6 +4,7 @@ import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Rect;
 
+import com.game.engine.DisplayAdapter;
 import com.game.tama.core.Sprite;
 import com.game.tama.core.WorldObject;
 import com.game.tama.util.Log;

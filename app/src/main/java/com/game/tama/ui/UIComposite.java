@@ -4,10 +4,8 @@ package com.game.tama.ui;
 import android.graphics.Matrix;
 
 import com.game.android.gesture.GestureEvent;
-import com.game.android.gesture.GestureEventHandler;
-import com.game.tama.core.Drawable;
-import com.game.tama.core.Loadable;
-import com.game.tama.core.Updateable;
+import com.game.engine.Drawable;
+import com.game.engine.Updateable;
 
 // TODO make all the composite objects positions relative to one another
 

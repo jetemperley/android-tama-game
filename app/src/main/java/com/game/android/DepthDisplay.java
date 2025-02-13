@@ -2,6 +2,7 @@ package com.game.android;
 
 import android.graphics.Matrix;
 
+import com.game.engine.DisplayAdapter;
 import com.game.tama.core.Sprite;
 import com.game.tama.core.WorldObject;
 

@@ -2,7 +2,7 @@ package com.game.tama.engine.behaviour;
 
 import android.graphics.Matrix;
 
-import com.game.android.DisplayAdapter;
+import com.game.engine.DisplayAdapter;
 import com.game.android.gesture.GestureEvent;
 import com.game.android.gesture.Input;
 import com.game.android.gesture.Scale;

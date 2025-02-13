@@ -1,7 +1,7 @@
 package com.game.tama.command
 
 import android.util.Log
-import com.game.android.DisplayAdapter
+import com.game.engine.DisplayAdapter
 import com.game.tama.core.World
 import com.game.tama.thing.pet.Pet
 

@@ -1,6 +1,6 @@
 package com.game.tama.thing.tile;
 
-import com.game.android.DisplayAdapter;
+import com.game.engine.DisplayAdapter;
 import com.game.tama.core.WorldObject;
 import com.game.tama.thing.Thing;
 import com.tama.R;

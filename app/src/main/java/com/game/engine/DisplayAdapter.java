@@ -1,11 +1,11 @@
-package com.game.android;
+package com.game.engine;
 
 import android.graphics.Matrix;
 
 import com.game.tama.core.Sprite;
 import com.game.tama.core.WorldObject;
 
-public interface DisplayAdapter
+public interface DisplayAdapter<T extends Transform>
 {
     /**
      * Display the object based on its x, y, and offsets
@@ -33,9 +33,9 @@ public interface DisplayAdapter
      */
     public void drawSprite(Sprite d, float x, float y);
 
-    public void setMatrix(Matrix mat);
+    public void setMatrix(T mat);
 
-    public Matrix getMatrix();
+    public T getMatrix();
 
     public void translate(float x, float y);
 
@@ -51,6 +51,6 @@ public interface DisplayAdapter
      * preConcat effects the matrix in its *local* frame of reference
      * @param mat
      */
-    public void preConcat(Matrix mat);
+    public void preConcat(T mat);
 }
 

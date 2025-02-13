@@ -1,6 +1,6 @@
 package com.game.tama.core;
 
-import com.game.android.DisplayAdapter;
+import com.game.engine.DisplayAdapter;
 import com.game.tama.thing.tile.DynTile;
 import com.game.tama.thing.tile.Grass;
 import com.game.tama.thing.Thing;

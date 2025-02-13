@@ -1,4 +1,4 @@
-package com.game.tama.core;
+package com.game.engine;
 
 public interface Updateable
 {

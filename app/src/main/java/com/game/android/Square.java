@@ -56,35 +56,7 @@ public class Square
         // set the buffer to read the first coordinate
         vertexBuffer.position(0);
 
-        // do texture stuff
-        GLES20.glGenTextures(1, textureHandle, 0);
-        // Bind to the texture in OpenGL
-        GLES20.glActiveTexture ( GLES20.GL_TEXTURE0 );
-        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textureHandle[0]);
 
-//         load image automaticaly
-//                GLUtils.texImage2D(
-//                    GLES20.GL_TEXTURE_2D,
-//                    0,
-//                    Assets.getSprite(Assets.Names.static_footprints.name())
-//                    .getSprite(),
-//                    0);
-        Bitmap bitmap =
-            Assets.getStaticSprite(AssetName.static_footprints).getSprite();
-        ByteBuffer byteBuffer = ByteBuffer.allocateDirect(bitmap.getByteCount());
-
-        bitmap.copyPixelsToBuffer(byteBuffer);
-        byteBuffer.position(0);
-        GLES20.glTexImage2D(
-            GLES20.GL_TEXTURE_2D,
-            0,
-            GLES20.GL_RGBA,
-            bitmap.getWidth(),
-            bitmap.getHeight(),
-            0,
-            GLES20.GL_RGBA,
-            GLES20.GL_UNSIGNED_BYTE,
-            byteBuffer);
     }
 
 

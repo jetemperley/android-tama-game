@@ -1,11 +1,9 @@
 package com.game.tama.engine.behaviour;
 
-import com.game.android.DisplayAdapter;
+import com.game.engine.DisplayAdapter;
 import com.game.android.gesture.GestureEvent;
 import com.game.engine.Behaviour;
 import com.game.engine.Node;
-import com.game.tama.core.Loadable;
-import com.game.tama.ui.UIComposite;
 import com.game.tama.ui.UINode;
 
 public class MenuBehaviour extends Behaviour

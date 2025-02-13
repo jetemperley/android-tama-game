@@ -2,8 +2,6 @@ package com.game.tama.core;
 
 public enum AssetName
 {
-
-    ic_launcher_background,
     sheet_16_blob,
     sheet_16_bush,
     sheet_16_egg,
@@ -63,7 +61,7 @@ public enum AssetName
     static_circle_14,
     static_x,
     static_o,
-    static_cell_pet,
     static_arrow_corner,
     static_footprints
 }
+e

@@ -1,6 +1,6 @@
-package com.game.tama.core;
+package com.game.engine;
 
-import com.game.android.DisplayAdapter;
+import com.game.engine.DisplayAdapter;
 
 public interface Drawable
 {

@@ -3,7 +3,7 @@ package com.game.tama.thing;
 import com.game.tama.core.AssetName;
 import com.game.tama.thing.component.Component;
 import com.game.android.Assets;
-import com.game.android.DisplayAdapter;
+import com.game.engine.DisplayAdapter;
 import com.game.tama.core.Sprite;
 import com.game.tama.core.Loadable;
 import com.game.tama.core.Type;

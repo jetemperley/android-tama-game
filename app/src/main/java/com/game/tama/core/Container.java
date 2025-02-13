@@ -2,7 +2,7 @@ package com.game.tama.core;
 
 import android.graphics.Matrix;
 
-import com.game.android.DisplayAdapter;
+import com.game.engine.DisplayAdapter;
 import com.game.android.gesture.Down;
 import com.game.android.gesture.DragEnd;
 import com.game.android.gesture.DragStart;

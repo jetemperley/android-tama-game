@@ -1,30 +1,38 @@
 package com.game.engine;
 
-import android.graphics.Matrix;
-
-import com.game.android.DisplayAdapter;
-import com.game.tama.core.Drawable;
-import com.game.tama.core.Updateable;
+import com.game.android.Matrix4;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Node implements Updateable, Drawable
+public class Node<T extends Transform> implements Updateable, Drawable
 {
+    Class<T> transformClass;
     Node parent = null;
     List<Node> children = new ArrayList<>();
     private List<Behaviour> behaviours = new ArrayList<>();
     private boolean enabled = true;
-    public Matrix localTransform = new Matrix();
-    public Matrix worldTransform = new Matrix();
+    public T localTransform;
+    public T worldTransform;
 
-    public Node()
+    public Node(Class<T> klass)
     {
-        this(null);
+        try
+        {
+            worldTransform = klass.newInstance();
+            localTransform = klass.newInstance();
+        }
+        catch (Exception e)
+        {
+            throw new RuntimeException(
+                "Transforms need a default constructor",
+                e);
+        }
     }
 
-    public Node(Node parent)
+    public Node(Node<T> parent)
     {
+        this(parent.transformClass);
         setParent(parent);
     }
 
@@ -119,18 +127,19 @@ public class Node implements Updateable, Drawable
 
     /**
      * Gets the world transform and returns it in the out matrix.
+     *
      * @param out
      * @return out
      */
-    public Matrix getWorldTransform(Matrix out)
+    public T getWorldTransform(T out)
     {
         if (parent == null)
         {
-            out.set(localTransform);
+            out.setValues(localTransform);
             return out;
         }
         parent.getWorldTransform(out);
-        out.preConcat(localTransform);
+        out.preMult(localTransform);
         return out;
     }
 
@@ -139,13 +148,13 @@ public class Node implements Updateable, Drawable
         behaviours.remove(b);
     }
 
-    public <T extends Behaviour> T getBehaviour(Class<T> clazz)
+    public <B extends Behaviour> B getBehaviour(Class<B> clazz)
     {
         for (Behaviour b : behaviours)
         {
             if (b.getClass() == clazz)
             {
-                return (T) b;
+                return (B) b;
             }
         }
         return null;

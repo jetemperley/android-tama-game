@@ -14,10 +14,10 @@ class GLSurfaceView extends android.opengl.GLSurfaceView
         setEGLContextClientVersion(2);
 
 //        setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
-        setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
         renderer = new GLRenderer();
 
         // Set the Renderer for drawing on the GLSurfaceView
         setRenderer(renderer);
+        setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
     }
 }
