@@ -1,9 +1,7 @@
 package com.game.tama.ui;
 
-import android.graphics.Matrix;
-
 import com.game.engine.DisplayAdapter;
-import com.game.android.Assets;
+import com.game.android.Asset;
 import com.game.tama.core.AssetName;
 import com.game.tama.core.Sprite;
 
@@ -25,17 +23,25 @@ public class CircleCellButtonLeaf extends SimpleButtonLeaf
     private Sprite sprite;
 
     /**
-     * @param xPos   pixel x position of the button
-     * @param yPos   pixel y position of the button
+     * @param xPos pixel x position of the button
+     * @param yPos pixel y position of the button
      */
-    public CircleCellButtonLeaf(float xPos, float yPos, Sprite sprite, Size size)
+    public CircleCellButtonLeaf(float xPos,
+                                float yPos,
+                                Sprite sprite,
+                                Size size)
     {
-        this(xPos, yPos, sprite, ()->{}, size);
+        this(xPos, yPos, sprite, () ->
+        {}, size);
     }
 
-    public CircleCellButtonLeaf(float xPos, float yPos, Sprite sprite, Runnable activate, Size size)
+    public CircleCellButtonLeaf(float xPos,
+                                float yPos,
+                                Sprite sprite,
+                                Runnable activate,
+                                Size size)
     {
-        super(xPos, yPos, 16, 16, Assets.getStaticSprite(size.asset), activate);
+        super(xPos, yPos, 1, 1, Asset.getStaticSprite(size.asset), activate);
         this.sprite = sprite;
     }
 
@@ -47,20 +53,11 @@ public class CircleCellButtonLeaf extends SimpleButtonLeaf
     }
 
     @Override
-    public boolean isInside(float x, float y, Matrix matrix)
+    public boolean isInside(float x, float y)
     {
-        float[] posArr = new float[]{
-            pos.x,
-            pos.y};
-        float[] sizeArr = new float[]{
-            8,
-            0};
-        matrix.mapPoints(posArr);
-        matrix.mapVectors(sizeArr);
-        float xdiff = posArr[0] + sizeArr[0] - x;
-        float ydiff = posArr[1] + sizeArr[0] - y;
-        float distSq = xdiff*xdiff + ydiff*ydiff;
-        return distSq <= sizeArr[0]*sizeArr[0];
+        float xdiff = pos.x + size.x - x;
+        float ydiff = pos.y + size.x - y;
+        float distSq = xdiff * xdiff + ydiff * ydiff;
+        return distSq <= size.x * size.x;
     }
-
 }

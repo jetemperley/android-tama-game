@@ -8,16 +8,16 @@ import com.game.android.gesture.GestureEvent;
 import com.game.android.gesture.Input;
 import com.game.engine.Behaviour;
 import com.game.engine.Node;
+import com.game.engine.Transform;
 import com.game.tama.core.AssetName;
 import com.game.tama.command.CommandFactory;
 import com.game.tama.command.CommandQueue;
-import com.game.android.Assets;
+import com.game.android.Asset;
 import com.game.tama.core.World;
 import com.game.tama.thing.pet.Pet;
 import com.game.tama.thing.Thing;
 import com.game.tama.ui.ContainerManager;
 import com.game.tama.util.Log;
-import com.game.tama.util.MatrixUtil;
 import com.game.tama.util.Vec2;
 
 public class PetGardenBehaviour extends Behaviour implements Input
@@ -25,7 +25,7 @@ public class PetGardenBehaviour extends Behaviour implements Input
     public MenuBehaviour thingMenu;
 
     public World world;
-    public Matrix tempMat = new Matrix();
+    public Transform tempMat = node.newTransform();
     public ContainerManager containerManager = new ContainerManager();
 
     boolean showBackpack = true;
@@ -56,15 +56,11 @@ public class PetGardenBehaviour extends Behaviour implements Input
 
     public void draw(DisplayAdapter display)
     {
-        depthDisplay.display = display;
-        world.draw(depthDisplay);
-        depthDisplay.drawQ();
-        depthDisplay.clearQ();
-
+        world.draw(display);
         if (selected != null)
         {
             display.drawArr(
-                Assets.getStaticSprite(AssetName.static_inv),
+                Asset.getStaticSprite(AssetName.static_inv),
                 selected.loc.getWorldArrPos().x,
                 selected.loc.getWorldArrPos().y);
             if (selected instanceof Pet)
@@ -75,7 +71,7 @@ public class PetGardenBehaviour extends Behaviour implements Input
         //        display.setMatrix(identity);
         if (showBackpack)
         {
-            //backpackSlot.draw(display);
+            // backpackSlot.draw(display);
         }
         containerManager.draw(display);
     }
@@ -100,7 +96,7 @@ public class PetGardenBehaviour extends Behaviour implements Input
 
     public float[] transferFromContainer(Thing t, Matrix containerMat)
     {
-
+        // TODO fix this
         float[] f = t.loc.getWorldBitPosAsArray();
         Log.log(
             this,
@@ -112,7 +108,7 @@ public class PetGardenBehaviour extends Behaviour implements Input
 
         Matrix inv = new Matrix();
         tempMat.reset();
-        getTempWorldTransform().invert(inv);
+        //getTempWorldTransform().invert();
         inv.mapPoints(f);
         Log.log(
             this,
@@ -219,7 +215,7 @@ public class PetGardenBehaviour extends Behaviour implements Input
         if (thing == null)
         {
             CommandQueue walk =
-                CommandFactory.Companion.commandPathTo((int) ax, (int) ay);
+                CommandFactory.commandPathTo((int) ax, (int) ay);
             pet.currentCommand.replace(walk);
             return;
         }
@@ -229,13 +225,8 @@ public class PetGardenBehaviour extends Behaviour implements Input
     @Override
     public void singleTapConfirmed(float x, float y)
     {
-        float[] f =
-            MatrixUtil.convertScreenToWorldArray(
-                getWorldTransform(tempMat),
-                x,
-                y);
 
-        Thing t = getThing(f[0], f[1]);
+        Thing t = getThing(x, y);
         if (selected == null || t == selected ||
             controlsBehaviour.getSelectedControl() == null)
         {
@@ -246,8 +237,8 @@ public class PetGardenBehaviour extends Behaviour implements Input
             controlsBehaviour.executeCurrentControl(
                 selected,
                 world,
-                f[0],
-                f[1]);
+                x,
+                y);
         }
     }
 
@@ -260,9 +251,7 @@ public class PetGardenBehaviour extends Behaviour implements Input
     @Override
     public void longPressConfirmed(float x, float y)
     {
-        float[] f =
-            MatrixUtil.convertScreenToWorldArray(getTempWorldTransform(), x, y);
-        use(f[0], f[1]);
+        use(x, y);
     }
 
     @Override
@@ -291,44 +280,38 @@ public class PetGardenBehaviour extends Behaviour implements Input
         float scale = nsize / psize;
 
         // apply changes
-        node.localTransform.postTranslate(-nmid.x, -nmid.y);
-        node.localTransform.postScale(scale, scale);
-        node.localTransform.postTranslate(nmid.x, nmid.y);
-        node.localTransform.postTranslate(nmid.x - pmid.x, nmid.y - pmid.y);
+        node.localTransform.postTranslate(-nmid.x, -nmid.y, 0);
+        node.localTransform.postScale(scale, scale, 1);
+        node.localTransform.postTranslate(nmid.x, nmid.y, 0);
+        node.localTransform.postTranslate(nmid.x - pmid.x, nmid.y - pmid.y, 0);
     }
 
     @Override
     public void dragStart(float x, float y)
     {
-        float[] f =
-            MatrixUtil.convertScreenToWorldArray(getTempWorldTransform(), x, y);
-        Thing touched = world.checkCollision(f[0], f[1]);
+        Thing touched = world.checkCollision(x, y);
         if (selected != null && selected == touched)
         {
-            setHeld(f[0], f[1]);
+            setHeld(x, y);
         }
     }
 
     @Override
     public void drag(Vec2<Float> prev, Vec2<Float> next)
     {
-        node.localTransform.postTranslate(next.x - prev.x, next.y - prev.y);
+        node.localTransform.postTranslate(next.x - prev.x, next.y - prev.y, 0);
     }
 
     @Override
     public boolean handleEvent(GestureEvent e)
     {
-        if (containerManager.handleEvent(e, getTempWorldTransform()))
+        e.transform(getWorldTransform(tempMat).invert());
+        if (containerManager.handleEvent(e, getWorldTransform(tempMat)))
         {
             return true;
         }
         e.callEvent(this);
         return true;
-    }
-
-    public Matrix getTempWorldTransform()
-    {
-        return getWorldTransform(tempMat);
     }
 
     public void deselectThing()

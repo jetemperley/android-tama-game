@@ -39,7 +39,7 @@ public class GameManager extends Behaviour
         hudMenu = BehaviourBuilder.buildHUD(new Node(mainGameNode));
         heldBehaviour = new HeldThingBehaviour(new Node(mainGameNode));
         // translate the game down below the hud button
-        gameBehaviour.node.localTransform.preTranslate(0, 16);
+        gameBehaviour.node.localTransform.preTranslate(0, 1, 0);
         pauseMenu = BehaviourBuilder.buildPauseMenu(new Node(parent));
 
         prioritySubscriber = new EventPrioritySubscriber();

@@ -10,7 +10,6 @@ public class BehaviorStarter
     public static void subscribe(Behaviour b)
     {
         startSubscribers.add(b);
-
     }
 
     public static void alertStart()

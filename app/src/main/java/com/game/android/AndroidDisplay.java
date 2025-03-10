@@ -5,9 +5,12 @@ import android.graphics.Matrix;
 import android.graphics.Rect;
 
 import com.game.engine.DisplayAdapter;
+import com.game.engine.Transform;
 import com.game.tama.core.Sprite;
 import com.game.tama.core.WorldObject;
 import com.game.tama.util.Log;
+
+import kotlin.NotImplementedError;
 
 public class AndroidDisplay implements DisplayAdapter
 {
@@ -44,9 +47,15 @@ public class AndroidDisplay implements DisplayAdapter
             GameActivity.black);
     }
 
-    public void drawSprite(Sprite d, float x, float y)
+    public void drawSprite(Sprite sprite, float x, float y)
     {
-        canvas.drawBitmap(d.getSprite(), x, y, GameActivity.black);
+        canvas.drawBitmap(sprite.getSprite(), x, y, GameActivity.black);
+    }
+
+    @Override
+    public void drawSprite(Sprite sprite)
+    {
+        throw new NotImplementedError();
     }
 
     @Override
@@ -63,19 +72,19 @@ public class AndroidDisplay implements DisplayAdapter
 
     public void drawArr(Sprite d, float x, float y)
     {
-        canvas.drawBitmap(d.getSprite(), x * 16, y * 16, GameActivity.black);
+        canvas.drawBitmap(d.getSprite(), x, y, GameActivity.black);
     }
 
-    public void setMatrix(Matrix mat)
+    public void setTransform(Transform mat)
     {
-        currentMatrix.set(mat);
+        currentMatrix.setValues(mat.getValues());
         canvas.setMatrix(currentMatrix);
     }
 
     @Override
-    public Matrix getMatrix()
+    public Transform getTransform()
     {
-        return currentMatrix;
+        throw new NotImplementedError("Method not implemented.");
     }
 
     @Override
@@ -98,9 +107,9 @@ public class AndroidDisplay implements DisplayAdapter
     }
 
     @Override
-    public void preConcat(Matrix mat)
+    public void preConcat(Transform mat)
     {
-        currentMatrix.preConcat(mat);
-        canvas.concat(mat);
+        // currentMatrix.preConcat(mat.getValues());
+        // canvas.concat(mat);
     }
 }

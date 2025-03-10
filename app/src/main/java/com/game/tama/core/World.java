@@ -57,7 +57,7 @@ public class World implements java.io.Serializable
         {
             for (int y = 0; y < celln; y++)
             {
-                tiles[x][y].display(d);
+                tiles[x][y].draw(d);
             }
         }
     }

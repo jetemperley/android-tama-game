@@ -5,18 +5,20 @@ import com.game.android.Matrix4;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Node<T extends Transform> implements Updateable, Drawable
+public class Node
 {
-    Class<T> transformClass;
-    Node parent = null;
-    List<Node> children = new ArrayList<>();
-    private List<Behaviour> behaviours = new ArrayList<>();
-    private boolean enabled = true;
-    public T localTransform;
-    public T worldTransform;
+    public final Class<? extends Transform> transformClass;
+    protected Node parent = null;
+    protected List<Node> children = new ArrayList<>();
+    protected List<Behaviour> behaviours = new ArrayList<>();
+    protected boolean enabled = true;
 
-    public Node(Class<T> klass)
+    public Transform localTransform;
+    public Transform worldTransform;
+
+    public Node(Class<? extends Transform> klass)
     {
+        transformClass = klass;
         try
         {
             worldTransform = klass.newInstance();
@@ -30,7 +32,7 @@ public class Node<T extends Transform> implements Updateable, Drawable
         }
     }
 
-    public Node(Node<T> parent)
+    public Node(Node parent)
     {
         this(parent.transformClass);
         setParent(parent);
@@ -66,18 +68,6 @@ public class Node<T extends Transform> implements Updateable, Drawable
         {
             node.engine_update();
         }
-    }
-
-    @Override
-    public void update()
-    {
-
-    }
-
-    @Override
-    public void draw(DisplayAdapter display)
-    {
-
     }
 
     public final void engine_draw(DisplayAdapter display)
@@ -131,7 +121,7 @@ public class Node<T extends Transform> implements Updateable, Drawable
      * @param out
      * @return out
      */
-    public T getWorldTransform(T out)
+    public Transform getWorldTransform(Transform out)
     {
         if (parent == null)
         {
@@ -173,5 +163,17 @@ public class Node<T extends Transform> implements Updateable, Drawable
     public boolean isEnabled()
     {
         return enabled && (parent == null || parent.isEnabled());
+    }
+
+    public Transform newTransform()
+    {
+        try
+        {
+            return transformClass.newInstance();
+        }
+        catch (IllegalAccessException | InstantiationException e)
+        {
+            throw new RuntimeException("Could not instantiate transform.");
+        }
     }
 }

@@ -19,7 +19,7 @@ import com.game.tama.command.CommandFactory;
 import com.game.tama.command.CommandReplacer;
 import com.game.tama.command.CommandEat;
 import com.game.tama.thing.component.Health;
-import com.game.android.Assets;
+import com.game.android.Asset;
 import com.game.tama.core.Sprite;
 import com.game.tama.core.World;
 
@@ -82,13 +82,13 @@ public class Pet extends Thing
     {
         if (anim == null)
         {
-            anim = new Animator(Assets.getSpriteSheet(asset));
+            anim = new Animator(Asset.getSpriteSheet(asset));
             anim.play();
             anim.repeat(true);
         }
         else
         {
-            anim.sheet = Assets.getSpriteSheet(asset);
+            anim.sheet = Asset.getSpriteSheet(asset);
         }
         return anim;
     }
@@ -102,7 +102,7 @@ public class Pet extends Thing
                 this,
                 "Pet doubled up on an update. Does this matter?");
         }
-        currentCommand.getUpdate().invoke(this, world);
+        currentCommand.update.accept(this, world);
         anim.update(this);
         state.update(this, world);
         time = GameManager.time;
@@ -191,13 +191,13 @@ public class Pet extends Thing
     {
         if (thing.type() == Type.food)
         {
-            currentCommand.replace(CommandFactory.Companion.commandWalkAndAdjacentAction(
+            currentCommand.replace(CommandFactory.commandWalkAndAdjacentAction(
                 thing,
                 new CommandEat(thing)));
         }
         else
         {
-            currentCommand.replace(CommandFactory.Companion.commandWalkAndAdjacentAction(
+            currentCommand.replace(CommandFactory.commandWalkAndAdjacentAction(
                 thing,
                 new CommandAttack(thing)));
         }

@@ -1,10 +1,10 @@
 package com.game.tama.thing.tile;
 
 import com.game.engine.DisplayAdapter;
+import com.game.tama.core.AssetName;
 import com.game.tama.core.WorldObject;
 import com.game.tama.thing.Thing;
-import com.tama.R;
-import com.game.android.Assets;
+import com.game.android.Asset;
 import com.game.tama.core.Sprite;
 import com.game.tama.core.World;
 
@@ -25,7 +25,7 @@ public abstract class Tile implements java.io.Serializable
 
     Sprite getAssets()
     {
-        return Assets.sheets.get(R.drawable.sheet_16_terrain).getSprite(0, 0);
+        return Asset.getSpriteSheet(AssetName.sheet_16_terrain).getSprite(0, 0);
     }
 
     public void load()
@@ -37,7 +37,7 @@ public abstract class Tile implements java.io.Serializable
         }
     }
 
-    public void display(DisplayAdapter d)
+    public void draw(DisplayAdapter d)
     {
         if (visible)
         {

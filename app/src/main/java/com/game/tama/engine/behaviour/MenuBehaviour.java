@@ -30,7 +30,7 @@ public class MenuBehaviour extends Behaviour
     @Override
     public boolean handle(GestureEvent e)
     {
-        return root.handleEvent(e, node.worldTransform);
+        return root.handleEvent(e);
     }
 
     public boolean isInside(float x, float y)
@@ -39,6 +39,6 @@ public class MenuBehaviour extends Behaviour
         {
             return false;
         }
-        return root.isInside(x, y, node.worldTransform);
+        return root.isInside(x, y);
     }
 }

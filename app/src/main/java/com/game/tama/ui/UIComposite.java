@@ -11,8 +11,21 @@ import com.game.engine.Updateable;
 
 public abstract class UIComposite implements Drawable, Updateable
 {
+    /**
+     * Returns whether point x y is inside this button. X and Y should be
+     * in the UI tree's frame of reference
+     *
+     * @param x      point to check
+     * @param y      point to check
+     * @return
+     */
+    public abstract boolean isInside(float x, float y);
 
-    public abstract boolean isInside(float x, float y, Matrix matrix);
-    public abstract boolean handleEvent(GestureEvent e, Matrix mat);
-
+    /**
+     * The gesture event should already be transformed to this tree's
+     * frame of reference
+     * @param e
+     * @return true if the event is consumed
+     */
+    public abstract boolean handleEvent(GestureEvent e);
 }

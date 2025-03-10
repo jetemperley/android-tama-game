@@ -10,7 +10,7 @@ public enum AssetName
     sheet_16_treegrowth,
     sheet_16_treeripped,
     sheet_16_walker,
-    sheet_16_button,
+    sheet_16_rect,
     sheet_16_cell_pet,
 
     sheet_5_num,
@@ -64,4 +64,3 @@ public enum AssetName
     static_arrow_corner,
     static_footprints
 }
-e

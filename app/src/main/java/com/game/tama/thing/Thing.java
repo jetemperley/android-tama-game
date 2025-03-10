@@ -2,7 +2,7 @@ package com.game.tama.thing;
 
 import com.game.tama.core.AssetName;
 import com.game.tama.thing.component.Component;
-import com.game.android.Assets;
+import com.game.android.Asset;
 import com.game.engine.DisplayAdapter;
 import com.game.tama.core.Sprite;
 import com.game.tama.core.Loadable;
@@ -29,7 +29,7 @@ public abstract class Thing implements java.io.Serializable, Loadable
 
     public Thing()
     {
-        loc = new WorldObject(Assets.getStaticSprite(asset));
+        loc = new WorldObject(Asset.getStaticSprite(asset));
         loc.sprite = getAsset();
         children = new ArrayList<>();
         components = new ArrayList<>();
@@ -46,7 +46,7 @@ public abstract class Thing implements java.io.Serializable, Loadable
 
     public Sprite getAsset()
     {
-        return Assets.getStaticSprite(asset);
+        return Asset.getStaticSprite(asset);
     }
 
     @Override

@@ -92,7 +92,7 @@ public abstract class Behaviour implements Updateable, Drawable, GestureEventHan
      * Easy access for Node.getWorldTransform
      * @param out
      */
-    public Matrix getWorldTransform(Matrix out)
+    public Transform getWorldTransform(Transform out)
     {
         return node.getWorldTransform(out);
     }

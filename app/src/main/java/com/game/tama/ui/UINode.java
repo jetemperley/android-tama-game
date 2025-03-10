@@ -28,11 +28,11 @@ public class UINode extends UIComposite
     }
 
     @Override
-    public boolean handleEvent(GestureEvent event, Matrix mat)
+    public boolean handleEvent(GestureEvent event)
     {
         for (UIComposite ui : childMap.values())
         {
-            if (ui.handleEvent(event, mat))
+            if (ui.handleEvent(event))
             {
                 return true;
             }
@@ -59,11 +59,11 @@ public class UINode extends UIComposite
     }
 
     @Override
-    public boolean isInside(float x, float y, Matrix matrix)
+    public boolean isInside(float x, float y)
     {
         for (UIComposite ui : childMap.values())
         {
-            if (ui.isInside(x, y, matrix))
+            if (ui.isInside(x, y))
             {
                 return true;
             }

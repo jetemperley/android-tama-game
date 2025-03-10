@@ -2,8 +2,6 @@ package com.game.android;
 
 import android.opengl.GLES20;
 
-import com.game.tama.core.Sprite;
-
 public class Shader
 {
     public final int shaderId;
@@ -15,8 +13,8 @@ public class Shader
 
     public static int buildShader (GLAssetName vertShaderName, GLAssetName fragShaderName)
     {
-        String vertexShaderCode = Assets.getRawContent(vertShaderName);
-        String fragmentShaderCode = Assets.getRawContent(fragShaderName);
+        String vertexShaderCode = Asset.getRawContent(vertShaderName);
+        String fragmentShaderCode = Asset.getRawContent(fragShaderName);
 
         int vertexShader = GLRenderer.loadShader(
             GLES20.GL_VERTEX_SHADER,

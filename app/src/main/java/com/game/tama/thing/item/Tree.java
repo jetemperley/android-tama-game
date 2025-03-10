@@ -2,11 +2,10 @@ package com.game.tama.thing.item;
 
 import com.game.tama.core.AssetName;
 import com.game.tama.core.Animator;
-import com.game.android.Assets;
+import com.game.android.Asset;
 import com.game.tama.core.Type;
 import com.game.tama.core.World;
 import com.game.tama.thing.Thing;
-import com.tama.R;
 import com.game.tama.core.Sprite;
 
 public class Tree extends Thing implements java.io.Serializable
@@ -43,11 +42,11 @@ public class Tree extends Thing implements java.io.Serializable
     {
         if (anim == null)
         {
-            anim = new Animator(Assets.sheets.get(R.drawable.sheet_16_treegrowth));
+            anim = new Animator(Asset.getSpriteSheet(AssetName.sheet_16_treegrowth));
         }
         else
         {
-            anim.sheet = Assets.sheets.get(R.drawable.sheet_16_treegrowth);
+            anim.sheet = Asset.getSpriteSheet(AssetName.sheet_16_treegrowth);
         }
         return anim;
     }

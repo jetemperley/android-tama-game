@@ -16,6 +16,6 @@ public class PetGardenBehaviourConfigurer
 
         Matrix backpackMat = new Matrix();
         backpackMat.set(uiMat);
-        backpackMat.preTranslate(16, 0);
+        backpackMat.preTranslate(1, 0);
     }
 }

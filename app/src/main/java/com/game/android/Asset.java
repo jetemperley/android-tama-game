@@ -11,20 +11,17 @@ import com.game.tama.core.SpriteSheet;
 import com.game.tama.core.StaticSprite;
 import com.tama.R;
 
-import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Scanner;
 
-public class Assets
+public class Asset
 {
-
-    public static Map<Integer, String> raw;
-    public static Map<Integer, StaticSprite> sprites;
-    public static Map<Integer, SpriteSheet> sheets;
+    private static Map<Integer, String> raw;
+    private static Map<Integer, StaticSprite> sprites;
+    private static Map<Integer, SpriteSheet> sheets;
 
     public static void init(Resources resources)
     {

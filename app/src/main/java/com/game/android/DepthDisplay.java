@@ -3,11 +3,14 @@ package com.game.android;
 import android.graphics.Matrix;
 
 import com.game.engine.DisplayAdapter;
+import com.game.engine.Transform;
 import com.game.tama.core.Sprite;
 import com.game.tama.core.WorldObject;
 
 import java.util.Comparator;
 import java.util.PriorityQueue;
+
+import kotlin.NotImplementedError;
 
 public class DepthDisplay implements DisplayAdapter
 {
@@ -32,9 +35,15 @@ public class DepthDisplay implements DisplayAdapter
         throw new RuntimeException("Operation not supported");
     }
 
-    public void drawSprite(Sprite d, float x, float y)
+    public void drawSprite(Sprite sprite, float x, float y)
     {
         throw new RuntimeException("Operation not supported");
+    }
+
+    @Override
+    public void drawSprite(Sprite sprite)
+    {
+        throw new NoSuchMethodError();
     }
 
     @Override
@@ -89,13 +98,13 @@ public class DepthDisplay implements DisplayAdapter
     }
 
     @Override
-    public void setMatrix(Matrix mat)
+    public void setTransform(Transform mat)
     {
-        display.setMatrix(mat);
+        display.setTransform(mat);
     }
 
     @Override
-    public Matrix getMatrix()
+    public Transform getTransform()
     {
         throw new RuntimeException("Operation not supported");
     }
@@ -119,7 +128,7 @@ public class DepthDisplay implements DisplayAdapter
     }
 
     @Override
-    public void preConcat(Matrix mat)
+    public void preConcat(Transform mat)
     {
         throw new RuntimeException("Operation not supported");
     }

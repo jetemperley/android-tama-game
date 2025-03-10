@@ -62,17 +62,16 @@ public class GameActivity extends Activity
     {
         super.onCreate(savedInstanceState);
         //        Log.log(this, "staring setup");
-        Assets.init(getResources());
+        Asset.init(getResources());
         //        Log.log(this, "finished loading resources");
 
         gLView = new GLSurfaceView(this);
         setContentView(gLView);
 
         //        TOP_OFFSET = view.getTop();
-        //        display = getWindowManager().getDefaultDisplay();
+        display = getWindowManager().getDefaultDisplay();
         screenSize = new Rect();
-
-        //        display.getRectSize(screenSize);
+        display.getRectSize(screenSize);
 
         red = new Paint();
         red.setARGB(255, 255, 0, 0);
@@ -125,15 +124,18 @@ public class GameActivity extends Activity
 
         //        display.getRectSize(out);
 
-        displayAdapter = new AndroidDisplay(16);
+        displayAdapter = new AndroidDisplay(1);
 
-        rootNode = new Node();
+        rootNode = new Node(Matrix4.class);
+        float xscale = 1;
+        float yscale = screenSize.width()/(float)screenSize.height();
+        rootNode.localTransform.preTranslate(-1, 1, 0);
+        rootNode.localTransform.preScale(1, -yscale, 1);
+        rootNode.localTransform.preScale(0.05f, 0.05f, 1);
         gesture = new Gesture();
         GestureEventAdaptor gestureEventAdaptor = new GestureEventAdaptor();
         gesture.gestureTarget = gestureEventAdaptor;
         gameManager = new GameManager(rootNode, gestureEventAdaptor);
-
-        gameLoop = new GameLoop(this);
     }
 
     public void updateAndDraw()
@@ -147,8 +149,8 @@ public class GameActivity extends Activity
         displayAdapter.view = SCREEN_RECT;
         gesture.topOffset = SCREEN_RECT.top;
         gesture.update();
-        // rootNode.engine_update();
-        // rootNode.engine_draw(displayAdapter);
+        rootNode.engine_update();
+        // rootNode.engine_draw(gLView.renderer);
         // TODO work out how to trigger engine draw from here
         gLView.requestRender();
     }
@@ -174,6 +176,8 @@ public class GameActivity extends Activity
     {
         super.onStart();
         loadGame();
+        // TODO this
+        gLView.renderer.drawWorld = rootNode::engine_draw;
         gameLoop = new GameLoop(this);
         gameLoop.start();
     }

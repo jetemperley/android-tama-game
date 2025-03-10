@@ -7,6 +7,7 @@ import com.game.android.gesture.Down;
 import com.game.android.gesture.DragEnd;
 import com.game.android.gesture.DragStart;
 import com.game.android.gesture.LongPress;
+import com.game.engine.Transform;
 import com.game.tama.engine.behaviour.GameManager;
 import com.game.tama.thing.Thing;
 import com.game.tama.util.Bounds;
@@ -21,7 +22,6 @@ import java.io.Serializable;
 public class Container extends Thing implements Serializable
 {
     private World world;
-    private transient Matrix mat = new Matrix();
 
     public Container(int size)
     {
@@ -34,13 +34,12 @@ public class Container extends Thing implements Serializable
     {
         display.push();
         Vec2<Float> pos = loc.getWorldBitPos();
-        mat.setTranslate(pos.x, pos.y+16);
-        display.preConcat(mat);
+        display.getTransform().preTranslate(pos.x, pos.y+1, 0);
         display.drawRect(
             0,
             0,
-            world.celln * 16,
-            world.celln * 16);
+            world.celln,
+            world.celln);
 
         world.draw(display);
         display.pop();
@@ -58,30 +57,32 @@ public class Container extends Thing implements Serializable
 
     }
 
+    /**
+     * Start drag event
+     * @param startX x position in parent world arr coords
+     * @param startY y position in parent world arr coords
+     */
     public void dragStart(float startX,
-                          float startY, Matrix mat)
+                          float startY)
     {
-        float[] f = MatrixUtil.convertScreenToWorldArray(
-            mat, startX, startY);
-        float invTapX = f[0] - loc.x;
-        float invTapY = f[1] - loc.y - 1;
-        Thing t = world.checkCollision(invTapX, invTapY);
+        Thing t = world.checkCollision(startX - loc.x, startY - loc.y);
         if (t != null)
         {
             world.pickupThing(t.loc.x, t.loc.y);
-            t.loc.setPos((int)f[0], (int)f[1]);
-            GameManager.getHeld().setHeld(t, f[0], f[1]);
+            // t.loc.setPos((int)f[0], (int)f[1]);
+            GameManager.getHeld().setHeld(t, startX, startY);
         }
     }
 
-    public void dragEnd(float x, float y, Matrix mat)
+    /**
+     * End drag event
+     * @param x x position in parent world arr coords
+     * @param y y position in parent world arr coords
+     */
+    public void dragEnd(float x, float y)
     {
-        float[] arrPos = MatrixUtil.convertScreenToWorldArray(mat, x, y);
-        arrPos[0] -= loc.x;
-        arrPos[1] -= loc.y +1;
-        Log.log(this, "doubleTapDragEnd drop loc " + arrPos[0] + " " + arrPos[1]);
         Thing held = GameManager.getHeld().held;
-        if (world.addOrClosest(held, (int) arrPos[0], (int) arrPos[1]))
+        if (world.addOrClosest(held, (int) (x - loc.x), (int) (y - loc.y)))
         {
             GameManager.getHeld().held = null;
             return;
@@ -92,32 +93,32 @@ public class Container extends Thing implements Serializable
     /**
      * @param x Screen space x
      * @param y Screen space y
+     * @param transform the transform of the parent world
      * @return
      */
-    public boolean isTouchInside(float x, float y, Matrix mat)
+    public boolean isTouchInside(float x, float y, Transform transform)
     {
-        mat.setTranslate(0, 16);
-        mat.preConcat(mat);
         Vec2<Float> locv = loc.getWorldBitPos();
-        float[] pos = {locv.x, locv.y+16};
-        float[] size = {world.celln*16, world.celln*16};
-        mat.mapPoints(pos);
-        mat.mapVectors(size);
+
+        // the position of this containers display element in the world
+        float[] position = transform.mapPoint(locv.x, locv.y + 1, 0);
+        // the size of this container is the size of its internal world
+        float[] size = transform.mapPoint(world.celln, world.celln, 0);
 
         return Bounds.isInside(x, y,
-            pos[0],
-            pos[1],
+            position[0],
+            position[1],
             size[0],
             size[1]);
     }
 
     /**
-     * Call when the containes inventory has been pressed
+     * Call when the contains inventory has been pressed
      * @param e
      * @param mat
      * @return
      */
-    public boolean handleEvent(GestureEvent e, Matrix mat)
+    public boolean handleEvent(GestureEvent e, Transform mat)
     {
         if (!isTouchInside(e.x, e.y, mat))
         {
@@ -127,12 +128,12 @@ public class Container extends Thing implements Serializable
         Class clazz = e.getClass();
         if (clazz == DragEnd.class)
         {
-            dragEnd(e.x, e.y, mat);
+            dragEnd(e.x, e.y);
             return true;
         }
         else if (clazz == DragStart.class)
         {
-            dragStart(e.x, e.y, mat);
+            dragStart(e.x, e.y);
             return true;
         }
         return clazz == Down.class || clazz == LongPress.class;
@@ -142,7 +143,6 @@ public class Container extends Thing implements Serializable
         throws IOException, ClassNotFoundException
     {
         in.defaultReadObject();
-        mat = new Matrix();
         world.reLoadAllAssets();
     }
 }

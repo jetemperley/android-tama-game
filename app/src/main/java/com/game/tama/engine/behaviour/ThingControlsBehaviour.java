@@ -2,7 +2,7 @@ package com.game.tama.engine.behaviour;
 
 import com.game.engine.Behaviour;
 import com.game.engine.Node;
-import com.game.android.Assets;
+import com.game.android.Asset;
 import com.game.tama.core.AssetName;
 import com.game.tama.core.World;
 import com.game.tama.thing.Thing;
@@ -62,7 +62,7 @@ public class ThingControlsBehaviour extends Behaviour
         // add the thing picture
         controlNode.add(
             Thing.class,
-            new SquareCellButtonLeaf(16, 0, 1, 1, thing.getAsset()));
+            new SquareCellButtonLeaf(1, 0, 1, 1, thing.getAsset()));
         // set the controls defined by the thing
         for (int i = 0; i < controls.size(); i++)
         {
@@ -71,11 +71,11 @@ public class ThingControlsBehaviour extends Behaviour
             controlNode.add(
                 tc,
                 new SquareCellButtonLeaf(
-                    16 * (i + 2),
+                    (i + 2),
                     0,
                     1,
                     1,
-                    Assets.getStaticSprite(tc.assetName),
+                    Asset.getStaticSprite(tc.assetName),
                     () ->
                     {
                         if (selectedControl == tc)
@@ -92,11 +92,11 @@ public class ThingControlsBehaviour extends Behaviour
         controlNode.add(
             deselectControl,
             new SquareCellButtonLeaf(
-                16 * (controls.size() + 2),
+                controls.size() + 2,
                 0,
                 1,
                 1,
-                Assets.getStaticSprite(AssetName.static_x),
+                Asset.getStaticSprite(AssetName.static_x),
                 deselectControl));
         menu.add(this, controlNode);
     }

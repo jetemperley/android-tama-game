@@ -1,9 +1,8 @@
 package com.game.tama.ui;
 
-import android.graphics.Matrix;
-
 import com.game.engine.DisplayAdapter;
 import com.game.android.gesture.GestureEvent;
+import com.game.engine.Transform;
 import com.game.tama.core.Container;
 
 import java.util.ArrayList;
@@ -41,7 +40,7 @@ public class ContainerManager
 
     }
 
-    public boolean handleEvent(GestureEvent e, Matrix mat)
+    public boolean handleEvent(GestureEvent e, Transform mat)
     {
         for (int i = containers.size() - 1; i >= 0; i--)
         {

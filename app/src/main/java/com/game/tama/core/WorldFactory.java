@@ -64,7 +64,7 @@ public class WorldFactory
         w.addOrClosest(PetFactory.cellPet(), 0, 0);
         w.addOrClosest(PetFactory.cellPet(), 0, 0);
         w.addOrClosest(PetFactory.cellPet(), 0, 0);
-        w.addOrClosest(new Food(R.drawable.static_meat), 1, 1);
+        w.addOrClosest(new Food(AssetName.static_meat), 1, 1);
         w.addOrClosest(new Container(2), 2, 2);
 
     }

@@ -16,7 +16,7 @@ public abstract class Command implements Serializable
     public BiConsumer<Pet, World> update = (p, w) -> {};
     public CommandState state = CommandState.ready;
 
-    private Pet actor = null;
+    protected Pet actor = null;
 
     protected void start(Pet pet, World world)
     {

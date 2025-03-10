@@ -1,10 +1,8 @@
 package com.game.tama.ui;
 
-import android.graphics.Matrix;
-
 import com.game.engine.DisplayAdapter;
 import com.game.android.gesture.GestureEvent;
-import com.game.android.Assets;
+import com.game.android.Asset;
 import com.game.tama.core.AssetName;
 import com.game.tama.core.Sprite;
 import com.game.tama.core.SpriteSheet;
@@ -61,7 +59,7 @@ public class TextLeaf extends UIComposite
 
     public void loadChars()
     {
-        SpriteSheet sheet = Assets.getSpriteSheet(AssetName.sheet_8_symbols);
+        SpriteSheet sheet = Asset.getSpriteSheet(AssetName.sheet_8_symbols);
         letters = new Sprite[text.length()];
         byte[] bytes = text.getBytes();
         for (int i = 0; i < text.length(); i++)
@@ -94,13 +92,13 @@ public class TextLeaf extends UIComposite
     }
 
     @Override
-    public boolean handleEvent(GestureEvent event, Matrix mat)
+    public boolean handleEvent(GestureEvent event)
     {
         return false;
     }
 
     @Override
-    public boolean isInside(float x, float y, Matrix matrix)
+    public boolean isInside(float x, float y)
     {
         return false;
     }

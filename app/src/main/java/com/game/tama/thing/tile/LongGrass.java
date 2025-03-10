@@ -1,9 +1,9 @@
 package com.game.tama.thing.tile;
 
 import com.game.engine.DisplayAdapter;
+import com.game.tama.core.AssetName;
 import com.game.tama.core.WorldObject;
-import com.tama.R;
-import com.game.android.Assets;
+import com.game.android.Asset;
 import com.game.tama.core.Sprite;
 
 class LongGrass extends Tile
@@ -28,7 +28,7 @@ class LongGrass extends Tile
 
     Sprite getAssets()
     {
-        Sprite d = Assets.sprites.get(R.drawable.static_longgrass);
+        Sprite d = Asset.getStaticSprite(AssetName.static_longgrass);
         if (sprite2 != null)
         {
             sprite2.sprite = d;
@@ -44,10 +44,10 @@ class LongGrass extends Tile
         sprite3.setPos(x, y);
     }
 
-    @Override public void display(DisplayAdapter d)
+    @Override public void draw(DisplayAdapter d)
     {
 
-        super.display(d);
+        super.draw(d);
         d.drawArr(sprite2);
         d.drawArr(sprite3);
     }

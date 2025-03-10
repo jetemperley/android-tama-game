@@ -6,15 +6,16 @@ import javax.microedition.khronos.opengles.GL10;
 import android.graphics.Bitmap;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
-import android.opengl.Matrix;
 
 import com.game.engine.DisplayAdapter;
+import com.game.engine.Transform;
 import com.game.tama.core.AssetName;
 import com.game.tama.core.Sprite;
 import com.game.tama.core.SpriteSheet;
 import com.game.tama.core.StaticSprite;
 import com.game.tama.core.WorldObject;
 import com.game.tama.util.Log;
+import com.game.tama.util.Vec2;
 
 import java.lang.reflect.Field;
 import java.nio.ByteBuffer;
@@ -31,7 +32,7 @@ public class GLRenderer implements GLSurfaceView.Renderer, DisplayAdapter
     public Consumer<DisplayAdapter> drawWorld = null;
 
     private Matrix4 currentMatrix = new Matrix4();
-    private Stack<Matrix4> matrixStack = new Stack<>();
+    private Stack<float[]> matrixStack = new Stack<>();
 
     private int[] textureHandles;
     private HashMap<Bitmap, Integer> textures = new HashMap<>();
@@ -55,8 +56,8 @@ public class GLRenderer implements GLSurfaceView.Renderer, DisplayAdapter
         // Redraw background color
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
         GLES20.glUseProgram(genericShader.shaderId);
-        // drawWorld.accept(this);
-        draw(genericShader, square, Assets.getStaticSprite(AssetName.static_acorn));
+        drawWorld.accept(this);
+        // draw(genericShader, square, Assets.getStaticSprite(AssetName.static_acorn));
     }
 
     public void onSurfaceChanged(GL10 unused, int width, int height)
@@ -81,35 +82,39 @@ public class GLRenderer implements GLSurfaceView.Renderer, DisplayAdapter
     @Override
     public void drawArr(WorldObject t)
     {
-
+        Vec2<Float> pos = t.getWorldArrPos();
+        drawSprite(t.sprite, pos.x, pos.y);
     }
 
     @Override
     public void drawArr(Sprite d, float ax, float ay)
     {
+        drawSprite(d, ax, ay);
+    }
+
+    @Override
+    public void drawSprite(Sprite sprite, float x, float y)
+    {
         push();
-        currentMatrix.(ax*16, ay*16);
+        currentMatrix.preTranslate(x, y, 0);
+        draw(genericShader, square, sprite);
         pop();
     }
 
     @Override
-    public void drawSprite(Sprite d, float x, float y)
+    public void drawSprite(Sprite sprite)
     {
-        push();
-        currentMatrix.preTranslate(x, y);
-
-        pop();
+        throw new NoSuchMethodError();
     }
 
     @Override
-    public void setMatrix(Matrix mat)
+    public void setTransform(Transform transform)
     {
-        currentMatrix.reset();
-        currentMatrix.preConcat(mat);
+        currentMatrix.setValues(transform);
     }
 
     @Override
-    public Matrix getMatrix()
+    public Transform getTransform()
     {
         return currentMatrix;
     }
@@ -123,7 +128,7 @@ public class GLRenderer implements GLSurfaceView.Renderer, DisplayAdapter
     @Override
     public void push()
     {
-        float[] values = new float[9];
+        float[] values = new float[16];
         currentMatrix.getValues(values);
         matrixStack.push(values);
     }
@@ -147,9 +152,9 @@ public class GLRenderer implements GLSurfaceView.Renderer, DisplayAdapter
     }
 
     @Override
-    public void preConcat(Matrix mat)
+    public void preConcat(Transform mat)
     {
-        currentMatrix.preConcat(mat);
+        currentMatrix.preMult(mat);
     }
 
     private void draw(Shader shader, Square square, Sprite sprite)
@@ -157,11 +162,15 @@ public class GLRenderer implements GLSurfaceView.Renderer, DisplayAdapter
         // Add program to OpenGL ES environment
         GLES20.glUseProgram(shader.shaderId);
 
-        // get handle to vertex shader's vPosition member
+
+        // matrix
+        int matrixHandle =
+            GLES20.glGetUniformLocation(shader.shaderId, "matrix");
+        GLES20.glUniformMatrix4fv(matrixHandle, 1, false, currentMatrix.getValues(), 0);
+
+        // vertex pos
         int positionHandle =
             GLES20.glGetAttribLocation(shader.shaderId, "vPosition");
-
-        // Enable a handle to the triangle vertices
         GLES20.glEnableVertexAttribArray(positionHandle);
 
         // Prepare the triangle coordinate data
@@ -215,7 +224,7 @@ public class GLRenderer implements GLSurfaceView.Renderer, DisplayAdapter
             AssetName name = AssetName.valueOf(f.getName());
             if (name.name().startsWith("sheet"))
             {
-                SpriteSheet sheet = Assets.getSpriteSheet(name);
+                SpriteSheet sheet = Asset.getSpriteSheet(name);
                 for (int row = 0; row < sheet.numRows(); row++)
                 {
                     for (int col = 0; col < sheet.rowLength(row); col++)
@@ -231,7 +240,7 @@ public class GLRenderer implements GLSurfaceView.Renderer, DisplayAdapter
             }
             else
             {
-                StaticSprite sprite = Assets.getStaticSprite(name);
+                StaticSprite sprite = Asset.getStaticSprite(name);
                 if (sprite == null)
                 {
                     Log.log(this, name.name());
@@ -277,7 +286,7 @@ public class GLRenderer implements GLSurfaceView.Renderer, DisplayAdapter
         {
             if (f.getName().startsWith("sheet"))
             {
-                count += Assets.getSpriteSheet(AssetName.valueOf(f.getName()))
+                count += Asset.getSpriteSheet(AssetName.valueOf(f.getName()))
                     .totalSprites();
             }
             else

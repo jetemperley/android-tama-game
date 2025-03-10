@@ -13,8 +13,8 @@ public class MatrixUtil
         float[] f2 = new float[9];
         mat.getValues(f2);
 
-        points[0] = (f[0] - f2[2]) / 16;
-        points[1] = (f[1] - f2[5]) / 16;
+        points[0] = (f[0] - f2[2]);
+        points[1] = (f[1] - f2[5]);
 
         temp.reset();
         mat.invert(temp);
@@ -44,8 +44,8 @@ public class MatrixUtil
         float[] f2 = new float[9];
         mat.getValues(f2);
         float[] f = {
-            (x - f2[2]) / 16,
-            (y - f2[5]) / 16};
+            (x - f2[2]),
+            (y - f2[5])};
 
         temp.reset();
         mat.invert(temp);

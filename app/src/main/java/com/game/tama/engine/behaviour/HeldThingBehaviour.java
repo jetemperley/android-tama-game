@@ -8,6 +8,7 @@ import com.game.android.gesture.Input;
 import com.game.android.gesture.Scale;
 import com.game.engine.Behaviour;
 import com.game.engine.Node;
+import com.game.engine.Transform;
 import com.game.tama.thing.Thing;
 import com.game.tama.util.Log;
 import com.game.tama.util.MatrixUtil;
@@ -19,7 +20,7 @@ public class HeldThingBehaviour extends Behaviour implements Input
     public Vec2<Float> heldPos = new Vec2<>(0f, 0f);
     public Vec2<Float> heldOffset = new Vec2<>(0f, 0f);
 
-    private Matrix heldMat = new Matrix();
+    private Transform heldMat = node.newTransform();
 
     public HeldThingBehaviour(Node parent)
     {
@@ -30,13 +31,10 @@ public class HeldThingBehaviour extends Behaviour implements Input
     public void draw(DisplayAdapter d)
     {
         d.push();
-        d.setMatrix(heldMat);
+        d.preConcat(heldMat);
         if (held != null)
         {
-            d.drawArr(
-                held.loc.sprite,
-                heldPos.x - heldOffset.x,
-                heldPos.y - heldOffset.y);
+            d.drawSprite(held.loc.sprite);
         }
         d.pop();
     }
@@ -63,24 +61,21 @@ public class HeldThingBehaviour extends Behaviour implements Input
     @Override
     public void drag(Vec2<Float> prev, Vec2<Float> next)
     {
-        Matrix targetMat = GameManager.INST.getContainingNode(
+        Transform targetMat = GameManager.INST.getContainingNode(
             next.x,
             next.y).worldTransform;
-        float scale = MatrixUtil.getScale(targetMat);
+        targetMat.postTranslate(next.x, next.y, 0);
+        float scale = targetMat.getScale().x;
         heldMat.setScale(scale, scale);
-        float[] f =
-            MatrixUtil.convertScreenToWorldArray(
-                heldMat, next.x, next.y);
-        heldPos.set(f[0], f[1]);
+        heldPos.set(next.x, next.y);
     }
 
     public void dragEnd(float x, float y)
     {
-        Matrix targetMat = GameManager.INST.getContainingNode(
+        Transform targetMat = GameManager.INST.getContainingNode(
             x, y).worldTransform;
-        float[] f =
-            MatrixUtil.convertScreenToWorldArray(
-                targetMat, x, y);
+        targetMat.invert();
+        float[] f = targetMat.mapPoint(x,y,0);
         dropHeld(f[0], f[1]);
     }
 
@@ -100,6 +95,11 @@ public class HeldThingBehaviour extends Behaviour implements Input
         dropHeld(heldPos.x, heldPos.y);
     }
 
+    /**
+     * Drop the thing on the root world at x, y, in world coords
+     * @param x
+     * @param y
+     */
     public void dropHeld(float x, float y)
     {
         Log.log(this, "dropping");

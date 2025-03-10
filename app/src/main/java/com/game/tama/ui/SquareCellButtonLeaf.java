@@ -1,7 +1,7 @@
 package com.game.tama.ui;
 
 import com.game.engine.DisplayAdapter;
-import com.game.android.Assets;
+import com.game.android.Asset;
 import com.game.tama.core.AssetName;
 import com.game.tama.core.Sprite;
 import com.game.tama.core.SpriteSheet;
@@ -60,7 +60,7 @@ public class SquareCellButtonLeaf extends SimpleButtonLeaf
                                 Sprite sprite,
                                 Runnable activate)
     {
-        super(xPos, yPos, width*16, height*16, sprite, activate);
+        super(xPos, yPos, width, height, sprite, activate);
         sizeInCells = new Vec2<>(width, height);
         init();
     }
@@ -68,7 +68,7 @@ public class SquareCellButtonLeaf extends SimpleButtonLeaf
     private void init()
     {
         SpriteSheet sheet =
-            Assets.getSpriteSheet(AssetName.sheet_16_button);
+            Asset.getSpriteSheet(AssetName.sheet_16_rect);
         TOP_LEFT = sheet.getSprite(0, 0);
         TOP_RIGHT = sheet.getSprite(0, 2);
         BOT_LEFT = sheet.getSprite(2, 0);
@@ -93,7 +93,7 @@ public class SquareCellButtonLeaf extends SimpleButtonLeaf
     @Override
     public void draw(DisplayAdapter display)
     {
-        display.drawRect(pos.x, pos.y, sizeInCells.x * 16, sizeInCells.y * 16);
+        display.drawRect(pos.x, pos.y, sizeInCells.x, sizeInCells.y);
         if (sizeInCells.x == 1 && sizeInCells.y == 1)
         {
             display.drawSprite(SQUARE, pos.x, pos.y);
@@ -117,11 +117,11 @@ public class SquareCellButtonLeaf extends SimpleButtonLeaf
     {
         display.drawSprite(TOP_CAP, pos.x, pos.y);
 
-        float y = pos.y + 16;
+        float y = pos.y + 1;
         for (int i = 1; i < sizeInCells.y - 1; i++)
         {
             display.drawSprite(VERT_PIPE, pos.x, y);
-            y += 16;
+            y++;
         }
         display.drawSprite(BOT_CAP, pos.x, y);
     }
@@ -130,11 +130,11 @@ public class SquareCellButtonLeaf extends SimpleButtonLeaf
     {
         display.drawSprite(LEFT_CAP, pos.x, pos.y);
 
-        float x = pos.x + 16;
+        float x = pos.x +1;
         for (int i = 1; i < sizeInCells.x - 1; i++)
         {
             display.drawSprite(HORZ_PIPE, x, pos.y);
-            x += 16;
+            x += 1;
         }
         display.drawSprite(RIGHT_CAP, x, pos.y);
     }
@@ -142,27 +142,27 @@ public class SquareCellButtonLeaf extends SimpleButtonLeaf
     private void drawRect(DisplayAdapter display)
     {
         display.drawSprite(TOP_LEFT, pos.x, pos.y);
-        display.drawSprite(TOP_RIGHT, pos.x + (sizeInCells.x - 1) * 16, pos.y);
-        display.drawSprite(BOT_LEFT, pos.x, pos.y + (sizeInCells.y - 1) * 16);
+        display.drawSprite(TOP_RIGHT, pos.x + (sizeInCells.x - 1), pos.y);
+        display.drawSprite(BOT_LEFT, pos.x, pos.y + (sizeInCells.y - 1));
         display.drawSprite(
             BOT_RIGHT,
-            pos.x + (sizeInCells.x - 1) * 16,
-            pos.y + (sizeInCells.y - 1) * 16);
+            pos.x + (sizeInCells.x - 1),
+            pos.y + (sizeInCells.y - 1));
 
-        float x = pos.x + 16;
+        float x = pos.x + 1;
         for (int i = 1; i < sizeInCells.x - 1; i++)
         {
             display.drawSprite(TOP, x, pos.y);
-            display.drawSprite(BOT, x, pos.y + (sizeInCells.y - 1) * 16);
-            x += 16;
+            display.drawSprite(BOT, x, pos.y + (sizeInCells.y - 1));
+            x += 1;
         }
 
-        float y = pos.y + 16;
+        float y = pos.y + 1;
         for (int i = 1; i < sizeInCells.y - 1; i++)
         {
             display.drawSprite(LEFT, pos.x, y);
-            display.drawSprite(RIGHT, pos.x + (sizeInCells.x - 1) * 16, y);
-            y += 16;
+            display.drawSprite(RIGHT, pos.x + (sizeInCells.x - 1), y);
+            y += 1;
         }
     }
 }

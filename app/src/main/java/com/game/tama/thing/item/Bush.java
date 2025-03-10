@@ -3,7 +3,7 @@ package com.game.tama.thing.item;
 import com.game.tama.core.AssetName;
 import com.game.tama.core.Animator;
 import com.game.tama.core.World;
-import com.game.android.Assets;
+import com.game.android.Asset;
 import com.game.tama.core.Sprite;
 import com.game.tama.thing.Thing;
 
@@ -23,11 +23,11 @@ public class Bush extends Thing
     {
         if (anim == null)
         {
-            anim = new Animator(Assets.getSpriteSheet(asset));
+            anim = new Animator(Asset.getSpriteSheet(asset));
         }
         else
         {
-            anim.sheet = Assets.getSpriteSheet(asset);
+            anim.sheet = Asset.getSpriteSheet(asset);
         }
         anim.animId = 1;
         anim.animDur = 500;
