@@ -1,20 +1,15 @@
 package com.game.tama.core;
 
-import android.graphics.Matrix;
-
 import com.game.engine.DisplayAdapter;
-import com.game.android.gesture.Down;
-import com.game.android.gesture.DragEnd;
-import com.game.android.gesture.DragStart;
-import com.game.android.gesture.LongPress;
-import com.game.engine.Transform;
+import com.game.engine.gesture.gestureEvent.Down;
+import com.game.engine.gesture.gestureEvent.DragEnd;
+import com.game.engine.gesture.gestureEvent.DragStart;
+import com.game.engine.gesture.gestureEvent.LongPress;
 import com.game.tama.engine.behaviour.GameManager;
 import com.game.tama.thing.Thing;
 import com.game.tama.util.Bounds;
-import com.game.tama.util.MatrixUtil;
 import com.game.tama.util.Vec2;
-import com.game.android.gesture.GestureEvent;
-import com.game.tama.util.Log;
+import com.game.engine.gesture.gestureEvent.GestureEvent;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -93,38 +88,25 @@ public class Container extends Thing implements Serializable
     /**
      * @param x Screen space x
      * @param y Screen space y
-     * @param transform the transform of the parent world
      * @return
      */
-    public boolean isTouchInside(float x, float y, Transform transform)
+    public boolean isTouchInside(float x, float y)
     {
-        Vec2<Float> locv = loc.getWorldBitPos();
-
-        // the position of this containers display element in the world
-        float[] position = transform.mapPoint(locv.x, locv.y + 1, 0);
-        // the size of this container is the size of its internal world
-        float[] size = transform.mapPoint(world.celln, world.celln, 0);
-
         return Bounds.isInside(x, y,
-            position[0],
-            position[1],
-            size[0],
-            size[1]);
+            loc.x, loc.y, world.width(), world.height());
     }
 
     /**
      * Call when the contains inventory has been pressed
-     * @param e
-     * @param mat
+     * @param e event with transformed coords
      * @return
      */
-    public boolean handleEvent(GestureEvent e, Transform mat)
+    public boolean handleEvent(GestureEvent e)
     {
-        if (!isTouchInside(e.x, e.y, mat))
+        if (!isTouchInside(e.x, e.y))
         {
             return false;
         }
-        Log.log(this, "Touch was inside.");
         Class clazz = e.getClass();
         if (clazz == DragEnd.class)
         {

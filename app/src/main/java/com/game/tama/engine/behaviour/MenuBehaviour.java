@@ -1,7 +1,7 @@
 package com.game.tama.engine.behaviour;
 
 import com.game.engine.DisplayAdapter;
-import com.game.android.gesture.GestureEvent;
+import com.game.engine.gesture.gestureEvent.GestureEvent;
 import com.game.engine.Behaviour;
 import com.game.engine.Node;
 import com.game.tama.ui.UINode;
@@ -35,6 +35,7 @@ public class MenuBehaviour extends Behaviour
 
     public boolean isInside(float x, float y)
     {
+
         if (!isEnabled())
         {
             return false;

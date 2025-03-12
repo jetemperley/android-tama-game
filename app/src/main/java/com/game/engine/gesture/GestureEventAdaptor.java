@@ -1,5 +1,19 @@
-package com.game.android.gesture;
+package com.game.engine.gesture;
 
+import com.game.engine.gesture.gestureEvent.DoubleTap;
+import com.game.engine.gesture.gestureEvent.DoubleTapDrag;
+import com.game.engine.gesture.gestureEvent.DoubleTapDragEnd;
+import com.game.engine.gesture.gestureEvent.DoubleTapDragStart;
+import com.game.engine.gesture.gestureEvent.DoubleTapRelease;
+import com.game.engine.gesture.gestureEvent.Down;
+import com.game.engine.gesture.gestureEvent.Drag;
+import com.game.engine.gesture.gestureEvent.DragEnd;
+import com.game.engine.gesture.gestureEvent.DragStart;
+import com.game.engine.gesture.gestureEvent.GestureEvent;
+import com.game.engine.gesture.gestureEvent.LongPress;
+import com.game.engine.gesture.gestureEvent.Scale;
+import com.game.engine.gesture.gestureEvent.SingleTap;
+import com.game.engine.Transform;
 import com.game.tama.util.Vec2;
 
 public class GestureEventAdaptor extends GestureEventSource implements Input
@@ -17,6 +31,19 @@ public class GestureEventAdaptor extends GestureEventSource implements Input
     private final DragStart dragStart = new DragStart();
     private final Drag drag = new Drag();
     private final DragEnd dragEnd = new DragEnd();
+
+    private Transform transform;
+
+    /**
+     * Converts generic android motion events to game contextual gesture events.
+     * @param gestureTransformer This argument transforms all the points passed
+     *                           through this class. Its purpose is to abstract
+     *                           the hardware from the game.
+     */
+    public GestureEventAdaptor(Transform gestureTransformer)
+    {
+        this.transform = gestureTransformer;
+    }
 
     @Override
     public void singleTapConfirmed(float x, float y)
@@ -119,6 +146,6 @@ public class GestureEventAdaptor extends GestureEventSource implements Input
 
     public boolean handleEvent(GestureEvent event)
     {
-        return target.handleEvent(event);
+        return target.handleEvent(event.transform(transform));
     }
 }

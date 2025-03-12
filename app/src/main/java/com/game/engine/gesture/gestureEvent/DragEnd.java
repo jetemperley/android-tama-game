@@ -1,4 +1,6 @@
-package com.game.android.gesture;
+package com.game.engine.gesture.gestureEvent;
+
+import com.game.engine.gesture.Input;
 
 public class DragEnd extends GestureEvent
 {

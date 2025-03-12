@@ -1,5 +1,6 @@
-package com.game.android.gesture;
+package com.game.engine.gesture.gestureEvent;
 
+import com.game.engine.gesture.Input;
 import com.game.engine.Transform;
 
 public class DoubleTapDragStart extends GestureEvent
@@ -24,13 +25,16 @@ public class DoubleTapDragStart extends GestureEvent
     }
 
     @Override
-    public void transform(Transform transform) {
-        super.transform(transform);
+    public GestureEvent transform(Transform transform)
+    {
+        DoubleTapDragStart copy =
+            (DoubleTapDragStart) super.transform(transform);
         float[] start = transform.mapVector(startX, startY, 0);
-        startX = start[0];
-        startY = start[1];
+        copy.startX = start[0];
+        copy.startY = start[1];
         float[] curr = transform.mapVector(currentX, currentY, 0);
-        currentX = curr[0];
-        currentY = curr[1];
+        copy.currentX = curr[0];
+        copy.currentY = curr[1];
+        return copy;
     }
 }

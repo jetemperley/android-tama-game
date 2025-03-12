@@ -98,9 +98,9 @@ public class Pet extends Thing
     {
         if (time == GameManager.time)
         {
-            Log.error(
-                this,
-                "Pet doubled up on an update. Does this matter?");
+            // Log.error(
+            //     this,
+            //     "Pet doubled up on an update. Does this matter?");
         }
         currentCommand.update.accept(this, world);
         anim.update(this);

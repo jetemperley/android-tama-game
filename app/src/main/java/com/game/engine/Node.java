@@ -176,4 +176,12 @@ public class Node
             throw new RuntimeException("Could not instantiate transform.");
         }
     }
+
+    public Node getRoot()
+    {
+        if (parent == null) {
+            return this;
+        }
+        return parent.getRoot();
+    }
 }

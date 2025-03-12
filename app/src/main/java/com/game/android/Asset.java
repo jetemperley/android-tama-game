@@ -36,7 +36,6 @@ public class Asset
         Field[] fields = R.raw.class.getFields();
         for (Field f : fields)
         {
-            String name = f.getName();
             try
             {
                 int id = f.getInt(f);
@@ -79,7 +78,8 @@ public class Asset
     private static String read(InputStream stream) throws IOException
     {
         StringBuilder sb = new StringBuilder();
-        for (int ch; (ch = stream.read()) != -1; ) {
+        for (int ch; (ch = stream.read()) != -1; )
+        {
             sb.append((char) ch);
         }
         return sb.toString();
@@ -151,32 +151,6 @@ public class Asset
         return sheet;
     }
 
-    public static Sprite getStatPic(String stat)
-    {
-
-        switch (stat)
-        {
-            case "hunger":
-                return sprites.get(R.drawable.static_fork);
-
-            case "thirst":
-                return sprites.get(R.drawable.static_waterdrop);
-
-            case "happy":
-                return sprites.get(R.drawable.static_happiness);
-
-            case "sleep":
-                return sprites.get(R.drawable.static_zzz);
-
-            case "poop":
-                return sprites.get(R.drawable.static_poop);
-
-            case "energy":
-                return sprites.get(R.drawable.static_energy);
-        }
-        return null;
-    }
-
     public static StaticSprite getStaticSprite(AssetName name)
     {
         if (name == null)
@@ -192,8 +166,7 @@ public class Asset
         catch (Exception e)
         {
             throw new RuntimeException(
-                "Sprite asset did not exist: " + name,
-                e);
+                "Sprite asset did not exist: " + name, e);
         }
     }
 

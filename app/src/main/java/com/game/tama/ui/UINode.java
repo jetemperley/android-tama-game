@@ -1,9 +1,7 @@
 package com.game.tama.ui;
 
-import android.graphics.Matrix;
-
 import com.game.engine.DisplayAdapter;
-import com.game.android.gesture.GestureEvent;
+import com.game.engine.gesture.gestureEvent.GestureEvent;
 
 import java.util.LinkedHashMap;
 import java.util.Map;

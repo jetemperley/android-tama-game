@@ -1,17 +1,14 @@
 package com.game.tama.engine.behaviour;
 
-import android.graphics.Matrix;
-
 import com.game.engine.DisplayAdapter;
-import com.game.android.gesture.GestureEvent;
-import com.game.android.gesture.Input;
-import com.game.android.gesture.Scale;
+import com.game.engine.gesture.gestureEvent.GestureEvent;
+import com.game.engine.gesture.Input;
+import com.game.engine.gesture.gestureEvent.Scale;
 import com.game.engine.Behaviour;
 import com.game.engine.Node;
 import com.game.engine.Transform;
 import com.game.tama.thing.Thing;
 import com.game.tama.util.Log;
-import com.game.tama.util.MatrixUtil;
 import com.game.tama.util.Vec2;
 
 public class HeldThingBehaviour extends Behaviour implements Input

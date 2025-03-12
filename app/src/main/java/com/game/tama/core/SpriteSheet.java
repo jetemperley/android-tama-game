@@ -5,24 +5,21 @@ import android.graphics.Bitmap;
 public class SpriteSheet
 {
 
-    // sheet is in [Y][X] coordinates
+    // sheet is in [y][x] coordinates
     StaticSprite[][] sheet;
 
     public SpriteSheet(StaticSprite[][] arr)
     {
         sheet = arr;
-
     }
 
     public Bitmap get(int row, int col)
     {
-
         return sheet[row][col].getSprite();
     }
 
     public StaticSprite getSprite(int row, int col)
     {
-
         return sheet[row][col];
     }
 

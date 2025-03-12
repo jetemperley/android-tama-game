@@ -2,10 +2,9 @@ package com.game.tama.engine.behaviour;
 
 import android.graphics.Matrix;
 
-import com.game.android.DepthDisplay;
 import com.game.engine.DisplayAdapter;
-import com.game.android.gesture.GestureEvent;
-import com.game.android.gesture.Input;
+import com.game.engine.gesture.gestureEvent.GestureEvent;
+import com.game.engine.gesture.Input;
 import com.game.engine.Behaviour;
 import com.game.engine.Node;
 import com.game.engine.Transform;
@@ -31,14 +30,13 @@ public class PetGardenBehaviour extends Behaviour implements Input
     boolean showBackpack = true;
 
     private Thing selected = null;
-    private DepthDisplay depthDisplay = new DepthDisplay();
 
     private ThingControlsBehaviour controlsBehaviour;
 
     public PetGardenBehaviour(Node parent)
     {
         super(parent);
-        PetGardenBehaviourConfigurer.testConfiguration(this);
+        BehaviourBuilder.testConfiguration(this);
         controlsBehaviour = new ThingControlsBehaviour(parent);
     }
 
@@ -279,11 +277,12 @@ public class PetGardenBehaviour extends Behaviour implements Input
 
         float scale = nsize / psize;
 
-        // apply changes
-        node.localTransform.postTranslate(-nmid.x, -nmid.y, 0);
-        node.localTransform.postScale(scale, scale, 1);
-        node.localTransform.postTranslate(nmid.x, nmid.y, 0);
-        node.localTransform.postTranslate(nmid.x - pmid.x, nmid.y - pmid.y, 0);
+        // TODO fix this
+        Transform target = node.localTransform;
+        target.preTranslate(-nmid.x, -nmid.y, 0);
+        target.preScale(scale, scale, 1);
+        target.preTranslate(nmid.x, nmid.y, 0);
+        target.preTranslate(nmid.x - pmid.x, nmid.y - pmid.y, 0);
     }
 
     @Override
@@ -299,18 +298,18 @@ public class PetGardenBehaviour extends Behaviour implements Input
     @Override
     public void drag(Vec2<Float> prev, Vec2<Float> next)
     {
-        node.localTransform.postTranslate(next.x - prev.x, next.y - prev.y, 0);
+        node.localTransform.preTranslate(next.x - prev.x, next.y - prev.y, 0);
     }
 
     @Override
     public boolean handleEvent(GestureEvent e)
     {
-        e.transform(getWorldTransform(tempMat).invert());
-        if (containerManager.handleEvent(e, getWorldTransform(tempMat)))
+        GestureEvent localEvent = e.transform(getWorldTransform(tempMat).invert());
+        if (containerManager.handleEvent(localEvent))
         {
             return true;
         }
-        e.callEvent(this);
+        localEvent.callEvent(this);
         return true;
     }
 

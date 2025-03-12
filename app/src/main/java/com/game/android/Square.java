@@ -17,22 +17,22 @@ public class Square
     // number of coordinates per vertex in this array
     static final int COORDS_PER_VERTEX = 3;
     static float triangleCoords[] = {   // in counterclockwise order:
-        -0.5f,
-        -0.5f,
-        0.0f,
         // bot left
-        0.5f,
-        -0.5f,
-        0.0f,
+        -0f,
+        -0f,
+        0f,
         // bot right
-        -0.5f,
-        0.5f,
-        0.0f,
+        1f,
+        -0f,
+        0f,
         // top left
-        0.5f,
-        0.5f,
-        0.0f,
+        -0f,
+        1f,
+        0f,
         // top right
+        1f,
+        1f,
+        0f,
     };
 
     public final int[] textureHandle = new int[1];

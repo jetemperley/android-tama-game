@@ -1,5 +1,6 @@
-package com.game.android.gesture;
+package com.game.engine.gesture.gestureEvent;
 
+import com.game.engine.gesture.Input;
 import com.game.engine.Transform;
 import com.game.tama.util.Vec2;
 
@@ -36,12 +37,13 @@ public class Scale extends GestureEvent
     }
 
     @Override
-    public void transform(Transform transform) {
-        super.transform(transform);
-        transform(transform, prev1);
-        transform(transform, prev2);
-        transform(transform, next1);
-        transform(transform, next2);
+    public GestureEvent transform(Transform transform) {
+        Scale copy = (Scale) super.transform(transform);
+        transform(transform, copy.prev1);
+        transform(transform, copy.prev2);
+        transform(transform, copy.next1);
+        transform(transform, copy.next2);
+        return copy;
     }
 
     private static void transform(Transform transform, Vec2<Float> vec) {

@@ -12,6 +12,7 @@ public enum AssetName
     sheet_16_walker,
     sheet_16_rect,
     sheet_16_cell_pet,
+    sheet_16_rect_index,
 
     sheet_5_num,
     sheet_8_water,

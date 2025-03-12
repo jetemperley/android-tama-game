@@ -15,10 +15,11 @@ import android.os.Bundle;
 import android.view.Display;
 import android.view.MotionEvent;
 
-import com.game.android.gesture.Gesture;
-import com.game.android.gesture.GestureEventAdaptor;
+import com.game.engine.gesture.Gesture;
+import com.game.engine.gesture.GestureEventAdaptor;
 import com.game.engine.Node;
 import com.game.engine.GameLoop;
+import com.game.engine.Transform;
 import com.game.tama.engine.behaviour.GameManager;
 import com.game.tama.util.Log;
 
@@ -129,12 +130,17 @@ public class GameActivity extends Activity
         rootNode = new Node(Matrix4.class);
         float xscale = 1;
         float yscale = screenSize.width()/(float)screenSize.height();
-        rootNode.localTransform.preTranslate(-1, 1, 0);
-        rootNode.localTransform.preScale(1, -yscale, 1);
-        rootNode.localTransform.preScale(0.05f, 0.05f, 1);
+        rootNode.localTransform.preTranslate(-1f, 1f, 0);
+        rootNode.localTransform.preScale(xscale, -yscale, 1);
+        // rootNode.localTransform.preScale(0.05f, 0.05f, 1);
         gesture = new Gesture();
-        GestureEventAdaptor gestureEventAdaptor = new GestureEventAdaptor();
+
+        Transform gestureTransform = new Matrix4();
+        gestureTransform.preTranslate(-1, 1, 0);
+        gestureTransform.preScale(2f/screenSize.width(), -2f/screenSize.height(), 1);
+        GestureEventAdaptor gestureEventAdaptor = new GestureEventAdaptor(gestureTransform);
         gesture.gestureTarget = gestureEventAdaptor;
+
         gameManager = new GameManager(rootNode, gestureEventAdaptor);
     }
 

@@ -1,5 +1,6 @@
-package com.game.android.gesture;
+package com.game.engine.gesture.gestureEvent;
 
+import com.game.engine.gesture.Input;
 import com.game.engine.Transform;
 import com.game.tama.util.Vec2;
 
@@ -21,13 +22,14 @@ public class Drag extends GestureEvent
     }
 
     @Override
-    public void transform(Transform transform) {
-        super.transform(transform);
+    public GestureEvent transform(Transform transform) {
+        Drag copy = (Drag) super.transform(transform);
         float[] pt = transform.mapVector(prev.x, prev.y, 0);
-        prev.x = pt[0];
-        prev.y = pt[1];
+        copy.prev.x = pt[0];
+        copy.prev.y = pt[1];
         float[] nt = transform.mapVector(next.x, next.y, 0);
-        next.x = nt[0];
-        next.y = nt[1];
+        copy.next.x = nt[0];
+        copy.next.y = nt[1];
+        return copy;
     }
 }

@@ -1,9 +1,7 @@
 package com.game.tama.ui;
 
 
-import android.graphics.Matrix;
-
-import com.game.android.gesture.GestureEvent;
+import com.game.engine.gesture.gestureEvent.GestureEvent;
 import com.game.engine.Drawable;
 import com.game.engine.Updateable;
 

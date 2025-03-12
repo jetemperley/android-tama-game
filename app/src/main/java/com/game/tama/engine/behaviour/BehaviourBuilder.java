@@ -1,8 +1,11 @@
 package com.game.tama.engine.behaviour;
 
+import android.graphics.Matrix;
+
 import com.game.engine.Node;
 import com.game.android.Asset;
 import com.game.tama.core.AssetName;
+import com.game.tama.core.WorldFactory;
 import com.game.tama.ui.SquareCellButtonLeaf;
 import com.game.tama.ui.DialogueTextBoxLeaf;
 import com.game.tama.ui.TextLeaf;
@@ -29,7 +32,7 @@ public class BehaviourBuilder
             3,
             "Ayee this is some text that is gonna be in a text box and " +
                 "hopefullly its just gonna work the first time.!!"));
-        parent.localTransform.setScale(6, 6);
+        // parent.localTransform.setScale(6, 6);
         pauseMenuBehaviour.root = pauseMenu;
         return pauseMenuBehaviour;
     }
@@ -43,8 +46,21 @@ public class BehaviourBuilder
             0,
             Asset.getStaticSprite(AssetName.static_menu),
             () -> GameManager.INST.pause()));
-        parent.localTransform.setScale(6, 6);
+        parent.localTransform.setScale(1f/6, 1f/6);
         hud.root = hudRoot;
         return hud;
+    }
+
+    public static void testConfiguration(PetGardenBehaviour behaviour) {
+        behaviour.node.localTransform.setScale(1f/6, 1f/6);
+        // thingMenu = new MenuBehaviour(parent);
+        behaviour.world = WorldFactory.makeTestWorld();
+
+        Matrix uiMat = new Matrix();
+        uiMat.setScale(6, 6);
+
+        // Matrix backpackMat = new Matrix();
+        // backpackMat.set(uiMat);
+        // backpackMat.preTranslate(1, 0);
     }
 }

@@ -152,7 +152,12 @@ public class Matrix4 implements Transform
      */
     public Transform preScale(float x, float y, float z)
     {
-        Matrix.scaleM(values, 0, x, y, z);
+        // Matrix.scaleM(values, 0, x, y, z);
+        float[] scale = new float[16];
+        Matrix.setIdentityM(scale, 0);
+        Matrix.scaleM(scale, 0, x, y, z);
+        Matrix.multiplyMM(tempValues, 0, values, 0, scale, 0);
+        swapTempValues();
         return this;
     }
 

@@ -1,7 +1,7 @@
 package com.game.tama.ui;
 
 import com.game.engine.DisplayAdapter;
-import com.game.android.gesture.GestureEvent;
+import com.game.engine.gesture.gestureEvent.GestureEvent;
 import com.game.android.Asset;
 import com.game.tama.core.AssetName;
 import com.game.tama.core.Sprite;

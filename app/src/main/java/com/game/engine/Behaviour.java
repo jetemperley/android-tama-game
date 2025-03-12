@@ -1,9 +1,7 @@
 package com.game.engine;
 
-import android.graphics.Matrix;
-
-import com.game.android.gesture.GestureEvent;
-import com.game.android.gesture.GestureEventHandler;
+import com.game.engine.gesture.gestureEvent.GestureEvent;
+import com.game.engine.gesture.GestureEventHandler;
 
 public abstract class Behaviour implements Updateable, Drawable, GestureEventHandler
 {

@@ -14,6 +14,8 @@ public class DynTile extends Tile
     private SpriteSheet sheet;
     private StaticSprite current;
 
+    private final TileType type = TileType.water;
+
     public DynTile()
     {
         super();
@@ -24,14 +26,15 @@ public class DynTile extends Tile
     {
         if (sheet == null)
         {
-            sheet = Asset.getSpriteSheet(AssetName.sheet_16_rect);
+            sheet = Asset.getSpriteSheet(AssetName.sheet_16_rect_index);
         }
         return null;
     }
 
+    @Override
     public TileType type()
     {
-        return TileType.water;
+        return type;
     }
 
     public void draw(DisplayAdapter d)
@@ -46,9 +49,38 @@ public class DynTile extends Tile
         }
     }
 
-    @Override public void updateDetails(World m)
+    @Override public void updateDetails(World world)
     {
-    }
+        Tile topTile = world.getTile(loc.x, loc.y-1);
+        Tile bottomTile = world.getTile(loc.x, loc.y+1);
+        Tile leftTile = world.getTile(loc.x-1, loc.y);
+        Tile rightTile = world.getTile(loc.x+1, loc.y);
 
+        boolean top = topTile != null && topTile.type() == type;
+        boolean bottom = bottomTile != null && bottomTile.type() == type;
+        boolean left = leftTile != null && leftTile.type() == type;
+        boolean right = rightTile != null && rightTile.type() == type;
+
+        // index will be (top, bottom, left, right)
+        byte index = 0;
+
+        if (right)
+        {
+            index += 1;
+        }
+        if (left)
+        {
+            index += 1 << 1;
+        }
+        if (bottom)
+        {
+            index += 1 << 2;
+        }
+        if (top)
+        {
+            index += 1 << 3;
+        }
+        current = sheet.getSprite(0, index);
+    }
 
 }

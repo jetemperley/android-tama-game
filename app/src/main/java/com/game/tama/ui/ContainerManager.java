@@ -1,8 +1,7 @@
 package com.game.tama.ui;
 
 import com.game.engine.DisplayAdapter;
-import com.game.android.gesture.GestureEvent;
-import com.game.engine.Transform;
+import com.game.engine.gesture.gestureEvent.GestureEvent;
 import com.game.tama.core.Container;
 
 import java.util.ArrayList;
@@ -40,11 +39,11 @@ public class ContainerManager
 
     }
 
-    public boolean handleEvent(GestureEvent e, Transform mat)
+    public boolean handleEvent(GestureEvent e)
     {
         for (int i = containers.size() - 1; i >= 0; i--)
         {
-            if (containers.get(i).handleEvent(e, mat))
+            if (containers.get(i).handleEvent(e))
             {
                 return true;
             }
