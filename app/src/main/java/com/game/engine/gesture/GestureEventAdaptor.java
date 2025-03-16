@@ -133,7 +133,7 @@ public class GestureEventAdaptor extends GestureEventSource implements Input
     public void drag(Vec2<Float> prev, Vec2<Float> next)
     {
         drag.setTouch(prev.x, prev.y);
-        drag.setPrevNext(prev, next);
+        drag.set(prev, next);
         handleEvent(drag);
     }
 
@@ -146,6 +146,7 @@ public class GestureEventAdaptor extends GestureEventSource implements Input
 
     public boolean handleEvent(GestureEvent event)
     {
-        return target.handleEvent(event.transform(transform));
+        GestureEvent tevent = event.transform(transform);
+        return target.handleEvent(tevent);
     }
 }

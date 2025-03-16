@@ -7,14 +7,14 @@ public interface Transform
     /**
      * this = this * args
      * @param args
-     * @return this
+     * @return itself
      */
     public Transform preMult(Transform... args);
 
     /**
      * this = args * this
      * @param args
-     * @return this
+     * @return itself
      */
     public Transform postMult(Transform... args);
 
@@ -24,7 +24,7 @@ public interface Transform
      * @param x
      * @param y
      * @param z
-     * @return this
+     * @return itself
      */
     public Transform preTranslate(float x, float y, float z);
 
@@ -33,7 +33,7 @@ public interface Transform
      * @param x
      * @param y
      * @param z
-     * @return this
+     * @return itself
      */
     public Transform postTranslate(float x, float y, float z);
 
@@ -42,7 +42,7 @@ public interface Transform
      * @param x
      * @param y
      * @param z
-     * @return this
+     * @return itself
      */
     public Transform preScale(float x, float y, float z);
 
@@ -51,21 +51,21 @@ public interface Transform
      * @param x
      * @param y
      * @param z
-     * @return this
+     * @return itself
      */
     public Transform postScale(float x, float y, float z);
 
     /**
      * Sets this matrix's values to the same as the passed matrix
      * @param from
-     * @return this
+     * @return itself
      */
     public Transform setValues(Transform from);
 
     /**
      * Sets this matrix's values to the same as the passed values
      * @param from
-     * @return this
+     * @return itself
      */
     public Transform setValues(float[] from);
 
@@ -83,7 +83,7 @@ public interface Transform
 
     /**
      * Set this transform to the identity transform
-     * @return this
+     * @return itself
      */
     public Transform reset();
 

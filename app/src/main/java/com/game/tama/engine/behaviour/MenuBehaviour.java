@@ -1,6 +1,7 @@
 package com.game.tama.engine.behaviour;
 
 import com.game.engine.DisplayAdapter;
+import com.game.engine.Transform;
 import com.game.engine.gesture.gestureEvent.GestureEvent;
 import com.game.engine.Behaviour;
 import com.game.engine.Node;
@@ -30,7 +31,10 @@ public class MenuBehaviour extends Behaviour
     @Override
     public boolean handle(GestureEvent e)
     {
-        return root.handleEvent(e);
+        GestureEvent localEvent =
+            e.transform(getWorldTransform(node.localTransform.copy()
+                .reset()).invert());
+        return root.handleEvent(localEvent);
     }
 
     public boolean isInside(float x, float y)

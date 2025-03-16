@@ -122,7 +122,11 @@ public class Matrix4 implements Transform
      */
     public Transform preTranslate(float x, float y, float z)
     {
-        Matrix.translateM(values, 0, x, y, z);
+        float[] translate = new float[16];
+        Matrix.setIdentityM(translate, 0);
+        Matrix.translateM(translate, 0, x, y, z);
+        Matrix.multiplyMM(tempValues, 0, values, 0, translate, 0);
+        swapTempValues();
         return this;
     }
 

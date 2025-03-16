@@ -106,7 +106,7 @@ public class PetGardenBehaviour extends Behaviour implements Input
 
         Matrix inv = new Matrix();
         tempMat.reset();
-        //getTempWorldTransform().invert();
+        // getTempWorldTransform().invert();
         inv.mapPoints(f);
         Log.log(
             this,
@@ -277,12 +277,18 @@ public class PetGardenBehaviour extends Behaviour implements Input
 
         float scale = nsize / psize;
 
-        // TODO fix this
         Transform target = node.localTransform;
-        target.preTranslate(-nmid.x, -nmid.y, 0);
-        target.preScale(scale, scale, 1);
-        target.preTranslate(nmid.x, nmid.y, 0);
-        target.preTranslate(nmid.x - pmid.x, nmid.y - pmid.y, 0);
+
+        float[] nmidt = target.mapVector(nmid.x, nmid.y, 0);
+        float[] pmidt = target.mapVector(pmid.x, pmid.y, 0);
+
+        Transform transform = target.copy().reset();
+        transform.postTranslate(-nmidt[0], -nmidt[1], 0);
+        transform.postScale(scale, scale, 1);
+        transform.postTranslate(nmidt[0], nmidt[1], 0);
+        transform.postTranslate(nmidt[0] - pmidt[0], nmidt[1] - pmidt[1], 0);
+
+        node.localTransform.postMult(transform);
     }
 
     @Override
@@ -304,7 +310,8 @@ public class PetGardenBehaviour extends Behaviour implements Input
     @Override
     public boolean handleEvent(GestureEvent e)
     {
-        GestureEvent localEvent = e.transform(getWorldTransform(tempMat).invert());
+        GestureEvent localEvent =
+            e.transform(getWorldTransform(tempMat).invert());
         if (containerManager.handleEvent(localEvent))
         {
             return true;

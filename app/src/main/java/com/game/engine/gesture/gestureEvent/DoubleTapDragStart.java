@@ -2,26 +2,30 @@ package com.game.engine.gesture.gestureEvent;
 
 import com.game.engine.gesture.Input;
 import com.game.engine.Transform;
+import com.game.tama.util.Vec2;
 
 public class DoubleTapDragStart extends GestureEvent
 {
-    public float startX;
-    public float startY;
-    public float currentX;
-    public float currentY;
+
+    Vec2<Float> start = new Vec2<>(0f, 0f);
+    Vec2<Float> current = new Vec2<>(0f, 0f);
 
     @Override
     public void callEvent(Input handler)
     {
-        handler.doubleTapDragStart(x, y, currentX, currentY);
+        handler.doubleTapDragStart(start.x, start.y, current.x, current.y);
+    }
+
+    public void set(Vec2<Float> start, Vec2<Float> current)
+    {
+        this.start.set(start);
+        this.current.set(current);
     }
 
     public void set(float startX, float startY, float currentX, float currentY)
     {
-        this.startX = startX;
-        this.startY = startY;
-        this.currentX = currentX;
-        this.currentY = currentY;
+        this.start.set(startX, startY);
+        this.current.set(currentX, currentY);
     }
 
     @Override
@@ -29,12 +33,10 @@ public class DoubleTapDragStart extends GestureEvent
     {
         DoubleTapDragStart copy =
             (DoubleTapDragStart) super.transform(transform);
-        float[] start = transform.mapVector(startX, startY, 0);
-        copy.startX = start[0];
-        copy.startY = start[1];
-        float[] curr = transform.mapVector(currentX, currentY, 0);
-        copy.currentX = curr[0];
-        copy.currentY = curr[1];
+        float[] start = transform.mapVector(this.start.x, this.start.y, 0);
+        copy.start.set(start[0], start[1]);
+        float[] curr = transform.mapVector(current.x, current.y, 0);
+        copy.current.set(curr[0], curr[1]);
         return copy;
     }
 }

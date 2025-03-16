@@ -6,17 +6,17 @@ import com.game.tama.util.Vec2;
 
 public class Scale extends GestureEvent
 {
-    Vec2<Float> prev1;
-    Vec2<Float> prev2;
-    Vec2<Float> next1;
-    Vec2<Float> next2;
+    final public Vec2<Float> prev1;
+    final public Vec2<Float> prev2;
+    final public Vec2<Float> next1;
+    final public Vec2<Float> next2;
 
     public Scale()
     {
-        prev1 = new Vec2<Float>(0f, 0f);
-        prev2 = new Vec2<Float>(0f, 0f);
-        next1 = new Vec2<Float>(0f, 0f);
-        next2 = new Vec2<Float>(0f, 0f);
+        prev1 = new Vec2<>(0f, 0f);
+        prev2 = new Vec2<>(0f, 0f);
+        next1 = new Vec2<>(0f, 0f);
+        next2 = new Vec2<>(0f, 0f);
     }
 
     @Override
@@ -30,10 +30,10 @@ public class Scale extends GestureEvent
                     Vec2<Float> next1,
                     Vec2<Float> next2)
     {
-        this.prev1 = prev1;
-        this.prev2 = prev2;
-        this.next1 = next1;
-        this.next2 = next2;
+        this.prev1.set(prev1);
+        this.prev2.set(prev2);
+        this.next1.set(next1);
+        this.next2.set(next2);
     }
 
     @Override
@@ -50,5 +50,13 @@ public class Scale extends GestureEvent
         float[] temp = transform.mapVector(vec.x, vec.y, 0);
         vec.x = temp[0];
         vec.y = temp[1];
+    }
+
+    @Override
+    public GestureEvent copy()
+    {
+        Scale copy = (Scale) super.copy();
+        copy.set(prev1, prev2, next1, next2);
+        return copy;
     }
 }
