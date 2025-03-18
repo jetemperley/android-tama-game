@@ -4,6 +4,7 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 
@@ -15,6 +16,7 @@ import com.game.tama.core.SpriteSheet;
 import com.game.tama.core.StaticSprite;
 import com.game.tama.core.WorldObject;
 import com.game.tama.util.Log;
+import com.game.tama.util.Vec;
 import com.game.tama.util.Vec2;
 
 import java.lang.reflect.Field;
@@ -28,6 +30,8 @@ public class GLRenderer implements GLSurfaceView.Renderer, DisplayAdapter
 
     Square square;
     private Shader genericShader;
+    private final Vec<Float> color = new Vec<>(1f, 1f, 1f);
+    private final Vec<Float> tempColor = new Vec<>(1f, 1f, 1f);
 
     public Consumer<DisplayAdapter> drawWorld = null;
 
@@ -46,7 +50,7 @@ public class GLRenderer implements GLSurfaceView.Renderer, DisplayAdapter
         // IntBuffer intBuffer = IntBuffer.allocate(1);
         // GLES20.glGetIntegerv(GLES20.GL_MAX_TEXTURE_IMAGE_UNITS, intBuffer);
         // Log.log(this, "Max textures = " + intBuffer.get(0));
-        genericShader = new Shader(GLAssetName.vertex, GLAssetName.fragment);
+        genericShader = new Shader(GLAssetName.generic_vertex, GLAssetName.generic_fragment);
 
         loadAllTextures();
     }
@@ -57,7 +61,6 @@ public class GLRenderer implements GLSurfaceView.Renderer, DisplayAdapter
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
         GLES20.glUseProgram(genericShader.shaderId);
         drawWorld.accept(this);
-        // draw(genericShader, square, Assets.getStaticSprite(AssetName.static_acorn));
     }
 
     public void onSurfaceChanged(GL10 unused, int width, int height)
@@ -142,13 +145,20 @@ public class GLRenderer implements GLSurfaceView.Renderer, DisplayAdapter
     @Override
     public void drawLine(float x1, float y1, float x2, float y2)
     {
-
+        throw new NoSuchMethodError();
     }
 
     @Override
     public void drawRect(float x, float y, float width, float height)
     {
-
+        push();
+        currentMatrix.preTranslate(x, y, 0);
+        currentMatrix.preScale(width, height, 1);
+        tempColor.set(color);
+        color.set(0f, 0f, 0f);
+        draw(genericShader, square, Asset.getStaticSprite(AssetName.static_solid));
+        color.set(tempColor);
+        pop();
     }
 
     @Override
@@ -161,7 +171,6 @@ public class GLRenderer implements GLSurfaceView.Renderer, DisplayAdapter
     {
         // Add program to OpenGL ES environment
         GLES20.glUseProgram(shader.shaderId);
-
 
         // matrix
         int matrixHandle =
@@ -202,6 +211,10 @@ public class GLRenderer implements GLSurfaceView.Renderer, DisplayAdapter
         // Tell the texture uniform sampler to use this texture in the shader
         // by binding to texture unit 0.
         GLES20.glUniform1i(texUniform, 0);
+
+        int colorUniform =
+            GLES20.glGetUniformLocation(shader.shaderId, "tintColor");
+        GLES20.glUniform3f(colorUniform, color.r(), color.g(), color.b());
 
         GLES20.glEnable(GLES20.GL_BLEND);
         GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);

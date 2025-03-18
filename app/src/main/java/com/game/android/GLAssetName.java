@@ -2,6 +2,6 @@ package com.game.android;
 
 public enum GLAssetName
 {
-    fragment,
-    vertex
+    generic_fragment,
+    generic_vertex
 }

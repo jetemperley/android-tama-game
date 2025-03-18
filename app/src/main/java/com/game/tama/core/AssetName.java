@@ -63,5 +63,6 @@ public enum AssetName
     static_x,
     static_o,
     static_arrow_corner,
-    static_footprints
+    static_footprints,
+    static_solid
 }
