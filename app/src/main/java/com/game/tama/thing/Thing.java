@@ -35,8 +35,7 @@ public abstract class Thing implements java.io.Serializable, Loadable
         components = new ArrayList<>();
     }
 
-    public void draw(DisplayAdapter d)
-    {
+    public void draw(DisplayAdapter d) {
         d.drawArr(loc);
         for (Thing thing : children)
         {

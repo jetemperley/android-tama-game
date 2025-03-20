@@ -2,6 +2,8 @@ package com.game.tama.core;
 
 import android.graphics.Bitmap;
 
+import com.game.engine.GameLoop;
+import com.game.tama.engine.behaviour.GameManager;
 import com.game.tama.thing.Thing;
 
 public class Animator implements Sprite, java.io.Serializable
@@ -38,7 +40,7 @@ public class Animator implements Sprite, java.io.Serializable
     {
         if (play)
         {
-            animTime += 25;
+            animTime += (int) GameLoop.deltaTimeMs;
             if (isDone() && !repeat)
             {
                 cancelAnim();

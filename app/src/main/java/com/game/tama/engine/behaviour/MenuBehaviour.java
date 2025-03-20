@@ -39,11 +39,11 @@ public class MenuBehaviour extends Behaviour
 
     public boolean isInside(float x, float y)
     {
-
         if (!isEnabled())
         {
             return false;
         }
-        return root.isInside(x, y);
+        float[] point = node.getWorldTransform().invert().mapVector(x, y, 0);
+        return root.isInside(point[0], point[1]);
     }
 }

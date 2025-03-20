@@ -107,7 +107,7 @@ public class GLRenderer implements GLSurfaceView.Renderer, DisplayAdapter
     @Override
     public void drawSprite(Sprite sprite)
     {
-        throw new NoSuchMethodError();
+        draw(genericShader, square, sprite);
     }
 
     @Override

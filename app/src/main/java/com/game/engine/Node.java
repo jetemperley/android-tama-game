@@ -133,6 +133,15 @@ public class Node
         return out;
     }
 
+    /**
+     * Gets the world transform and returns it in a new transform.
+     * @return the world transform in a new transform
+     */
+    public Transform getWorldTransform()
+    {
+        return getWorldTransform(Transform.create());
+    }
+
     public void removeBehaviour(Behaviour b)
     {
         behaviours.remove(b);
@@ -183,5 +192,10 @@ public class Node
             return this;
         }
         return parent.getRoot();
+    }
+
+    public Node getParent()
+    {
+        return parent;
     }
 }

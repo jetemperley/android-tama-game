@@ -5,7 +5,7 @@ import android.opengl.Matrix;
 import com.game.engine.Transform;
 import com.game.tama.util.Vec2;
 
-public class Matrix4 implements Transform
+public class Matrix4 extends Transform
 {
     private float[] tempValues = new float[16];
     private float[] values = new float[16];
@@ -79,9 +79,10 @@ public class Matrix4 implements Transform
     }
 
     @Override
-    public void invert(Transform dest)
+    public Transform invert(Transform dest)
     {
         Matrix.invertM(dest.getValues(), 0, values, 0);
+        return dest;
     }
 
     /**
@@ -258,5 +259,11 @@ public class Matrix4 implements Transform
         values[3] = x;
         values[7] = y;
         return this;
+    }
+
+    @Override
+    public Transform inverse()
+    {
+        return invert(Transform.create());
     }
 }

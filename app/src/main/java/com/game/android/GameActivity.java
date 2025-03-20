@@ -61,6 +61,8 @@ public class GameActivity extends Activity
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
+        // TODO
+        Transform.transformClass = Matrix4.class;
         super.onCreate(savedInstanceState);
         //        Log.log(this, "staring setup");
         Asset.init(getResources());
@@ -157,7 +159,6 @@ public class GameActivity extends Activity
         gesture.update();
         rootNode.engine_update();
         // rootNode.engine_draw(gLView.renderer);
-        // TODO work out how to trigger engine draw from here
         gLView.requestRender();
     }
 
@@ -182,7 +183,6 @@ public class GameActivity extends Activity
     {
         super.onStart();
         loadGame();
-        // TODO this
         gLView.renderer.drawWorld = rootNode::engine_draw;
         gameLoop = new GameLoop(this);
         gameLoop.start();

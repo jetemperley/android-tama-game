@@ -22,12 +22,16 @@ public class Drag extends GestureEvent
     }
 
     @Override
-    public GestureEvent transform(Transform transform) {
+    public GestureEvent transform(Transform transform)
+    {
         Drag copy = (Drag) super.transform(transform);
+
         float[] pt = transform.mapVector(prev.x, prev.y, 0);
         copy.prev.set(pt[0], pt[1]);
+
         float[] nt = transform.mapVector(next.x, next.y, 0);
         copy.next.set(nt[0], nt[1]);
+
         return copy;
     }
 
