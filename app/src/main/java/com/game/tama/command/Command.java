@@ -13,7 +13,7 @@ public abstract class Command implements Serializable
 {
     public static final BiConsumer<Pet, World> noop = (p, w) -> {};
 
-    public BiConsumer<Pet, World> update = (p, w) -> {};
+    public BiConsumer<Pet, World> update = this::start;
     public CommandState state = CommandState.ready;
 
     protected Pet actor = null;

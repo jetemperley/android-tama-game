@@ -27,6 +27,11 @@ public class CommandReplacer extends Command
             {
                 currentCommand = replaceWith;
                 replaceWith = null;
+                if (currentCommand != null)
+                {
+                    currentCommand.start(pet, world);
+                    return;
+                }
             }
         }
 
@@ -40,6 +45,7 @@ public class CommandReplacer extends Command
         {
             Log.d(this.getClass().getCanonicalName(), "complete or failed");
             currentCommand = null;
+            return;
         }
 
         currentCommand.update.accept(pet, world);

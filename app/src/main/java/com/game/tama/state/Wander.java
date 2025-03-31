@@ -25,14 +25,14 @@ public class Wander extends StateController
             {
                 List<Direction>
                     moves = pet.getPossibleMoves(world, pet.loc.x, pet.loc.y);
-                if (moves.isEmpty()) {
-                    pet.currentCommand.replace(new CommandWait(4000));
+                if (moves.isEmpty())
+                {
+                    pet.currentCommand.replace(new CommandWait(1000));
                     return;
                 }
                 Direction randDir = moves.get(Rand.RandInt(0, moves.size()));
                 pet.currentCommand.replace(new CommandStep(randDir));
             }
-
         }
     }
 }
