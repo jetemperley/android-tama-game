@@ -16,14 +16,14 @@ class LongGrass extends Tile
     {
 
         super();
-        loc.flat = false;
+        loc.isFlat = false;
         loc.yoff = 1;
         sprite2 = new WorldObject(loc.sprite);
         sprite2.yoff = -30;
-        sprite2.flat = false;
+        sprite2.isFlat = false;
         sprite3 = new WorldObject(loc.sprite);
         sprite3.yoff = -60;
-        sprite3.flat = false;
+        sprite3.isFlat = false;
     }
 
     Sprite getAssets()

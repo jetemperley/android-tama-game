@@ -20,7 +20,7 @@ public abstract class Tile implements java.io.Serializable
         loc = new WorldObject(null);
         visible = true;
         loc.sprite = getAssets();
-        loc.flat = true;
+        loc.isFlat = true;
     }
 
     Sprite getAssets()

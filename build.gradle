@@ -15,6 +15,9 @@ buildscript {
         // in the individual module build.gradle files
     }
 }
+ext {
+    compileSdkVersion = 19
+}
 
 allprojects {
     repositories {

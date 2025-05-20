@@ -1,7 +1,5 @@
 package com.game.android;
 
-import android.graphics.Matrix;
-
 import com.game.engine.DisplayAdapter;
 import com.game.engine.Transform;
 import com.game.tama.core.Sprite;
@@ -9,8 +7,6 @@ import com.game.tama.core.WorldObject;
 
 import java.util.Comparator;
 import java.util.PriorityQueue;
-
-import kotlin.NotImplementedError;
 
 public class DepthDisplay implements DisplayAdapter
 {
@@ -81,15 +77,15 @@ public class DepthDisplay implements DisplayAdapter
     {
         public int compare(WorldObject a, WorldObject b)
         {
-            if (b.flat && a.flat)
+            if (b.isFlat && a.isFlat)
             {
                 return 0;
             }
-            if (a.flat)
+            if (a.isFlat)
             {
                 return -1;
             }
-            if (b.flat)
+            if (b.isFlat)
             {
                 return 1;
             }

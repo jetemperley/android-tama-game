@@ -12,7 +12,7 @@ public class WorldObject implements java.io.Serializable
     /** Offsets in percentage of 1 array square */
     public int xoff, yoff;
     // flat indicates if the sprite is displayed as a ground base layer
-    public boolean flat = false;
+    public boolean isFlat = false;
 
     public WorldObject(Sprite img)
     {

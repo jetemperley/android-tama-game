@@ -58,8 +58,9 @@ public class GLRenderer implements GLSurfaceView.Renderer, DisplayAdapter
     public void onDrawFrame(GL10 unused)
     {
         // Redraw background color
-        GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
+        GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
         GLES20.glUseProgram(genericShader.shaderId);
+        GLES20.glEnable(GLES20.GL_DEPTH_TEST);
         drawWorld.accept(this);
     }
 
@@ -86,20 +87,31 @@ public class GLRenderer implements GLSurfaceView.Renderer, DisplayAdapter
     public void drawArr(WorldObject t)
     {
         Vec2<Float> pos = t.getWorldArrPos();
-        drawSprite(t.sprite, pos.x, pos.y);
+        if (t.isFlat)
+        {
+            drawSprite(t.sprite, pos.x, pos.y, 0);
+            return;
+        }
+        drawSprite(t.sprite, pos.x, pos.y, -pos.y);
     }
 
     @Override
     public void drawArr(Sprite d, float ax, float ay)
     {
+
         drawSprite(d, ax, ay);
     }
 
     @Override
     public void drawSprite(Sprite sprite, float x, float y)
     {
+        drawSprite(sprite, x, y, 99);
+    }
+
+    public void drawSprite(Sprite sprite, float x, float y, float z)
+    {
         push();
-        currentMatrix.preTranslate(x, y, 0);
+        currentMatrix.preTranslate(x, y, z);
         draw(genericShader, square, sprite);
         pop();
     }

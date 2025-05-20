@@ -132,8 +132,9 @@ public class GameActivity extends Activity
         rootNode = new Node(Matrix4.class);
         float xscale = 1;
         float yscale = screenSize.width()/(float)screenSize.height();
+        float zscale = 1/2f;
         rootNode.localTransform.preTranslate(-1f, 1f, 0);
-        rootNode.localTransform.preScale(xscale, -yscale, 1);
+        rootNode.localTransform.preScale(xscale, -yscale, zscale);
         // rootNode.localTransform.preScale(0.05f, 0.05f, 1);
         gesture = new Gesture();
 
