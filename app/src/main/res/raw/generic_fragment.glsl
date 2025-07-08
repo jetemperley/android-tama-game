@@ -7,8 +7,8 @@ void main() {
   if(col.w < 0.01)
     discard;
   gl_FragColor = vec4(
-    col.x*tintColor.x*texPos.x,
-    col.y*tintColor.y*texPos.y,
+    col.x*tintColor.x,
+    col.y*tintColor.y,
     col.z*tintColor.z,
     col.w);
 }

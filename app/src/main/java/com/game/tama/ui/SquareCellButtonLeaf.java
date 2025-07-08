@@ -93,6 +93,7 @@ public class SquareCellButtonLeaf extends SimpleButtonLeaf
     @Override
     public void draw(DisplayAdapter display)
     {
+        // todo sort out this drawing rubbish
         display.drawRect(pos.x, pos.y, sizeInCells.x, sizeInCells.y);
         if (sizeInCells.x == 1 && sizeInCells.y == 1)
         {

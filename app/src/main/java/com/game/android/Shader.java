@@ -16,10 +16,10 @@ public class Shader
         String vertexShaderCode = Asset.getRawContent(vertShaderName);
         String fragmentShaderCode = Asset.getRawContent(fragShaderName);
 
-        int vertexShader = GLRenderer.loadShader(
+        int vertexShader = GLDisplay.loadShader(
             GLES20.GL_VERTEX_SHADER,
             vertexShaderCode);
-        int fragmentShader = GLRenderer.loadShader(
+        int fragmentShader = GLDisplay.loadShader(
             GLES20.GL_FRAGMENT_SHADER,
             fragmentShaderCode);
 

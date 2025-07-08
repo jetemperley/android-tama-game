@@ -4,7 +4,6 @@ import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 
@@ -25,7 +24,7 @@ import java.util.HashMap;
 import java.util.Stack;
 import java.util.function.Consumer;
 
-public class GLRenderer implements GLSurfaceView.Renderer, DisplayAdapter
+public class GLDisplay implements GLSurfaceView.Renderer, DisplayAdapter
 {
 
     Square square;
@@ -89,10 +88,10 @@ public class GLRenderer implements GLSurfaceView.Renderer, DisplayAdapter
         Vec2<Float> pos = t.getWorldArrPos();
         if (t.isFlat)
         {
-            drawSprite(t.sprite, pos.x, pos.y, 0);
+            drawSprite(t.sprite, pos.x, pos.y, 1);
             return;
         }
-        drawSprite(t.sprite, pos.x, pos.y, -pos.y);
+        drawSprite(t.sprite, pos.x, pos.y, 0);
     }
 
     @Override
@@ -105,7 +104,7 @@ public class GLRenderer implements GLSurfaceView.Renderer, DisplayAdapter
     @Override
     public void drawSprite(Sprite sprite, float x, float y)
     {
-        drawSprite(sprite, x, y, 99);
+        drawSprite(sprite, x, y, -99);
     }
 
     public void drawSprite(Sprite sprite, float x, float y, float z)

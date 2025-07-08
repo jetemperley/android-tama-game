@@ -18,21 +18,13 @@ public class Square
     static final int COORDS_PER_VERTEX = 3;
     static float triangleCoords[] = {   // in counterclockwise order:
         // bot left
-        -0f,
-        -0f,
-        0f,
+        -0f, -0f, 0f,
         // bot right
-        1f,
-        -0f,
-        0f,
+        1f, 0f, 0f,
         // top left
-        -0f,
-        1f,
-        0f,
+        -0f, 1f, -1f,
         // top right
-        1f,
-        1f,
-        0f,
+        1f, 1f, -1f,
     };
 
     public final int[] textureHandle = new int[1];
@@ -58,8 +50,6 @@ public class Square
 
 
     }
-
-
 
 
 }
