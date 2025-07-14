@@ -7,7 +7,8 @@ class GLSurfaceView extends android.opengl.GLSurfaceView
 
     public final GLDisplay renderer;
 
-    public GLSurfaceView(Context context){
+    public GLSurfaceView(final Context context)
+    {
         super(context);
 
         // Create an OpenGL ES 2.0 context
@@ -17,7 +18,7 @@ class GLSurfaceView extends android.opengl.GLSurfaceView
 
         // Set the Renderer for drawing on the GLSurfaceView
         setRenderer(renderer);
-       // setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
+        //        setRenderMode(GLSurfaceView.RENDERMODE_CONTINUOUSLY);
         setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
     }
 }

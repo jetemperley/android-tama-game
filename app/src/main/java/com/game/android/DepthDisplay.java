@@ -12,7 +12,7 @@ public class DepthDisplay implements DisplayAdapter
 {
 
     public DisplayAdapter display;
-    private PriorityQueue<WorldObject> draws;
+    private final PriorityQueue<WorldObject> draws;
     boolean check = true;
 
     public DepthDisplay()
@@ -20,36 +20,37 @@ public class DepthDisplay implements DisplayAdapter
         draws = new PriorityQueue<>(200, new DepthComp());
     }
 
-    public void drawArr(WorldObject t)
+    public void draw(final WorldObject t)
     {
         draws.add(t);
     }
 
     @Override
-    public void drawArr(Sprite d, float x, float y)
-    {
-        throw new RuntimeException("Operation not supported");
-    }
-
-    public void drawSprite(Sprite sprite, float x, float y)
+    public void draw(final Sprite d, final float x, final float y, final float z)
     {
         throw new RuntimeException("Operation not supported");
     }
 
     @Override
-    public void drawSprite(Sprite sprite)
+    public void drawSprite(final Sprite sprite, final float x, final float y)
+    {
+
+    }
+
+    @Override
+    public void drawSprite(final Sprite sprite)
     {
         throw new NoSuchMethodError();
     }
 
     @Override
-    public void drawLine(float x1, float y1, float x2, float y2)
+    public void drawLine(final float x1, final float y1, final float x2, final float y2)
     {
         throw new RuntimeException("Operation not supported");
     }
 
     @Override
-    public void drawRect(float x, float y, float width, float height)
+    public void clearRect(final float x, final float y, final float width, final float height)
     {
         throw new RuntimeException("Operation not supported");
     }
@@ -62,7 +63,7 @@ public class DepthDisplay implements DisplayAdapter
             while (!draws.isEmpty())
             {
                 b = draws.poll();
-                display.drawArr(b);
+                display.draw(b);
             }
         }
         check = false;
@@ -75,7 +76,7 @@ public class DepthDisplay implements DisplayAdapter
 
     class DepthComp implements Comparator<WorldObject>
     {
-        public int compare(WorldObject a, WorldObject b)
+        public int compare(final WorldObject a, final WorldObject b)
         {
             if (b.isFlat && a.isFlat)
             {
@@ -94,7 +95,7 @@ public class DepthDisplay implements DisplayAdapter
     }
 
     @Override
-    public void setTransform(Transform mat)
+    public void setTransform(final Transform mat)
     {
         display.setTransform(mat);
     }
@@ -106,7 +107,7 @@ public class DepthDisplay implements DisplayAdapter
     }
 
     @Override
-    public void translate(float x, float y)
+    public void translate(final float x, final float y)
     {
         throw new RuntimeException("Operation not supported");
     }
@@ -124,8 +125,14 @@ public class DepthDisplay implements DisplayAdapter
     }
 
     @Override
-    public void preConcat(Transform mat)
+    public void preConcat(final Transform mat)
     {
         throw new RuntimeException("Operation not supported");
+    }
+
+    @Override
+    public void drawUi(final Sprite sprite, final float x, final float y)
+    {
+
     }
 }

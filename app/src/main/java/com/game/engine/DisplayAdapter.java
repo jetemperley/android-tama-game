@@ -5,64 +5,76 @@ import com.game.tama.core.WorldObject;
 
 public interface DisplayAdapter
 {
+    float UI_LAYER = -99;
+
     /**
-     * Display the object based on its x, y, and offsets
+     * Display the object based on its world position
      *
      * @param t
      */
-    public void drawArr(WorldObject t);
+    void draw(WorldObject t);
 
     /**
      * Dispay the sprite relative to the world array
      *
-     * @param d  the thing to display
-     * @param ax array position x
-     * @param ay array position y
+     * @param d the thing to display
+     * @param x world position x
+     * @param y world position y
      */
-    public void drawArr(Sprite d, float ax, float ay);
+    void draw(Sprite d, float x, float y, float z);
 
     /**
      * Display at the provided pixel location, with respect to the current
      * matrix
      *
      * @param sprite Thing to display
-     * @param x Pixel x
-     * @param y Pixel y
+     * @param x      world x
+     * @param y      world y
      */
-    public void drawSprite(Sprite sprite, float x, float y);
+    void drawSprite(Sprite sprite, float x, float y);
 
     /**
      * Draw the sprite with respect to the matrix
+     *
      * @param sprite
      */
-    public void drawSprite(Sprite sprite);
+    void drawSprite(Sprite sprite);
 
-    public void setTransform(Transform mat);
+    void setTransform(Transform mat);
 
-    public Transform getTransform();
+    Transform getTransform();
 
     /**
      * Translate in world coordinates
+     *
      * @param x
      * @param y
      */
-    public void translate(float x, float y);
+    void translate(float x, float y);
 
-    public void push();
+    void push();
 
-    public void pop();
+    void pop();
 
-    public void drawLine(float x1, float y1, float x2, float y2);
-
-    public void drawRect(float x, float y, float width, float height);
+    void drawLine(float x1, float y1, float x2, float y2);
 
     /**
      * preConcat effects the matrix in its *local* frame of reference
+     *
      * @param mat
      */
-    public void preConcat(Transform mat);
+    void preConcat(Transform mat);
 
+    /**
+     * Draws the sprite with no transparency, at x, y and on top of everything else.
+     *
+     * @param sprite the sprite to draw (ignoring transparency)
+     * @param x      world x position
+     * @param y      world y position
+     */
+    void drawUi(final Sprite sprite, final float x, final float y);
 
+    void clearRect(float x, float y, float xSize, float ySize);
 
 }
 

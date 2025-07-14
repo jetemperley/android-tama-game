@@ -1,8 +1,8 @@
 package com.game.tama.ui;
 
-import com.game.engine.DisplayAdapter;
 import com.game.android.Asset;
-import com.game.engine.GameLoop;
+import com.game.engine.DisplayAdapter;
+import com.game.engine.Time;
 import com.game.tama.core.AssetName;
 
 import java.util.ArrayList;
@@ -11,13 +11,13 @@ import java.util.stream.Collectors;
 
 public class DialogueTextBoxLeaf extends SquareCellButtonLeaf
 {
-    private String text;
-    private List<TextLeaf> lines;
+    private final String text;
+    private final List<TextLeaf> lines;
     private final int lettersPerLine;
     private final int linesPerBox;
     private float currentLetter = 0;
     private int currentLine = 0;
-    private float runTime = 0;
+    private final float runTime = 0;
 
     /**
      * @param xPos   pixel x position of the button
@@ -26,11 +26,11 @@ public class DialogueTextBoxLeaf extends SquareCellButtonLeaf
      * @param height size (in 16 bit cells) of button
      * @param text   the text to be displayed
      */
-    public DialogueTextBoxLeaf(float xPos,
-                               float yPos,
-                               int width,
-                               int height,
-                               String text)
+    public DialogueTextBoxLeaf(final float xPos,
+                               final float yPos,
+                               final int width,
+                               final int height,
+                               final String text)
     {
         super(xPos, yPos, width, height, Asset.getStaticSprite(AssetName.static_empty));
         this.text = text;
@@ -40,23 +40,23 @@ public class DialogueTextBoxLeaf extends SquareCellButtonLeaf
         lines = splitIntoLines(
             text,
             lettersPerLine).stream()
-            .map(TextLeaf::new)
-            .collect(Collectors.toList());
+                           .map(TextLeaf::new)
+                           .collect(Collectors.toList());
     }
 
     @Override
-    public void draw(DisplayAdapter d)
+    public void draw(final DisplayAdapter d)
     {
         super.draw(d);
         // initial offsets
-        float x = 4;
-        float y = 4;
+        final float x = 4;
+        final float y = 4;
         // draw the text
         for (int i = 0; i < linesPerBox; i++)
         {
-            int lineNum = (currentLine + i) % lines.size();
-            int lettersToDraw = (int) currentLetter - lettersPerLine * lineNum;
-            TextLeaf line = lines.get(lineNum);
+            final int lineNum = (currentLine + i) % lines.size();
+            final int lettersToDraw = (int) currentLetter - lettersPerLine * lineNum;
+            final TextLeaf line = lines.get(lineNum);
             line.setPos(pos.x + 0.25f, pos.y + 0.25f + i);
             line.draw(d, lettersToDraw);
         }
@@ -65,8 +65,8 @@ public class DialogueTextBoxLeaf extends SquareCellButtonLeaf
     @Override
     public void update()
     {
-        currentLetter += GameLoop.deltaTimeS * 15;
-        int letterLimit =
+        currentLetter += Time.deltaTimeS() * 15;
+        final int letterLimit =
             currentLine * lettersPerLine + lettersPerLine * linesPerBox;
         if (currentLetter > letterLimit)
         {
@@ -90,15 +90,15 @@ public class DialogueTextBoxLeaf extends SquareCellButtonLeaf
         }
     }
 
-    public static List<String> splitIntoLines(String text, int maxLineLength)
+    public static List<String> splitIntoLines(final String text, final int maxLineLength)
     {
-        String[] words = text.split(" ");
+        final String[] words = text.split(" ");
         if (words.length == 0)
         {
             throw new RuntimeException("Text should have at least 1 word.");
         }
 
-        List<String> lines = new ArrayList<>();
+        final List<String> lines = new ArrayList<>();
         String currentLine = words[0];
         for (int i = 1; i < words.length; i++)
         {
@@ -122,6 +122,6 @@ public class DialogueTextBoxLeaf extends SquareCellButtonLeaf
 
     public boolean isDone()
     {
-        return currentLetter < lettersPerLine*lines.size();
+        return currentLetter < lettersPerLine * lines.size();
     }
 }

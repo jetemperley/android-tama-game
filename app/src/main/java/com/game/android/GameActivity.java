@@ -8,18 +8,18 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
-import android.os.Bundle;
 import android.view.Display;
 import android.view.MotionEvent;
 
+import com.game.engine.GameLoop;
+import com.game.engine.Node;
+import com.game.engine.Transform;
 import com.game.engine.gesture.Gesture;
 import com.game.engine.gesture.GestureEventAdaptor;
-import com.game.engine.Node;
-import com.game.engine.GameLoop;
-import com.game.engine.Transform;
 import com.game.tama.engine.behaviour.GameManager;
 import com.game.tama.util.Log;
 
@@ -37,7 +37,7 @@ public class GameActivity extends Activity
      * The screen bounds for this particular game application taking into
      * account the navbar and such.
      */
-    private static Rect SCREEN_RECT = new Rect();
+    private static final Rect SCREEN_RECT = new Rect();
 
     ConstraintLayout lay;
     static Paint red, black, white, highlight;
@@ -59,7 +59,7 @@ public class GameActivity extends Activity
     GLSurfaceView gLView;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
+    protected void onCreate(final Bundle savedInstanceState)
     {
         // TODO
         Transform.transformClass = Matrix4.class;
@@ -96,28 +96,28 @@ public class GameActivity extends Activity
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
         {
-            CharSequence name = channel_name;
-            String description = channel_desc;
-            int importance = NotificationManager.IMPORTANCE_DEFAULT;
-            NotificationChannel channel =
+            final CharSequence name = channel_name;
+            final String description = channel_desc;
+            final int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            final NotificationChannel channel =
                 new NotificationChannel(CHANNEL_ID, name, importance);
             channel.setDescription(description);
             // Register the channel with the system; you can't change the
             // importance
             // or other notification behaviors after this
-            NotificationManager notificationManager =
+            final NotificationManager notificationManager =
                 getSystemService(NotificationManager.class);
             notificationManager.createNotificationChannel(channel);
         }
 
-        NotificationCompat.Builder builder =
+        final NotificationCompat.Builder builder =
             new NotificationCompat.Builder(
                 this,
                 CHANNEL_ID).setContentTitle(
                 "My notification").setContentText("Hello World!").setPriority(
                 NotificationCompat.PRIORITY_DEFAULT).setAutoCancel(true);
-        int ID = 0;
-        NotificationManagerCompat notificationManager =
+        final int ID = 0;
+        final NotificationManagerCompat notificationManager =
             NotificationManagerCompat.from(this);
         // notificationManager.notify(ID, builder.build());
 
@@ -130,18 +130,17 @@ public class GameActivity extends Activity
         displayAdapter = new AndroidDisplay(1);
 
         rootNode = new Node(Matrix4.class);
-        float xscale = 1;
-        float yscale = screenSize.width()/(float)screenSize.height();
-        float zscale = 1/2f;
+        final float xscale = 1;
+        final float yscale = screenSize.width() / (float) screenSize.height();
+        final float zscale = 1 / 100f;
         rootNode.localTransform.preTranslate(-1f, 1f, 0);
         rootNode.localTransform.preScale(xscale, -yscale, zscale);
-        // rootNode.localTransform.preScale(0.05f, 0.05f, 1);
         gesture = new Gesture();
 
-        Transform gestureTransform = new Matrix4();
+        final Transform gestureTransform = new Matrix4();
         gestureTransform.preTranslate(-1, 1, 0);
-        gestureTransform.preScale(2f/screenSize.width(), -2f/screenSize.height(), 1);
-        GestureEventAdaptor gestureEventAdaptor = new GestureEventAdaptor(gestureTransform);
+        gestureTransform.preScale(2f / screenSize.width(), -2f / screenSize.height(), 1);
+        final GestureEventAdaptor gestureEventAdaptor = new GestureEventAdaptor(gestureTransform);
         gesture.gestureTarget = gestureEventAdaptor;
 
         gameManager = new GameManager(rootNode, gestureEventAdaptor);
@@ -172,7 +171,7 @@ public class GameActivity extends Activity
         {
             gameLoop.join();
         }
-        catch (InterruptedException e)
+        catch (final InterruptedException e)
         {
             Log.log(this, "could not join gameloop");
         }
@@ -190,7 +189,7 @@ public class GameActivity extends Activity
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent e)
+    public boolean onTouchEvent(final MotionEvent e)
     {
         gesture.onTouchEvent(e);
         return true;
@@ -198,17 +197,17 @@ public class GameActivity extends Activity
 
     private void saveGame()
     {
-        Context context = getApplicationContext();
+        final Context context = getApplicationContext();
         try
         {
-            FileOutputStream fos =
+            final FileOutputStream fos =
                 context.openFileOutput(DATA_FILE_NAME, Context.MODE_PRIVATE);
-            ObjectOutputStream oos = new ObjectOutputStream(fos);
+            final ObjectOutputStream oos = new ObjectOutputStream(fos);
             gameManager.save(oos);
             oos.close();
             Log.log(this, "Serialization complete");
         }
-        catch (IOException e)
+        catch (final IOException e)
         {
             Log.error(this, "Serialization failed.", e);
         }
@@ -216,21 +215,21 @@ public class GameActivity extends Activity
 
     private void loadGame()
     {
-        Context context = getApplicationContext();
-        File dir = context.getFilesDir();
-        File data = new File(dir.getPath() + "/" + DATA_FILE_NAME);
+        final Context context = getApplicationContext();
+        final File dir = context.getFilesDir();
+        final File data = new File(dir.getPath() + "/" + DATA_FILE_NAME);
         Log.log(this, "data path is " + data.getAbsolutePath());
         if (data.exists())
         {
             try
             {
-                ObjectInputStream in =
+                final ObjectInputStream in =
                     new ObjectInputStream(Files.newInputStream(data.toPath()));
                 gameManager.load(in);
                 in.close();
                 Log.log(this, "deserialization complete");
             }
-            catch (Exception e)
+            catch (final Exception e)
             {
                 gameManager.newGame();
                 Log.error(this, "deserialization failed", e);

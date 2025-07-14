@@ -24,14 +24,14 @@ public class AndroidDisplay implements DisplayAdapter
      */
     public Rect view = new Rect();
 
-    public AndroidDisplay(int cellSize)
+    public AndroidDisplay(final int cellSize)
     {
         this.cellSize = cellSize;
         idMatrix = new Matrix();
         idMatrix.reset();
     }
 
-    public void drawArr(WorldObject t)
+    public void draw(final WorldObject t)
     {
         if (t.sprite == null)
         {
@@ -47,35 +47,37 @@ public class AndroidDisplay implements DisplayAdapter
             GameActivity.black);
     }
 
-    public void drawSprite(Sprite sprite, float x, float y)
+    @Override
+    public void draw(final Sprite sprite, final float x, final float y, final float z)
     {
         canvas.drawBitmap(sprite.getSprite(), x, y, GameActivity.black);
     }
 
     @Override
-    public void drawSprite(Sprite sprite)
+    public void drawSprite(final Sprite sprite, final float x, final float y)
     {
         throw new NotImplementedError();
     }
 
     @Override
-    public void drawLine(float x1, float y1, float x2, float y2)
+    public void drawSprite(final Sprite sprite)
+    {
+        throw new NotImplementedError();
+    }
+
+    @Override
+    public void drawLine(final float x1, final float y1, final float x2, final float y2)
     {
         canvas.drawLine(x1, y1, x2, y2, GameActivity.white);
     }
 
     @Override
-    public void drawRect(float x, float y, float width, float height)
+    public void clearRect(final float x, final float y, final float width, final float height)
     {
         canvas.drawRect(x, y, x + width, y + height, GameActivity.black);
     }
 
-    public void drawArr(Sprite d, float x, float y)
-    {
-        canvas.drawBitmap(d.getSprite(), x, y, GameActivity.black);
-    }
-
-    public void setTransform(Transform mat)
+    public void setTransform(final Transform mat)
     {
         currentMatrix.setValues(mat.getValues());
         canvas.setMatrix(currentMatrix);
@@ -88,7 +90,7 @@ public class AndroidDisplay implements DisplayAdapter
     }
 
     @Override
-    public void translate(float dx, float dy)
+    public void translate(final float dx, final float dy)
     {
         currentMatrix.preTranslate(dx, dy);
         canvas.translate(dx, dy);
@@ -107,9 +109,15 @@ public class AndroidDisplay implements DisplayAdapter
     }
 
     @Override
-    public void preConcat(Transform mat)
+    public void preConcat(final Transform mat)
     {
         // currentMatrix.preConcat(mat.getValues());
         // canvas.concat(mat);
+    }
+
+    @Override
+    public void drawUi(final Sprite sprite, final float x, final float y)
+    {
+
     }
 }

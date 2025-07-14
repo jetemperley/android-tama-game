@@ -1,27 +1,27 @@
 package com.game.tama.thing.pet;
 
+import com.game.android.Asset;
+import com.game.engine.Time;
+import com.game.tama.command.Command;
+import com.game.tama.command.CommandAttack;
+import com.game.tama.command.CommandEat;
+import com.game.tama.command.CommandFactory;
+import com.game.tama.command.CommandReplacer;
+import com.game.tama.core.Animator;
 import com.game.tama.core.AssetName;
 import com.game.tama.core.Direction;
-import com.game.tama.engine.behaviour.GameManager;
-import com.game.tama.core.Animator;
+import com.game.tama.core.Sprite;
 import com.game.tama.core.Type;
+import com.game.tama.core.World;
 import com.game.tama.state.StateController;
 import com.game.tama.state.Wander;
-import com.game.tama.thing.ThingControl;
-import com.game.tama.thing.item.Food;
 import com.game.tama.thing.Thing;
+import com.game.tama.thing.ThingControl;
+import com.game.tama.thing.component.Health;
+import com.game.tama.thing.item.Food;
 import com.game.tama.thing.tile.Tile;
 import com.game.tama.util.Log;
 import com.game.tama.util.Vec2;
-import com.game.tama.command.Command;
-import com.game.tama.command.CommandAttack;
-import com.game.tama.command.CommandFactory;
-import com.game.tama.command.CommandReplacer;
-import com.game.tama.command.CommandEat;
-import com.game.tama.thing.component.Health;
-import com.game.android.Asset;
-import com.game.tama.core.Sprite;
-import com.game.tama.core.World;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,7 +32,7 @@ public class Pet extends Thing
 {
     private long time = 0;
 
-    private StateController state;
+    private final StateController state;
     final public CommandReplacer currentCommand;
 
     public Animator anim;
@@ -52,7 +52,8 @@ public class Pet extends Thing
             Direction.up,
             Direction.down,
             Direction.left,
-            Direction.right};
+            Direction.right
+        };
         stepsVec = Arrays.stream(steps).map(d -> new Vec2<>(d.x, d.y)).collect(
             Collectors.toList()).toArray(new Vec2[]{});
     }
@@ -94,21 +95,22 @@ public class Pet extends Thing
     }
 
     @Override
-    public void update(World world)
+    public void update(final World world)
     {
-        if (time == GameManager.time)
+        Log.log(this, "Pet update time " + Time.time());
+        if (time == Time.time())
         {
-            // Log.error(
-            //     this,
-            //     "Pet doubled up on an update. Does this matter?");
+            Log.error(
+                this,
+                "Pet doubled up on an update. Does this matter?");
         }
         currentCommand.update.accept(this, world);
         anim.update(this);
         state.update(this, world);
-        time = GameManager.time;
+        time = Time.time();
     }
 
-    public boolean consume(Thing t)
+    public boolean consume(final Thing t)
     {
         // TODO COMPLETE
         return true;
@@ -120,14 +122,14 @@ public class Pet extends Thing
         return Type.pet;
     }
 
-    public void setDir(Direction dir)
+    public void setDir(final Direction dir)
     {
         // TODO move the pose and direction calc stuff into those enums
         if (anim == null)
         {
             return;
         }
-        int pose = anim.animId / 4;
+        final int pose = anim.animId / 4;
         anim.animId = 4 * pose + dir.ordinal();
     }
 
@@ -137,7 +139,7 @@ public class Pet extends Thing
         return super.getDescription() + "It's a Pet!";
     }
 
-    public boolean canMoveOnto(Tile tile)
+    public boolean canMoveOnto(final Tile tile)
     {
         if (tile == null)
         {
@@ -146,10 +148,10 @@ public class Pet extends Thing
         return tile.isEmpty();
     }
 
-    public List<Direction> getPossibleMoves(World world, int x, int y)
+    public List<Direction> getPossibleMoves(final World world, final int x, final int y)
     {
-        List<Direction> out = new ArrayList<>();
-        for (Direction dir : steps)
+        final List<Direction> out = new ArrayList<>();
+        for (final Direction dir : steps)
         {
             if (world.isEmpty(loc.x + dir.x, loc.y + dir.y))
             {
@@ -159,7 +161,7 @@ public class Pet extends Thing
         return out;
     }
 
-    public void setMovementPose(Movement movement)
+    public void setMovementPose(final Movement movement)
     {
         if (movement == Movement.stand)
         {
@@ -171,7 +173,7 @@ public class Pet extends Thing
         }
     }
 
-    public Command getActionForTarget(Thing thing)
+    public Command getActionForTarget(final Thing thing)
     {
         if (thing instanceof Food)
         {
@@ -187,7 +189,7 @@ public class Pet extends Thing
         return this;
     }
 
-    public void setActionTarget(Thing thing)
+    public void setActionTarget(final Thing thing)
     {
         if (thing.type() == Type.food)
         {
@@ -203,7 +205,7 @@ public class Pet extends Thing
         }
     }
 
-    public void setAsset(AssetName asset)
+    public void setAsset(final AssetName asset)
     {
         this.asset = asset;
         load();

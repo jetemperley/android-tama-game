@@ -1,10 +1,9 @@
 package com.game.tama.engine.behaviour;
 
-import com.game.engine.gesture.EventPrioritySubscriber;
-import com.game.engine.gesture.GestureEventSource;
 import com.game.engine.Behaviour;
 import com.game.engine.Node;
-import com.game.engine.GameLoop;
+import com.game.engine.gesture.EventPrioritySubscriber;
+import com.game.engine.gesture.GestureEventSource;
 import com.game.tama.core.World;
 import com.game.tama.core.WorldFactory;
 
@@ -21,14 +20,12 @@ public class GameManager extends Behaviour
     public MenuBehaviour pauseMenu;
     public MenuBehaviour hudMenu;
 
-    private GestureEventSource mainInput;
-    private EventPrioritySubscriber prioritySubscriber;
-    private Node mainGameNode;
+    private final GestureEventSource mainInput;
+    private final EventPrioritySubscriber prioritySubscriber;
+    private final Node mainGameNode;
 
-    /** The amount of ms this game has been running for. */
-    public static long time = 0;
 
-    public GameManager(Node parent, GestureEventSource input)
+    public GameManager(final Node parent, final GestureEventSource input)
     {
         super(parent);
         INST = this;
@@ -64,13 +61,6 @@ public class GameManager extends Behaviour
         pauseMenu.setEnabled(true);
     }
 
-    @Override
-    public void update()
-    {
-        // TODO fix this time unit mismatch
-        time += GameLoop.deltaTimeMs;
-    }
-
     public static HeldThingBehaviour getHeld()
     {
         return INST.heldBehaviour;
@@ -91,7 +81,7 @@ public class GameManager extends Behaviour
         return INST.pauseMenu;
     }
 
-    public Node getContainingNode(float x, float y)
+    public Node getContainingNode(final float x, final float y)
     {
         if (hudMenu.isInside(x, y))
         {
@@ -100,19 +90,20 @@ public class GameManager extends Behaviour
         return gameBehaviour.node;
     }
 
-    public void save(ObjectOutputStream oos) throws IOException
+    public void save(final ObjectOutputStream oos) throws IOException
     {
         oos.writeObject(gameBehaviour.world);
     }
 
-    public void load(ObjectInputStream in)
+    public void load(final ObjectInputStream in)
         throws IOException, ClassNotFoundException
     {
         gameBehaviour.world = (World) in.readObject();
     }
 
-    public void newGame ()
+    public void newGame()
     {
         gameBehaviour.world = WorldFactory.makeTestWorld();
     }
+
 }

@@ -2,8 +2,7 @@ package com.game.tama.core;
 
 import android.graphics.Bitmap;
 
-import com.game.engine.GameLoop;
-import com.game.tama.engine.behaviour.GameManager;
+import com.game.engine.Time;
 import com.game.tama.thing.Thing;
 
 public class Animator implements Sprite, java.io.Serializable
@@ -15,10 +14,9 @@ public class Animator implements Sprite, java.io.Serializable
     private int animTime = 0;
     public int animDur = 1000;
 
-    public Animator(SpriteSheet ss)
+    public Animator(final SpriteSheet ss)
     {
         sheet = ss;
-
     }
 
     public Bitmap getUISprite()
@@ -36,11 +34,11 @@ public class Animator implements Sprite, java.io.Serializable
         play = true;
     }
 
-    public void update(Thing t)
+    public void update(final Thing t)
     {
         if (play)
         {
-            animTime += (int) GameLoop.deltaTimeMs;
+            animTime += (int) Time.deltaTimeMs();
             if (isDone() && !repeat)
             {
                 cancelAnim();
@@ -53,7 +51,7 @@ public class Animator implements Sprite, java.io.Serializable
     }
 
 
-    public void repeat(boolean repeat)
+    public void repeat(final boolean repeat)
     {
         this.repeat = repeat;
     }
@@ -69,11 +67,14 @@ public class Animator implements Sprite, java.io.Serializable
         play = false;
     }
 
-    Bitmap getSlide(int time, int duration, int row)
+    Bitmap getSlide(final int time, final int duration, final int row)
     {
-        int perSlide = duration / sheet.rowLength(row);
-        int i = time / perSlide;
-        return sheet.get(row, i);
+        final long l = Time.time();
+        // todo this can land exactly on the col length
+        final int perSlide = duration / sheet.rowLength(row);
+        final int frame = time / perSlide;
+        final Bitmap b = sheet.get(row, frame);
+        return b;
     }
 
 }

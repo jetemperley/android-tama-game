@@ -1,23 +1,23 @@
 package com.game.tama.command;
 
-import com.game.engine.GameLoop;
+import com.game.engine.Time;
 import com.game.tama.core.World;
 import com.game.tama.thing.Thing;
 import com.game.tama.thing.pet.Pet;
 
 public class CommandEat extends Command
 {
-    private float totalTime = 1f;
+    private final float totalTime = 1f;
     private float currentTime = 0f;
-    private Thing toEat;
+    private final Thing toEat;
 
-    public CommandEat(Thing targetToEat)
+    public CommandEat(final Thing targetToEat)
     {
         this.toEat = targetToEat;
     }
 
     @Override
-    public void start(Pet pet, World world)
+    public void start(final Pet pet, final World world)
     {
         super.start(pet, world);
         world.removeThing(toEat);
@@ -25,9 +25,9 @@ public class CommandEat extends Command
     }
 
     @Override
-    protected void doing(Pet pet, World world)
+    protected void doing(final Pet pet, final World world)
     {
-        currentTime += GameLoop.deltaTimeS;
+        currentTime += Time.deltaTimeS();
 
         if (currentTime > totalTime)
         {
@@ -36,7 +36,7 @@ public class CommandEat extends Command
         }
     }
 
-    public static Command Eat(Thing target)
+    public static Command Eat(final Thing target)
     {
         return CommandFactory.commandWalkAndAdjacentAction(
             target,

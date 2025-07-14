@@ -1,9 +1,9 @@
 package com.game.tama.core;
 
 import com.game.engine.DisplayAdapter;
+import com.game.tama.thing.Thing;
 import com.game.tama.thing.tile.DynTile;
 import com.game.tama.thing.tile.Grass;
-import com.game.tama.thing.Thing;
 import com.game.tama.thing.tile.Tile;
 import com.game.tama.thing.tile.TileType;
 import com.game.tama.util.A;
@@ -14,8 +14,8 @@ import java.io.IOException;
 public class World implements java.io.Serializable
 {
 
-    private Tile[][] tiles;
-    int celln, openSpace;
+    private final Tile[][] tiles;
+    int celln;
     float xoff, yoff;
 
     public World()
@@ -23,7 +23,7 @@ public class World implements java.io.Serializable
         this(10);
     }
 
-    public World(int size)
+    public World(final int size)
     {
         celln = size;
         xoff = 0;
@@ -41,7 +41,6 @@ public class World implements java.io.Serializable
 
     public void update()
     {
-        openSpace = 0;
         for (int x = 0; x < celln; x++)
         {
             for (int y = 0; y < celln; y++)
@@ -51,7 +50,7 @@ public class World implements java.io.Serializable
         }
     }
 
-    public void draw(DisplayAdapter d)
+    public void draw(final DisplayAdapter d)
     {
         for (int x = 0; x < celln; x++)
         {
@@ -71,7 +70,7 @@ public class World implements java.io.Serializable
      * @param y The y array pos
      * @return Whether the add was successful
      */
-    public boolean add(Thing t, int x, int y)
+    public boolean add(final Thing t, final int x, final int y)
     {
         if (t == null || !A.inRange(tiles, x, y) || !tiles[x][y].isEmpty())
         {
@@ -85,9 +84,9 @@ public class World implements java.io.Serializable
 
     public void reLoadAllAssets()
     {
-        for (Tile[] tileLine : tiles)
+        for (final Tile[] tileLine : tiles)
         {
-            for (Tile tile : tileLine)
+            for (final Tile tile : tileLine)
             {
                 tile.load();
                 tile.updateDetails(this);
@@ -103,7 +102,7 @@ public class World implements java.io.Serializable
      * @return
      */
 
-    public Thing removeThing(Thing thing)
+    public Thing removeThing(final Thing thing)
     {
         if (tiles[thing.loc.x][thing.loc.y].getThing() == thing)
         {
@@ -121,7 +120,7 @@ public class World implements java.io.Serializable
      * @return
      */
 
-    public Thing removeThing(int x, int y)
+    public Thing removeThing(final int x, final int y)
     {
         if (A.inRange(tiles, x, y))
         {
@@ -130,7 +129,7 @@ public class World implements java.io.Serializable
         return null;
     }
 
-    public boolean isEmpty(int x, int y)
+    public boolean isEmpty(final int x, final int y)
     {
         if (A.inRange(tiles, x, y))
         {
@@ -140,25 +139,24 @@ public class World implements java.io.Serializable
     }
 
     // swaps t with the target xy, or returns t
-    public Thing swap(Thing t, int x, int y)
+    public Thing swap(final Thing t, final int x, final int y)
     {
         if (fits(t, x, y))
         {
-            Thing temp = tiles[x][y].removeThing();
+            final Thing temp = tiles[x][y].removeThing();
             add(t, x, y);
             return temp;
         }
         return t;
     }
 
-    void updateDyn(int x, int y)
+    void updateDyn(final int x, final int y)
     {
         for (int i = -1; i < 2; i++)
         {
             for (int j = -1; j < 2; j++)
             {
-                if (A.inRange(tiles, x + i, y + j) &&
-                    tiles[x + i][y + j] != null)
+                if (A.inRange(tiles, x + i, y + j) && tiles[x + i][y + j] != null)
                 {
                     tiles[x + i][y + j].updateDetails(this);
                 }
@@ -167,7 +165,7 @@ public class World implements java.io.Serializable
     }
 
     // bug source
-    public void setTile(int x, int y, TileType type)
+    public void setTile(final int x, final int y, final TileType type)
     {
 
         if (A.inRange(tiles, x, y))
@@ -194,7 +192,7 @@ public class World implements java.io.Serializable
      * @param y y coord of tile
      * @return the tile object
      */
-    public Tile getTile(int x, int y)
+    public Tile getTile(final int x, final int y)
     {
         if (A.inRange(tiles, x, y))
         {
@@ -214,12 +212,12 @@ public class World implements java.io.Serializable
     }
 
     // works if everything only occupies 1 cell
-    public boolean fits(Thing t, int x, int y)
+    public boolean fits(final Thing t, final int x, final int y)
     {
         return A.inRange(tiles, x, y);
     }
 
-    public Thing getThing(int x, int y)
+    public Thing getThing(final int x, final int y)
     {
         if (A.inRange(tiles, x, y))
         {
@@ -228,7 +226,7 @@ public class World implements java.io.Serializable
         return null;
     }
 
-    boolean setTile(int x, int y, Tile t)
+    boolean setTile(final int x, final int y, final Tile t)
     {
         if (t == null || !A.inRange(tiles, x, y))
         {
@@ -245,7 +243,7 @@ public class World implements java.io.Serializable
         return true;
     }
 
-    public Thing checkCollision(float x, float y)
+    public Thing checkCollision(final float x, final float y)
     {
 
         for (int xi = -1; xi < 2; xi++)
@@ -254,7 +252,7 @@ public class World implements java.io.Serializable
             {
                 if (A.inRange(tiles, (int) x + xi, (int) y + yi))
                 {
-                    Thing t = tiles[(int) x + xi][(int) y + yi].getThing();
+                    final Thing t = tiles[(int) x + xi][(int) y + yi].getThing();
                     if (t != null && t.contains(x, y))
                     {
                         return t;
@@ -273,11 +271,10 @@ public class World implements java.io.Serializable
      * @param y y position in the tiles array
      * @return has added successfully
      */
-    public boolean addOrClosest(Thing t, int x, int y)
+    public boolean addOrClosest(final Thing t, final int x, final int y)
     {
         int dist = 0;
-        int maxDist =
-            tiles.length > tiles[0].length ? tiles.length : tiles[0].length;
+        final int maxDist = tiles.length > tiles[0].length ? tiles.length : tiles[0].length;
         while (dist < maxDist)
         {
             if (addAnywhereOnBorder(t, x, y, dist))
@@ -299,7 +296,7 @@ public class World implements java.io.Serializable
      * @param radius radius of the square
      * @return
      */
-    private boolean addAnywhereOnBorder(Thing t, int x, int y, int radius)
+    private boolean addAnywhereOnBorder(final Thing t, final int x, final int y, final int radius)
     {
         for (int i = x - radius; i <= x + radius; i++)
         {
@@ -318,21 +315,21 @@ public class World implements java.io.Serializable
         return false;
     }
 
-    public Thing pickupThing(int ax, int ay)
+    public Thing pickupThing(final int ax, final int ay)
     {
-        Thing thing = removeThing(ax, ay);
+        final Thing thing = removeThing(ax, ay);
         return thing.pickup();
     }
 
-    public static boolean isAdjacent(WorldObject a, WorldObject b)
+    public static boolean isAdjacent(final WorldObject a, final WorldObject b)
     {
-        int xDiff = Math.abs(a.x - b.x);
-        int yDiff = Math.abs(a.y - b.y);
+        final int xDiff = Math.abs(a.x - b.x);
+        final int yDiff = Math.abs(a.y - b.y);
         return (xDiff == 1) ^ (yDiff == 1);
     }
 
-    private void readObject(java.io.ObjectInputStream in)
-        throws IOException, ClassNotFoundException
+    private void readObject(final java.io.ObjectInputStream in) throws IOException,
+        ClassNotFoundException
     {
         in.defaultReadObject();
         reLoadAllAssets();

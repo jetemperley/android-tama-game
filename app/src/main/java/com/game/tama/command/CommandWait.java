@@ -1,24 +1,24 @@
 package com.game.tama.command;
 
 import android.util.Log;
-import com.game.engine.DisplayAdapter;
-import com.game.engine.GameLoop;
-import com.game.tama.thing.pet.Pet;
+
+import com.game.engine.Time;
 import com.game.tama.core.World;
+import com.game.tama.thing.pet.Pet;
 
 public class CommandWait extends Command
 {
 
-    private float waitTimeMs;
+    private final float waitTimeMs;
     private float timeMs = 0f;
 
-    public CommandWait(float waitTimeMs)
+    public CommandWait(final float waitTimeMs)
     {
         this.waitTimeMs = waitTimeMs;
     }
 
     @Override
-    public void start(Pet pet, World world)
+    public void start(final Pet pet, final World world)
     {
         super.start(pet, world);
         Log.d(getClass().getCanonicalName(), "pet waiting $waitTimeMs");
@@ -26,9 +26,9 @@ public class CommandWait extends Command
     }
 
     @Override
-    public void doing(Pet pet, World world)
+    public void doing(final Pet pet, final World world)
     {
-        timeMs += GameLoop.deltaTimeMs;
+        timeMs += Time.deltaTimeMs();
         if (timeMs >= waitTimeMs)
         {
             complete();

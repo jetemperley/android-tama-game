@@ -2,35 +2,34 @@ package com.game.tama.command;
 
 import android.util.Log;
 
+import com.game.engine.Time;
 import com.game.tama.anim.KeyFrameAnim;
 import com.game.tama.anim.KeyFrameAssets;
-import com.game.engine.DisplayAdapter;
-import com.game.engine.GameLoop;
 import com.game.tama.core.Direction;
-import com.game.tama.thing.pet.Pet;
 import com.game.tama.core.World;
+import com.game.tama.thing.pet.Pet;
 import com.game.tama.thing.tile.Tile;
 import com.game.tama.util.Vec2;
 
 public class CommandStep extends Command
 {
-    private Direction dir;
-    private KeyFrameAnim anim = KeyFrameAssets.get(KeyFrameAssets.Name.MoveUni);
+    private final Direction dir;
+    private final KeyFrameAnim anim = KeyFrameAssets.get(KeyFrameAssets.Name.MoveUni);
     private float time = 0f;
-    private float stepTime = 1f;
+    private final float stepTime = 1f;
 
-    public CommandStep(Direction dir)
+    public CommandStep(final Direction dir)
     {
         this.dir = dir;
     }
 
     @Override
-    public void start(Pet pet, World world)
+    public void start(final Pet pet, final World world)
     {
         super.start(pet, world);
         Log.d(getClass().getCanonicalName(), "stepping " + dir.x + " " + dir.y);
         pet.setDir(dir);
-        Tile tile = world.getTile(pet.loc.x + dir.x, pet.loc.y + dir.y);
+        final Tile tile = world.getTile(pet.loc.x + dir.x, pet.loc.y + dir.y);
         if (!pet.canMoveOnto(tile))
         {
             fail();
@@ -43,9 +42,9 @@ public class CommandStep extends Command
     }
 
     @Override
-    public void doing(Pet pet, World world)
+    public void doing(final Pet pet, final World world)
     {
-        time += GameLoop.deltaTimeS;
+        time += Time.deltaTimeS();
         if (time >= stepTime)
         {
             pet.setMovementPose(Pet.Movement.stand);
@@ -53,8 +52,8 @@ public class CommandStep extends Command
             complete();
             return;
         }
-        Vec2<Float> offset = anim.getPosition(time / stepTime);
-        pet.loc.setOffset(offset.x.intValue()*-dir.x, offset.y.intValue()*-dir.y);
+        final Vec2<Float> offset = anim.getPosition(time / stepTime);
+        pet.loc.setOffset(offset.x.intValue() * -dir.x, offset.y.intValue() * -dir.y);
     }
 
     @Override

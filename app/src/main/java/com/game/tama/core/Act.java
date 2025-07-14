@@ -2,11 +2,11 @@ package com.game.tama.core;
 
 import android.util.Log;
 
-import com.game.tama.engine.behaviour.GameManager;
+import com.game.engine.Time;
+import com.game.tama.thing.item.Poop;
+import com.game.tama.thing.pet.Pet;
 import com.game.tama.util.Path;
 import com.game.tama.util.Vec2;
-import com.game.tama.thing.pet.Pet;
-import com.game.tama.thing.item.Poop;
 
 import java.util.ArrayList;
 
@@ -32,12 +32,12 @@ class ActSequence implements Act
         acts = new ArrayList<Act>();
     }
 
-    void add(Act b)
+    void add(final Act b)
     {
         acts.add(b);
     }
 
-    public ActState update(World m, Pet p)
+    public ActState update(final World m, final Pet p)
     {
 
         if (acts.size() == 0)
@@ -59,7 +59,7 @@ class ActSequence implements Act
 
 class Consume implements Act
 {
-    public ActState update(World m, Pet p)
+    public ActState update(final World m, final Pet p)
     {
         return ActState.failed;
     }
@@ -72,7 +72,7 @@ class GoTo implements Act
     int dist;
     ActSequence pathActs;
 
-    GoTo(int x, int y, int dist)
+    GoTo(final int x, final int y, final int dist)
     {
         super();
         this.x = x;
@@ -81,12 +81,13 @@ class GoTo implements Act
         pathActs = null;
     }
 
-    public ActState update(World world, Pet pet)
+    public ActState update(final World world, final Pet pet)
     {
         if (pathActs == null)
         {
             pathActs = new ActSequence();
-            Vec2<Integer>[] path = new Path(dist).findPath(world, pet, pet.loc.x, pet.loc.y, x, y);
+            final Vec2<Integer>[] path =
+                new Path(dist).findPath(world, pet, pet.loc.x, pet.loc.y, x, y);
             if (path == null)
             {
                 Log.d("Act", "path was null");
@@ -94,7 +95,7 @@ class GoTo implements Act
             }
 
             int xi = pet.loc.x, yi = pet.loc.y;
-            for (Vec2<Integer> s : path)
+            for (final Vec2<Integer> s : path)
             {
                 Log.d("goto path: ", (s.x - xi) + " " + (s.y - yi));
                 pathActs.add(new Step(s.x - xi, s.y - yi));
@@ -109,7 +110,7 @@ class GoTo implements Act
 
 class Pat implements Act
 {
-    public ActState update(World m, Pet p)
+    public ActState update(final World m, final Pet p)
     {
         return ActState.failed;
     }
@@ -123,17 +124,17 @@ class DoPoop implements Act
 
     DoPoop()
     {
-        startTime = GameManager.time;
+        startTime = Time.time();
     }
 
-    public ActState update(World m, Pet p)
+    public ActState update(final World m, final Pet p)
     {
 
         // make a random Step
         if (step == null)
         {
-            boolean vert = Math.random() < 0.5;
-            int d = Math.random() < 0.5 ? -1 : 1;
+            final boolean vert = Math.random() < 0.5;
+            final int d = Math.random() < 0.5 ? -1 : 1;
             if (vert)
             {
                 step = new Step(d, 0);
@@ -143,8 +144,8 @@ class DoPoop implements Act
                 step = new Step(0, d);
             }
         }
-        int x = p.loc.x;
-        int y = p.loc.y;
+        final int x = p.loc.x;
+        final int y = p.loc.y;
 
         if (step.state == ActState.start)
         {
@@ -164,8 +165,8 @@ class DoPoop implements Act
         if (state == ActState.failed)
         {
 
-            long now = GameManager.time;
-            long time = startTime - now;
+            final long now = Time.time();
+            final long time = startTime - now;
             startTime = now;
             // p.sickness += time;
             step = null;
@@ -182,14 +183,14 @@ class Step implements Act
     int x, y;
     ActState state;
 
-    Step(int x, int y)
+    Step(final int x, final int y)
     {
         this.x = x;
         this.y = y;
         state = ActState.start;
     }
 
-    public ActState update(World m, Pet p)
+    public ActState update(final World m, final Pet p)
     {
         // println("updating");
         if (state == ActState.start)
@@ -210,7 +211,7 @@ class Step implements Act
         return state;
     }
 
-    boolean step(World world, Pet pet, int X, int Y)
+    boolean step(final World world, final Pet pet, final int X, final int Y)
     {
 
         if (pet.canMoveOnto(world.getTile(pet.loc.x + X, pet.loc.y + Y)))
@@ -226,7 +227,7 @@ class Step implements Act
         return false;
     }
 
-    boolean updateOffsets(Pet p)
+    boolean updateOffsets(final Pet p)
     {
         // println("updating offsets");
         if (p.loc.xoff != 0)
@@ -268,11 +269,7 @@ class Step implements Act
             }
         }
 
-        if (p.loc.xoff == 0 && p.loc.yoff == 0)
-        {
-            return true;
-            // println("step complete");
-        }
-        return false;
+        // println("step complete");
+        return p.loc.xoff == 0 && p.loc.yoff == 0;
     }
 }

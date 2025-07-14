@@ -4,33 +4,33 @@ import com.game.engine.DisplayAdapter;
 import com.game.engine.gesture.gestureEvent.Down;
 import com.game.engine.gesture.gestureEvent.DragEnd;
 import com.game.engine.gesture.gestureEvent.DragStart;
+import com.game.engine.gesture.gestureEvent.GestureEvent;
 import com.game.engine.gesture.gestureEvent.LongPress;
 import com.game.tama.engine.behaviour.GameManager;
 import com.game.tama.thing.Thing;
 import com.game.tama.util.Bounds;
 import com.game.tama.util.Vec2;
-import com.game.engine.gesture.gestureEvent.GestureEvent;
 
 import java.io.IOException;
 import java.io.Serializable;
 
 public class Container extends Thing implements Serializable
 {
-    private World world;
+    private final World world;
 
-    public Container(int size)
+    public Container(final int size)
     {
         world = WorldFactory.makeBackpack(size, size);
         asset = AssetName.static_backpack;
         load();
     }
 
-    public void drawContainer(DisplayAdapter display)
+    public void drawContainer(final DisplayAdapter display)
     {
         display.push();
-        Vec2<Float> pos = loc.getWorldBitPos();
-        display.getTransform().preTranslate(pos.x, pos.y+1, 0);
-        display.drawRect(
+        final Vec2<Float> pos = loc.getWorldBitPos();
+        display.getTransform().preTranslate(pos.x, pos.y + 1, 0);
+        display.clearRect(
             0,
             0,
             world.celln,
@@ -54,13 +54,14 @@ public class Container extends Thing implements Serializable
 
     /**
      * Start drag event
+     *
      * @param startX x position in parent world arr coords
      * @param startY y position in parent world arr coords
      */
-    public void dragStart(float startX,
-                          float startY)
+    public void dragStart(final float startX,
+                          final float startY)
     {
-        Thing t = world.checkCollision(startX - loc.x, startY - loc.y);
+        final Thing t = world.checkCollision(startX - loc.x, startY - loc.y);
         if (t != null)
         {
             world.pickupThing(t.loc.x, t.loc.y);
@@ -71,12 +72,13 @@ public class Container extends Thing implements Serializable
 
     /**
      * End drag event
+     *
      * @param x x position in parent world arr coords
      * @param y y position in parent world arr coords
      */
-    public void dragEnd(float x, float y)
+    public void dragEnd(final float x, final float y)
     {
-        Thing held = GameManager.getHeld().held;
+        final Thing held = GameManager.getHeld().held;
         if (world.addOrClosest(held, (int) (x - loc.x), (int) (y - loc.y)))
         {
             GameManager.getHeld().held = null;
@@ -90,24 +92,25 @@ public class Container extends Thing implements Serializable
      * @param y Screen space y
      * @return
      */
-    public boolean isTouchInside(float x, float y)
+    public boolean isTouchInside(final float x, final float y)
     {
         return Bounds.isInside(x, y,
-            loc.x, loc.y, world.width(), world.height());
+                               loc.x, loc.y, world.width(), world.height());
     }
 
     /**
      * Call when the contains inventory has been pressed
+     *
      * @param e event with transformed coords
      * @return
      */
-    public boolean handleEvent(GestureEvent e)
+    public boolean handleEvent(final GestureEvent e)
     {
         if (!isTouchInside(e.x, e.y))
         {
             return false;
         }
-        Class clazz = e.getClass();
+        final Class clazz = e.getClass();
         if (clazz == DragEnd.class)
         {
             dragEnd(e.x, e.y);
@@ -121,7 +124,7 @@ public class Container extends Thing implements Serializable
         return clazz == Down.class || clazz == LongPress.class;
     }
 
-    private void readObject(java.io.ObjectInputStream in)
+    private void readObject(final java.io.ObjectInputStream in)
         throws IOException, ClassNotFoundException
     {
         in.defaultReadObject();

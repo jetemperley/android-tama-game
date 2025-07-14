@@ -1,8 +1,5 @@
 package com.game.android;
 
-import javax.microedition.khronos.egl.EGLConfig;
-import javax.microedition.khronos.opengles.GL10;
-
 import android.graphics.Bitmap;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
@@ -20,60 +17,64 @@ import com.game.tama.util.Vec2;
 
 import java.lang.reflect.Field;
 import java.nio.ByteBuffer;
+import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.Stack;
 import java.util.function.Consumer;
+
+import javax.microedition.khronos.egl.EGLConfig;
+import javax.microedition.khronos.opengles.GL10;
 
 public class GLDisplay implements GLSurfaceView.Renderer, DisplayAdapter
 {
 
     Square square;
     private Shader genericShader;
+    private Shader uiShader;
     private final Vec<Float> color = new Vec<>(1f, 1f, 1f);
     private final Vec<Float> tempColor = new Vec<>(1f, 1f, 1f);
 
     public Consumer<DisplayAdapter> drawWorld = null;
 
-    private Matrix4 currentMatrix = new Matrix4();
-    private Stack<float[]> matrixStack = new Stack<>();
+    private final Matrix4 currentMatrix = new Matrix4();
+    private final Stack<float[]> matrixStack = new Stack<>();
 
     private int[] textureHandles;
-    private HashMap<Bitmap, Integer> textures = new HashMap<>();
+    private final HashMap<Bitmap, Integer> textures = new HashMap<>();
 
-    public void onSurfaceCreated(GL10 unused, EGLConfig config)
+    public void onSurfaceCreated(final GL10 unused, final EGLConfig config)
     {
         // Set the background frame color
         Log.log(this, "surface created");
         GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         square = new Square();
-        // IntBuffer intBuffer = IntBuffer.allocate(1);
-        // GLES20.glGetIntegerv(GLES20.GL_MAX_TEXTURE_IMAGE_UNITS, intBuffer);
-        // Log.log(this, "Max textures = " + intBuffer.get(0));
         genericShader = new Shader(GLAssetName.generic_vertex, GLAssetName.generic_fragment);
-
+        uiShader = new Shader(GLAssetName.generic_vertex, GLAssetName.ui_fragment);
         loadAllTextures();
     }
 
-    public void onDrawFrame(GL10 unused)
+    public void onDrawFrame(final GL10 unused)
     {
         // Redraw background color
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
-        GLES20.glUseProgram(genericShader.shaderId);
+        GLES20.glClearColor(0, 0, 0, 1);
+        GLES20.glClearDepthf(1.0f);
         GLES20.glEnable(GLES20.GL_DEPTH_TEST);
+        Log.log(this, "draw time " + LocalTime.now());
         drawWorld.accept(this);
     }
 
-    public void onSurfaceChanged(GL10 unused, int width, int height)
+    public void onSurfaceChanged(final GL10 unused, final int width, final int height)
     {
         GLES20.glViewport(0, 0, width, height);
     }
 
-    public static int loadShader(int type, String shaderCode)
+    public static int loadShader(final int type, final String shaderCode)
     {
 
         // create a vertex shader type (GLES20.GL_VERTEX_SHADER)
         // or a fragment shader type (GLES20.GL_FRAGMENT_SHADER)
-        int shader = GLES20.glCreateShader(type);
+        final int shader = GLES20.glCreateShader(type);
 
         // add the source code to the shader and compile it
         GLES20.glShaderSource(shader, shaderCode);
@@ -83,31 +84,31 @@ public class GLDisplay implements GLSurfaceView.Renderer, DisplayAdapter
     }
 
     @Override
-    public void drawArr(WorldObject t)
+    public void draw(final WorldObject t)
     {
-        Vec2<Float> pos = t.getWorldArrPos();
+        final Vec2<Float> pos = t.getWorldArrPos();
         if (t.isFlat)
         {
-            drawSprite(t.sprite, pos.x, pos.y, 1);
+            drawSprite(t.sprite, pos.x, pos.y, 0);
             return;
         }
-        drawSprite(t.sprite, pos.x, pos.y, 0);
+        drawSprite(t.sprite, pos.x, pos.y, -1);
     }
 
     @Override
-    public void drawArr(Sprite d, float ax, float ay)
+    public void draw(final Sprite d, final float x, final float y, final float z)
     {
 
-        drawSprite(d, ax, ay);
+        drawSprite(d, x, y, z);
     }
 
     @Override
-    public void drawSprite(Sprite sprite, float x, float y)
+    public void drawSprite(final Sprite sprite, final float x, final float y)
     {
         drawSprite(sprite, x, y, -99);
     }
 
-    public void drawSprite(Sprite sprite, float x, float y, float z)
+    public void drawSprite(final Sprite sprite, final float x, final float y, final float z)
     {
         push();
         currentMatrix.preTranslate(x, y, z);
@@ -116,13 +117,13 @@ public class GLDisplay implements GLSurfaceView.Renderer, DisplayAdapter
     }
 
     @Override
-    public void drawSprite(Sprite sprite)
+    public void drawSprite(final Sprite sprite)
     {
         draw(genericShader, square, sprite);
     }
 
     @Override
-    public void setTransform(Transform transform)
+    public void setTransform(final Transform transform)
     {
         currentMatrix.setValues(transform);
     }
@@ -134,7 +135,7 @@ public class GLDisplay implements GLSurfaceView.Renderer, DisplayAdapter
     }
 
     @Override
-    public void translate(float x, float y)
+    public void translate(final float x, final float y)
     {
         throw new UnsupportedOperationException();
     }
@@ -142,7 +143,7 @@ public class GLDisplay implements GLSurfaceView.Renderer, DisplayAdapter
     @Override
     public void push()
     {
-        float[] values = new float[16];
+        final float[] values = new float[16];
         currentMatrix.getValues(values);
         matrixStack.push(values);
     }
@@ -154,48 +155,35 @@ public class GLDisplay implements GLSurfaceView.Renderer, DisplayAdapter
     }
 
     @Override
-    public void drawLine(float x1, float y1, float x2, float y2)
+    public void drawLine(final float x1, final float y1, final float x2, final float y2)
     {
         throw new NoSuchMethodError();
     }
 
     @Override
-    public void drawRect(float x, float y, float width, float height)
-    {
-        push();
-        currentMatrix.preTranslate(x, y, 0);
-        currentMatrix.preScale(width, height, 1);
-        tempColor.set(color);
-        color.set(0f, 0f, 0f);
-        draw(genericShader, square, Asset.getStaticSprite(AssetName.static_solid));
-        color.set(tempColor);
-        pop();
-    }
-
-    @Override
-    public void preConcat(Transform mat)
+    public void preConcat(final Transform mat)
     {
         currentMatrix.preMult(mat);
     }
 
-    private void draw(Shader shader, Square square, Sprite sprite)
+    private void draw(final Shader shader, final Square square, final Sprite sprite)
     {
         // Add program to OpenGL ES environment
         GLES20.glUseProgram(shader.shaderId);
 
         // matrix
-        int matrixHandle =
+        final int matrixHandle =
             GLES20.glGetUniformLocation(shader.shaderId, "matrix");
         GLES20.glUniformMatrix4fv(matrixHandle, 1, false, currentMatrix.getValues(), 0);
 
         // vertex pos
-        int positionHandle =
+        final int positionHandle =
             GLES20.glGetAttribLocation(shader.shaderId, "vPosition");
         GLES20.glEnableVertexAttribArray(positionHandle);
 
         // Prepare the triangle coordinate data
         GLES20.glVertexAttribPointer(
-            positionHandle, square.COORDS_PER_VERTEX,
+            positionHandle, Square.COORDS_PER_VERTEX,
             GLES20.GL_FLOAT, false,
             square.vertexStride, square.vertexBuffer);
 
@@ -209,21 +197,25 @@ public class GLDisplay implements GLSurfaceView.Renderer, DisplayAdapter
             GLES20.GL_TEXTURE_MAG_FILTER,
             GLES20.GL_NEAREST);
 
-        int texUniform =
+        final int texUniform =
             GLES20.glGetUniformLocation(shader.shaderId, "u_Texture");
 
         // Set the active texture unit to texture unit 0.
         GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
 
+        final int i = textures.get(sprite.getSprite());
+        final Bitmap b =
+            textures.entrySet().stream().filter(k -> k.getValue() == 37).findFirst().get().getKey();
+
         // Bind the texture to this unit.
         GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
-        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, textures.get(sprite.getSprite()));
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, i);
 
         // Tell the texture uniform sampler to use this texture in the shader
         // by binding to texture unit 0.
         GLES20.glUniform1i(texUniform, 0);
 
-        int colorUniform =
+        final int colorUniform =
             GLES20.glGetUniformLocation(shader.shaderId, "tintColor");
         GLES20.glUniform3f(colorUniform, color.r(), color.g(), color.b());
 
@@ -243,17 +235,17 @@ public class GLDisplay implements GLSurfaceView.Renderer, DisplayAdapter
         GLES20.glGenTextures(textureHandles.length, textureHandles, 0);
 
         int currentTex = 0;
-        for (Field f : AssetName.class.getFields())
+        for (final Field f : AssetName.class.getFields())
         {
-            AssetName name = AssetName.valueOf(f.getName());
+            final AssetName name = AssetName.valueOf(f.getName());
             if (name.name().startsWith("sheet"))
             {
-                SpriteSheet sheet = Asset.getSpriteSheet(name);
+                final SpriteSheet sheet = Asset.getSpriteSheet(name);
                 for (int row = 0; row < sheet.numRows(); row++)
                 {
                     for (int col = 0; col < sheet.rowLength(row); col++)
                     {
-                        Bitmap bitmap = sheet.get(row, col);
+                        final Bitmap bitmap = sheet.get(row, col);
                         loadSingleTexture(
                             textureHandles[currentTex],
                             bitmap);
@@ -264,7 +256,7 @@ public class GLDisplay implements GLSurfaceView.Renderer, DisplayAdapter
             }
             else
             {
-                StaticSprite sprite = Asset.getStaticSprite(name);
+                final StaticSprite sprite = Asset.getStaticSprite(name);
                 if (sprite == null)
                 {
                     Log.log(this, name.name());
@@ -278,7 +270,7 @@ public class GLDisplay implements GLSurfaceView.Renderer, DisplayAdapter
         }
     }
 
-    private void loadSingleTexture(int texHandle, Bitmap bitmap)
+    private void loadSingleTexture(final int texHandle, final Bitmap bitmap)
     {
 
         // do texture stuff
@@ -286,7 +278,7 @@ public class GLDisplay implements GLSurfaceView.Renderer, DisplayAdapter
         GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
         GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, texHandle);
 
-        ByteBuffer byteBuffer =
+        final ByteBuffer byteBuffer =
             ByteBuffer.allocateDirect(bitmap.getByteCount());
 
         bitmap.copyPixelsToBuffer(byteBuffer);
@@ -306,12 +298,12 @@ public class GLDisplay implements GLSurfaceView.Renderer, DisplayAdapter
     private int numTexturesRequired()
     {
         int count = 0;
-        for (Field f : AssetName.class.getDeclaredFields())
+        for (final Field f : AssetName.class.getDeclaredFields())
         {
             if (f.getName().startsWith("sheet"))
             {
                 count += Asset.getSpriteSheet(AssetName.valueOf(f.getName()))
-                    .totalSprites();
+                              .totalSprites();
             }
             else
             {
@@ -320,4 +312,22 @@ public class GLDisplay implements GLSurfaceView.Renderer, DisplayAdapter
         }
         return count;
     }
+
+    public void drawUi(final Sprite sprite, final float x, final float y)
+    {
+        push();
+        currentMatrix.preTranslate(x, y, -5);
+        GLES20.glDisable(GLES20.GL_DEPTH_TEST);
+        draw(genericShader, square, sprite);
+        GLES20.glEnable(GLES20.GL_DEPTH_TEST);
+        pop();
+    }
+
+    @Override
+    public void clearRect(final float x, final float y, final float xSize, final float ySize)
+    {
+        // todo implement size
+        drawUi(Asset.getStaticSprite(AssetName.static_solid), x, y);
+    }
+
 }

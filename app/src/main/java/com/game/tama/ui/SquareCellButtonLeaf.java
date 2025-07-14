@@ -1,7 +1,7 @@
 package com.game.tama.ui;
 
-import com.game.engine.DisplayAdapter;
 import com.game.android.Asset;
+import com.game.engine.DisplayAdapter;
 import com.game.tama.core.AssetName;
 import com.game.tama.core.Sprite;
 import com.game.tama.core.SpriteSheet;
@@ -33,16 +33,23 @@ public class SquareCellButtonLeaf extends SimpleButtonLeaf
      * @param width  size (in 16 bit cells) of button
      * @param height size (in 16 bit cells) of button
      */
-    public SquareCellButtonLeaf(float xPos, float yPos, int width, int height, Sprite sprite)
+    public SquareCellButtonLeaf(final float xPos,
+                                final float yPos,
+                                final int width,
+                                final int height,
+                                final Sprite sprite)
     {
-        this(xPos, yPos, width, height, sprite, ()->{});
+        this(xPos, yPos, width, height, sprite, () -> {});
     }
 
     /**
-     * @param xPos   pixel x position of the button
-     * @param yPos   pixel y position of the button
+     * @param xPos pixel x position of the button
+     * @param yPos pixel y position of the button
      */
-    public SquareCellButtonLeaf(float xPos, float yPos, Sprite sprite, Runnable activate)
+    public SquareCellButtonLeaf(final float xPos,
+                                final float yPos,
+                                final Sprite sprite,
+                                final Runnable activate)
     {
         this(xPos, yPos, 1, 1, sprite, activate);
     }
@@ -53,12 +60,12 @@ public class SquareCellButtonLeaf extends SimpleButtonLeaf
      * @param width  size (in 16 bit cells) of button
      * @param height size (in 16 bit cells) of button
      */
-    public SquareCellButtonLeaf(float xPos,
-                                float yPos,
-                                float width,
-                                float height,
-                                Sprite sprite,
-                                Runnable activate)
+    public SquareCellButtonLeaf(final float xPos,
+                                final float yPos,
+                                final float width,
+                                final float height,
+                                final Sprite sprite,
+                                final Runnable activate)
     {
         super(xPos, yPos, width, height, sprite, activate);
         sizeInCells = new Vec2<>(width, height);
@@ -67,7 +74,7 @@ public class SquareCellButtonLeaf extends SimpleButtonLeaf
 
     private void init()
     {
-        SpriteSheet sheet =
+        final SpriteSheet sheet =
             Asset.getSpriteSheet(AssetName.sheet_16_rect);
         TOP_LEFT = sheet.getSprite(0, 0);
         TOP_RIGHT = sheet.getSprite(0, 2);
@@ -91,13 +98,12 @@ public class SquareCellButtonLeaf extends SimpleButtonLeaf
     }
 
     @Override
-    public void draw(DisplayAdapter display)
+    public void draw(final DisplayAdapter display)
     {
-        // todo sort out this drawing rubbish
-        display.drawRect(pos.x, pos.y, sizeInCells.x, sizeInCells.y);
+        //        display.clearRect(pos.x, pos.y, 1, 1);
         if (sizeInCells.x == 1 && sizeInCells.y == 1)
         {
-            display.drawSprite(SQUARE, pos.x, pos.y);
+            display.drawUi(SQUARE, pos.x, pos.y);
         }
         else if (sizeInCells.x == 1)
         {
@@ -111,41 +117,41 @@ public class SquareCellButtonLeaf extends SimpleButtonLeaf
         {
             drawRect(display);
         }
-        display.drawSprite(sprite, pos.x, pos.y);
+        display.drawUi(sprite, pos.x, pos.y);
     }
 
-    private void drawCol(DisplayAdapter display)
+    private void drawCol(final DisplayAdapter display)
     {
-        display.drawSprite(TOP_CAP, pos.x, pos.y);
+        display.drawUi(TOP_CAP, pos.x, pos.y);
 
         float y = pos.y + 1;
         for (int i = 1; i < sizeInCells.y - 1; i++)
         {
-            display.drawSprite(VERT_PIPE, pos.x, y);
+            display.drawUi(VERT_PIPE, pos.x, y);
             y++;
         }
-        display.drawSprite(BOT_CAP, pos.x, y);
+        display.drawUi(BOT_CAP, pos.x, y);
     }
 
-    private void drawRow(DisplayAdapter display)
+    private void drawRow(final DisplayAdapter display)
     {
-        display.drawSprite(LEFT_CAP, pos.x, pos.y);
+        display.drawUi(LEFT_CAP, pos.x, pos.y);
 
-        float x = pos.x +1;
+        float x = pos.x + 1;
         for (int i = 1; i < sizeInCells.x - 1; i++)
         {
-            display.drawSprite(HORZ_PIPE, x, pos.y);
+            display.drawUi(HORZ_PIPE, x, pos.y);
             x += 1;
         }
-        display.drawSprite(RIGHT_CAP, x, pos.y);
+        display.drawUi(RIGHT_CAP, x, pos.y);
     }
 
-    private void drawRect(DisplayAdapter display)
+    private void drawRect(final DisplayAdapter display)
     {
-        display.drawSprite(TOP_LEFT, pos.x, pos.y);
-        display.drawSprite(TOP_RIGHT, pos.x + (sizeInCells.x - 1), pos.y);
-        display.drawSprite(BOT_LEFT, pos.x, pos.y + (sizeInCells.y - 1));
-        display.drawSprite(
+        display.drawUi(TOP_LEFT, pos.x, pos.y);
+        display.drawUi(TOP_RIGHT, pos.x + (sizeInCells.x - 1), pos.y);
+        display.drawUi(BOT_LEFT, pos.x, pos.y + (sizeInCells.y - 1));
+        display.drawUi(
             BOT_RIGHT,
             pos.x + (sizeInCells.x - 1),
             pos.y + (sizeInCells.y - 1));
@@ -153,16 +159,16 @@ public class SquareCellButtonLeaf extends SimpleButtonLeaf
         float x = pos.x + 1;
         for (int i = 1; i < sizeInCells.x - 1; i++)
         {
-            display.drawSprite(TOP, x, pos.y);
-            display.drawSprite(BOT, x, pos.y + (sizeInCells.y - 1));
+            display.drawUi(TOP, x, pos.y);
+            display.drawUi(BOT, x, pos.y + (sizeInCells.y - 1));
             x += 1;
         }
 
         float y = pos.y + 1;
         for (int i = 1; i < sizeInCells.y - 1; i++)
         {
-            display.drawSprite(LEFT, pos.x, y);
-            display.drawSprite(RIGHT, pos.x + (sizeInCells.x - 1), y);
+            display.drawUi(LEFT, pos.x, y);
+            display.drawUi(RIGHT, pos.x + (sizeInCells.x - 1), y);
             y += 1;
         }
     }
