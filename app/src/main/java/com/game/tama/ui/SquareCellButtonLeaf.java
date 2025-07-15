@@ -1,7 +1,7 @@
 package com.game.tama.ui;
 
-import com.game.android.Asset;
 import com.game.engine.DisplayAdapter;
+import com.game.tama.core.Asset;
 import com.game.tama.core.AssetName;
 import com.game.tama.core.Sprite;
 import com.game.tama.core.SpriteSheet;
@@ -75,7 +75,7 @@ public class SquareCellButtonLeaf extends SimpleButtonLeaf
     private void init()
     {
         final SpriteSheet sheet =
-            Asset.getSpriteSheet(AssetName.sheet_16_rect);
+            Asset.sheets.get(AssetName.sheet_16_rect);
         TOP_LEFT = sheet.getSprite(0, 0);
         TOP_RIGHT = sheet.getSprite(0, 2);
         BOT_LEFT = sheet.getSprite(2, 0);

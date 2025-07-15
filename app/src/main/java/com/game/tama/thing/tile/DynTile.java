@@ -1,11 +1,11 @@
 package com.game.tama.thing.tile;
 
 import com.game.engine.DisplayAdapter;
+import com.game.tama.core.Asset;
 import com.game.tama.core.AssetName;
-import com.game.tama.core.StaticSprite;
-import com.game.android.Asset;
 import com.game.tama.core.Sprite;
 import com.game.tama.core.SpriteSheet;
+import com.game.tama.core.StaticSprite;
 import com.game.tama.core.World;
 
 public class DynTile extends Tile
@@ -26,7 +26,7 @@ public class DynTile extends Tile
     {
         if (sheet == null)
         {
-            sheet = Asset.getSpriteSheet(AssetName.sheet_16_rect_index);
+            sheet = Asset.sheets.get(AssetName.sheet_16_rect_index);
         }
         return null;
     }
@@ -37,7 +37,7 @@ public class DynTile extends Tile
         return type;
     }
 
-    public void draw(DisplayAdapter d)
+    public void draw(final DisplayAdapter d)
     {
         if (current != null)
         {
@@ -49,17 +49,18 @@ public class DynTile extends Tile
         }
     }
 
-    @Override public void updateDetails(World world)
+    @Override
+    public void updateDetails(final World world)
     {
-        Tile topTile = world.getTile(loc.x, loc.y-1);
-        Tile bottomTile = world.getTile(loc.x, loc.y+1);
-        Tile leftTile = world.getTile(loc.x-1, loc.y);
-        Tile rightTile = world.getTile(loc.x+1, loc.y);
+        final Tile topTile = world.getTile(loc.x, loc.y - 1);
+        final Tile bottomTile = world.getTile(loc.x, loc.y + 1);
+        final Tile leftTile = world.getTile(loc.x - 1, loc.y);
+        final Tile rightTile = world.getTile(loc.x + 1, loc.y);
 
-        boolean top = topTile != null && topTile.type() == type;
-        boolean bottom = bottomTile != null && bottomTile.type() == type;
-        boolean left = leftTile != null && leftTile.type() == type;
-        boolean right = rightTile != null && rightTile.type() == type;
+        final boolean top = topTile != null && topTile.type() == type;
+        final boolean bottom = bottomTile != null && bottomTile.type() == type;
+        final boolean left = leftTile != null && leftTile.type() == type;
+        final boolean right = rightTile != null && rightTile.type() == type;
 
         // index will be (top, bottom, left, right)
         byte index = 0;

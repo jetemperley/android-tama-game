@@ -2,7 +2,6 @@ package com.game.tama.engine.behaviour;
 
 import android.graphics.Matrix;
 
-import com.game.android.Asset;
 import com.game.engine.Behaviour;
 import com.game.engine.DisplayAdapter;
 import com.game.engine.Node;
@@ -11,6 +10,7 @@ import com.game.engine.gesture.Input;
 import com.game.engine.gesture.gestureEvent.GestureEvent;
 import com.game.tama.command.CommandFactory;
 import com.game.tama.command.CommandQueue;
+import com.game.tama.core.Asset;
 import com.game.tama.core.AssetName;
 import com.game.tama.core.World;
 import com.game.tama.thing.Thing;
@@ -58,7 +58,7 @@ public class PetGardenBehaviour extends Behaviour implements Input
         if (selected != null)
         {
             display.draw(
-                Asset.getStaticSprite(AssetName.static_inv),
+                Asset.sprites.get(AssetName.static_inv),
                 selected.loc.getWorldArrPos().x,
                 selected.loc.getWorldArrPos().y,
                 -2);

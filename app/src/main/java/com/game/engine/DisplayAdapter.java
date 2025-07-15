@@ -10,33 +10,33 @@ public interface DisplayAdapter
     /**
      * Display the object based on its world position
      *
-     * @param t
+     * @param worldObject
      */
-    void draw(WorldObject t);
+    void draw(WorldObject worldObject);
 
     /**
      * Dispay the sprite relative to the world array
      *
-     * @param d the thing to display
-     * @param x world position x
-     * @param y world position y
+     * @param sprite the thing to display
+     * @param x      world position x
+     * @param y      world position y
      */
-    void draw(Sprite d, float x, float y, float z);
+    void draw(Sprite sprite, float x, float y, float z);
 
     /**
      * Display at the provided pixel location, with respect to the current
      * matrix
      *
-     * @param sprite Thing to display
-     * @param x      world x
-     * @param y      world y
+     * @param spriteIsprite to display
+     * @param x             world x
+     * @param y             world y
      */
     void drawSprite(Sprite sprite, float x, float y);
 
     /**
      * Draw the sprite with respect to the matrix
      *
-     * @param sprite
+     * @param spriteId sprite to display
      */
     void drawSprite(Sprite sprite);
 
@@ -72,7 +72,7 @@ public interface DisplayAdapter
      * @param x      world x position
      * @param y      world y position
      */
-    void drawUi(final Sprite sprite, final float x, final float y);
+    void drawUi(Sprite sprite, final float x, final float y);
 
     void clearRect(float x, float y, float xSize, float ySize);
 

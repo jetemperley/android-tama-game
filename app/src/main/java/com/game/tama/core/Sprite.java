@@ -1,11 +1,9 @@
 package com.game.tama.core;
 
-import android.graphics.Bitmap;
-
 public interface Sprite
 {
-    Bitmap getSprite();
+    int getSpriteId();
 
-    Bitmap getUISprite();
+    int getUISpriteId();
 }
 

@@ -1,7 +1,5 @@
 package com.game.tama.core;
 
-import android.graphics.Bitmap;
-
 import com.game.engine.Time;
 import com.game.tama.thing.Thing;
 
@@ -19,12 +17,14 @@ public class Animator implements Sprite, java.io.Serializable
         sheet = ss;
     }
 
-    public Bitmap getUISprite()
+    @Override
+    public int getUISpriteId()
     {
         return sheet.get(0, 0);
     }
 
-    public Bitmap getSprite()
+    @Override
+    public int getSpriteId()
     {
         return getSlide(animTime, animDur, animId);
     }
@@ -67,13 +67,13 @@ public class Animator implements Sprite, java.io.Serializable
         play = false;
     }
 
-    Bitmap getSlide(final int time, final int duration, final int row)
+    int getSlide(final int time, final int duration, final int row)
     {
         final long l = Time.time();
         // todo this can land exactly on the col length
         final int perSlide = duration / sheet.rowLength(row);
         final int frame = time / perSlide;
-        final Bitmap b = sheet.get(row, frame);
+        final int b = sheet.get(row, frame);
         return b;
     }
 

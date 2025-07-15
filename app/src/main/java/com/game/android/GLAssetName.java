@@ -4,5 +4,4 @@ public enum GLAssetName
 {
     generic_fragment,
     generic_vertex,
-    ui_fragment
 }

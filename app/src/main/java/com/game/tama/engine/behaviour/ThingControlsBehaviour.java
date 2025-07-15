@@ -2,7 +2,7 @@ package com.game.tama.engine.behaviour;
 
 import com.game.engine.Behaviour;
 import com.game.engine.Node;
-import com.game.android.Asset;
+import com.game.tama.core.Asset;
 import com.game.tama.core.AssetName;
 import com.game.tama.core.World;
 import com.game.tama.thing.Thing;
@@ -22,12 +22,12 @@ public class ThingControlsBehaviour extends Behaviour
     private final Runnable deselectControl;
     private final PetGardenBehaviour petGardenBehaviour;
 
-    public ThingControlsBehaviour(Node parent)
+    public ThingControlsBehaviour(final Node parent)
     {
         this(parent, null);
     }
 
-    public ThingControlsBehaviour(Node parent, UINode menu)
+    public ThingControlsBehaviour(final Node parent, final UINode menu)
     {
         super(parent);
         this.menu = menu;
@@ -40,7 +40,7 @@ public class ThingControlsBehaviour extends Behaviour
      *
      * @param thing
      */
-    public void setCurrentControls(Thing thing)
+    public void setCurrentControls(final Thing thing)
     {
         if (menu == null)
         {
@@ -53,11 +53,11 @@ public class ThingControlsBehaviour extends Behaviour
                 "Cannot set the controls for a null thing.");
         }
 
-        List<ThingControl> controls = thing.getControls();
+        final List<ThingControl> controls = thing.getControls();
         selectedControl = null;
         currentControls = controls;
 
-        UINode controlNode = new UINode();
+        final UINode controlNode = new UINode();
 
         // add the thing picture
         controlNode.add(
@@ -75,7 +75,7 @@ public class ThingControlsBehaviour extends Behaviour
                     0,
                     1,
                     1,
-                    Asset.getStaticSprite(tc.assetName),
+                    Asset.sprites.get(tc.assetName),
                     () ->
                     {
                         if (selectedControl == tc)
@@ -96,7 +96,7 @@ public class ThingControlsBehaviour extends Behaviour
                 0,
                 1,
                 1,
-                Asset.getStaticSprite(AssetName.static_x),
+                Asset.sprites.get(AssetName.static_x),
                 deselectControl));
         menu.add(this, controlNode);
     }
@@ -108,11 +108,11 @@ public class ThingControlsBehaviour extends Behaviour
         selectedControl = null;
     }
 
-    public void setMenuRoot(UINode root)
+    public void setMenuRoot(final UINode root)
     {
         if (menu != null)
         {
-            UIComposite controls = menu.remove(this);
+            final UIComposite controls = menu.remove(this);
             if (root != null && controls != null)
             {
                 root.add(this, controls);
@@ -129,10 +129,10 @@ public class ThingControlsBehaviour extends Behaviour
      * @param x
      * @param y
      */
-    public void executeCurrentControl(Thing thing,
-                                      World world,
-                                      float x,
-                                      float y)
+    public void executeCurrentControl(final Thing thing,
+                                      final World world,
+                                      final float x,
+                                      final float y)
     {
         if (selectedControl == null)
         {

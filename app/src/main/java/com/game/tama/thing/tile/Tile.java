@@ -1,12 +1,12 @@
 package com.game.tama.thing.tile;
 
 import com.game.engine.DisplayAdapter;
+import com.game.tama.core.Asset;
 import com.game.tama.core.AssetName;
-import com.game.tama.core.WorldObject;
-import com.game.tama.thing.Thing;
-import com.game.android.Asset;
 import com.game.tama.core.Sprite;
 import com.game.tama.core.World;
+import com.game.tama.core.WorldObject;
+import com.game.tama.thing.Thing;
 
 public abstract class Tile implements java.io.Serializable
 {
@@ -25,7 +25,7 @@ public abstract class Tile implements java.io.Serializable
 
     Sprite getAssets()
     {
-        return Asset.getSpriteSheet(AssetName.sheet_16_terrain).getSprite(0, 0);
+        return Asset.sheets.get(AssetName.sheet_16_terrain).getSprite(0, 0);
     }
 
     public void load()
@@ -37,7 +37,7 @@ public abstract class Tile implements java.io.Serializable
         }
     }
 
-    public void draw(DisplayAdapter d)
+    public void draw(final DisplayAdapter d)
     {
         if (visible)
         {
@@ -49,7 +49,7 @@ public abstract class Tile implements java.io.Serializable
         }
     }
 
-    public void update(World m)
+    public void update(final World m)
     {
         if (thing != null)
         {
@@ -57,12 +57,12 @@ public abstract class Tile implements java.io.Serializable
         }
     }
 
-    public void updateDetails(World m)
+    public void updateDetails(final World m)
     {
 
     }
 
-    public void setVisible(boolean visible)
+    public void setVisible(final boolean visible)
     {
         this.visible = visible;
     }
@@ -77,7 +77,7 @@ public abstract class Tile implements java.io.Serializable
         return thing == null;
     }
 
-    public void setThing(Thing thing)
+    public void setThing(final Thing thing)
     {
         this.thing = thing;
         if (thing != null)
@@ -92,7 +92,7 @@ public abstract class Tile implements java.io.Serializable
         {
             return null;
         }
-        Thing t = thing.pickup();
+        final Thing t = thing.pickup();
         thing = null;
         return t;
     }
@@ -102,7 +102,7 @@ public abstract class Tile implements java.io.Serializable
         return thing;
     }
 
-    public void setPos(int x, int y)
+    public void setPos(final int x, final int y)
     {
         loc.setPos(x, y);
     }

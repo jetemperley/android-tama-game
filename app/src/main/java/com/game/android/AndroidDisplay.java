@@ -31,26 +31,25 @@ public class AndroidDisplay implements DisplayAdapter
         idMatrix.reset();
     }
 
-    public void draw(final WorldObject t)
+    public void draw(final WorldObject worldObject)
     {
-        if (t.sprite == null)
+        if (worldObject.sprite == null)
         {
             Log.log(
-                t,
+                worldObject,
                 "sprite was null");
-            return;
         }
-        canvas.drawBitmap(
-            t.sprite.getSprite(),
-            t.x * cellSize + t.xoff * cellSize / 100f,
-            t.y * cellSize + t.yoff * cellSize / 100f,
-            GameActivity.black);
+        //        canvas.drawBitmap(
+        //            worldObject.sprite.getSpriteId(),
+        //            worldObject.x * cellSize + worldObject.xoff * cellSize / 100f,
+        //            worldObject.y * cellSize + worldObject.yoff * cellSize / 100f,
+        //            GameActivity.black);
     }
 
     @Override
     public void draw(final Sprite sprite, final float x, final float y, final float z)
     {
-        canvas.drawBitmap(sprite.getSprite(), x, y, GameActivity.black);
+        //        canvas.drawBitmap(sprite.getSpriteId(), x, y, GameActivity.black);
     }
 
     @Override

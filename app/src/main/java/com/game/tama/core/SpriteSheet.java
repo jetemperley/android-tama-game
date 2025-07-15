@@ -1,7 +1,5 @@
 package com.game.tama.core;
 
-import android.graphics.Bitmap;
-
 public class SpriteSheet
 {
     // sheet is in [y][x] coordinates
@@ -12,9 +10,9 @@ public class SpriteSheet
         sheet = arr;
     }
 
-    public Bitmap get(final int row, final int col)
+    public int get(final int row, final int col)
     {
-        return sheet[row][col].getSprite();
+        return sheet[row][col].getSpriteId();
     }
 
     public StaticSprite getSprite(final int row, final int col)

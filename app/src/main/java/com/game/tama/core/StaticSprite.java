@@ -1,24 +1,22 @@
 package com.game.tama.core;
 
-import android.graphics.Bitmap;
-
 public class StaticSprite implements Sprite
 {
 
-    Bitmap img;
+    int imgId;
 
-    public StaticSprite(Bitmap bm)
+    public StaticSprite(final int imgId)
     {
-        img = bm;
+        this.imgId = imgId;
     }
 
-    public Bitmap getSprite()
+    public int getSpriteId()
     {
-        return img;
+        return imgId;
     }
 
-    public Bitmap getUISprite()
+    public int getUISpriteId()
     {
-        return img;
+        return imgId;
     }
 }

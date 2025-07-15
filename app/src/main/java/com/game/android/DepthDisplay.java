@@ -20,9 +20,9 @@ public class DepthDisplay implements DisplayAdapter
         draws = new PriorityQueue<>(200, new DepthComp());
     }
 
-    public void draw(final WorldObject t)
+    public void draw(final WorldObject worldObject)
     {
-        draws.add(t);
+        draws.add(worldObject);
     }
 
     @Override

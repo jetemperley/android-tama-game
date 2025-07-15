@@ -1,8 +1,8 @@
 package com.game.tama.ui;
 
-import com.game.android.Asset;
 import com.game.engine.DisplayAdapter;
 import com.game.engine.Time;
+import com.game.tama.core.Asset;
 import com.game.tama.core.AssetName;
 
 import java.util.ArrayList;
@@ -32,7 +32,7 @@ public class DialogueTextBoxLeaf extends SquareCellButtonLeaf
                                final int height,
                                final String text)
     {
-        super(xPos, yPos, width, height, Asset.getStaticSprite(AssetName.static_empty));
+        super(xPos, yPos, width, height, Asset.sprites.get(AssetName.static_empty));
         this.text = text;
         lettersPerLine =
             width * 2 - 1; // 8 pixels per letter, 16 pixels per cell

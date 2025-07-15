@@ -4,12 +4,11 @@ import android.app.Activity;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Context;
-import android.graphics.Canvas;
+import android.content.res.Resources;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.view.Display;
@@ -32,26 +31,23 @@ import java.nio.file.Files;
 
 public class GameActivity extends Activity
 {
+    public static GameActivity gameActivity;
+
     final static String DATA_FILE_NAME = "gameData.ser";
     /**
      * The screen bounds for this particular game application taking into
      * account the navbar and such.
      */
     private static final Rect SCREEN_RECT = new Rect();
+    public static Resources resources;
 
-    ConstraintLayout lay;
     static Paint red, black, white, highlight;
     //    CustomView view;
     public static Rect screenSize;
-    final String
-        CHANNEL_ID = "01",
-        channel_name = "ch1",
-        channel_desc = "test channel";
-    Canvas canvas;
-    GameLoop gameLoop;
+    final String CHANNEL_ID = "01", channel_name = "ch1", channel_desc = "test channel";
 
+    GameLoop gameLoop;
     Display display;
-    AndroidDisplay displayAdapter;
 
     Node rootNode;
     GameManager gameManager;
@@ -61,12 +57,13 @@ public class GameActivity extends Activity
     @Override
     protected void onCreate(final Bundle savedInstanceState)
     {
-        // TODO
-        Transform.transformClass = Matrix4.class;
         super.onCreate(savedInstanceState);
-        //        Log.log(this, "staring setup");
-        Asset.init(getResources());
-        //        Log.log(this, "finished loading resources");
+        if (gameActivity != null)
+        {
+            throw new IllegalStateException();
+        }
+        gameActivity = this;
+        resources = getResources();
 
         gLView = new GLSurfaceView(this);
         setContentView(gLView);
@@ -111,14 +108,12 @@ public class GameActivity extends Activity
         }
 
         final NotificationCompat.Builder builder =
-            new NotificationCompat.Builder(
-                this,
-                CHANNEL_ID).setContentTitle(
-                "My notification").setContentText("Hello World!").setPriority(
-                NotificationCompat.PRIORITY_DEFAULT).setAutoCancel(true);
+            new NotificationCompat.Builder(this, CHANNEL_ID).setContentTitle("My notification")
+                                                            .setContentText("Hello World!")
+                                                            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                                                            .setAutoCancel(true);
         final int ID = 0;
-        final NotificationManagerCompat notificationManager =
-            NotificationManagerCompat.from(this);
+        final NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
         // notificationManager.notify(ID, builder.build());
 
         //        Rect out = new Rect();
@@ -127,38 +122,18 @@ public class GameActivity extends Activity
 
         //        display.getRectSize(out);
 
-        displayAdapter = new AndroidDisplay(1);
 
-        rootNode = new Node(Matrix4.class);
-        final float xscale = 1;
-        final float yscale = screenSize.width() / (float) screenSize.height();
-        final float zscale = 1 / 100f;
-        rootNode.localTransform.preTranslate(-1f, 1f, 0);
-        rootNode.localTransform.preScale(xscale, -yscale, zscale);
-        gesture = new Gesture();
-
-        final Transform gestureTransform = new Matrix4();
-        gestureTransform.preTranslate(-1, 1, 0);
-        gestureTransform.preScale(2f / screenSize.width(), -2f / screenSize.height(), 1);
-        final GestureEventAdaptor gestureEventAdaptor = new GestureEventAdaptor(gestureTransform);
-        gesture.gestureTarget = gestureEventAdaptor;
-
-        gameManager = new GameManager(rootNode, gestureEventAdaptor);
     }
 
     public void updateAndDraw()
     {
 
         //         update the view bounds, incase the screen changed
-        this.getWindow()
-            .getDecorView()
-            .getWindowVisibleDisplayFrame(SCREEN_RECT);
+        this.getWindow().getDecorView().getWindowVisibleDisplayFrame(SCREEN_RECT);
         // rootNode.localTransform.setTranslate(0, SCREEN_RECT.top);
-        displayAdapter.view = SCREEN_RECT;
         gesture.topOffset = SCREEN_RECT.top;
         gesture.update();
         rootNode.engine_update();
-        // rootNode.engine_draw(gLView.renderer);
         gLView.requestRender();
     }
 
@@ -182,10 +157,6 @@ public class GameActivity extends Activity
     public void onStart()
     {
         super.onStart();
-        loadGame();
-        gLView.renderer.drawWorld = rootNode::engine_draw;
-        gameLoop = new GameLoop(this);
-        gameLoop.start();
     }
 
     @Override
@@ -240,6 +211,31 @@ public class GameActivity extends Activity
             gameManager.newGame();
             Log.log(this, "data file did not exist");
         }
+    }
+
+    public void setupEngine()
+    {
+        Transform.transformClass = Matrix4.class;
+        rootNode = new Node(Matrix4.class);
+        final float xscale = 1;
+        final float yscale = screenSize.width() / (float) screenSize.height();
+        final float zscale = 1 / 100f;
+        rootNode.localTransform.preTranslate(-1f, 1f, 0);
+        rootNode.localTransform.preScale(xscale, -yscale, zscale);
+        gesture = new Gesture();
+
+        final Transform gestureTransform = new Matrix4();
+        gestureTransform.preTranslate(-1, 1, 0);
+        gestureTransform.preScale(2f / screenSize.width(), -2f / screenSize.height(), 1);
+        final GestureEventAdaptor gestureEventAdaptor = new GestureEventAdaptor(gestureTransform);
+        gesture.gestureTarget = gestureEventAdaptor;
+
+        gameManager = new GameManager(rootNode, gestureEventAdaptor);
+
+        loadGame();
+        gLView.renderer.drawWorld = rootNode::engine_draw;
+        gameLoop = new GameLoop(this);
+        gameLoop.start();
     }
 }
 

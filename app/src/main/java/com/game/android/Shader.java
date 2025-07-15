@@ -6,25 +6,23 @@ public class Shader
 {
     public final int shaderId;
 
-    public Shader(GLAssetName vertex, GLAssetName fragment)
+    public Shader(final String vertexShaderCode, final String fragmentShaderCode)
     {
-        shaderId = buildShader(vertex, fragment);
+        shaderId = buildShader(vertexShaderCode, fragmentShaderCode);
     }
 
-    public static int buildShader (GLAssetName vertShaderName, GLAssetName fragShaderName)
+    public static int buildShader(final String vertexShaderCode,
+                                  final String fragmentShaderCode)
     {
-        String vertexShaderCode = Asset.getRawContent(vertShaderName);
-        String fragmentShaderCode = Asset.getRawContent(fragShaderName);
-
-        int vertexShader = GLDisplay.loadShader(
+        final int vertexShader = GLDisplay.loadShader(
             GLES20.GL_VERTEX_SHADER,
             vertexShaderCode);
-        int fragmentShader = GLDisplay.loadShader(
+        final int fragmentShader = GLDisplay.loadShader(
             GLES20.GL_FRAGMENT_SHADER,
             fragmentShaderCode);
 
         // create empty OpenGL ES Program
-        int program = GLES20.glCreateProgram();
+        final int program = GLES20.glCreateProgram();
 
         // add the vertex shader to program
         GLES20.glAttachShader(program, vertexShader);
@@ -37,7 +35,6 @@ public class Shader
 
         return program;
     }
-
 
 
 }

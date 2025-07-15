@@ -18,9 +18,9 @@ public class WorldObject implements java.io.Serializable
     // flat indicates if the sprite is displayed as a ground base layer
     public boolean isFlat = false;
 
-    public WorldObject(final Sprite img)
+    public WorldObject(final Sprite sprite)
     {
-        sprite = img;
+        this.sprite = sprite;
         x = 0;
         y = 0;
         xoff = 0;

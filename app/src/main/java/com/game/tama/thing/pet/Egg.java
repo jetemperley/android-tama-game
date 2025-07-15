@@ -1,8 +1,8 @@
 package com.game.tama.thing.pet;
 
-import com.game.android.Asset;
 import com.game.engine.Time;
 import com.game.tama.core.Animator;
+import com.game.tama.core.Asset;
 import com.game.tama.core.AssetName;
 import com.game.tama.core.Sprite;
 import com.game.tama.core.World;
@@ -35,13 +35,13 @@ class Egg extends Thing
 
         if (anim == null)
         {
-            anim = new Animator(Asset.getSpriteSheet(asset));
+            anim = new Animator(Asset.sheets.get(asset));
             anim.play();
             anim.repeat(true);
         }
         else
         {
-            anim.sheet = Asset.getSpriteSheet(asset);
+            anim.sheet = Asset.sheets.get(asset);
         }
         return anim;
     }

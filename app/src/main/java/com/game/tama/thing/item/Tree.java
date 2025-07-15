@@ -1,12 +1,12 @@
 package com.game.tama.thing.item;
 
-import com.game.tama.core.AssetName;
 import com.game.tama.core.Animator;
-import com.game.android.Asset;
+import com.game.tama.core.Asset;
+import com.game.tama.core.AssetName;
+import com.game.tama.core.Sprite;
 import com.game.tama.core.Type;
 import com.game.tama.core.World;
 import com.game.tama.thing.Thing;
-import com.game.tama.core.Sprite;
 
 public class Tree extends Thing implements java.io.Serializable
 {
@@ -23,7 +23,7 @@ public class Tree extends Thing implements java.io.Serializable
         dead_4
     }
 
-    public Tree(GrowthLevel level)
+    public Tree(final GrowthLevel level)
     {
         super();
         asset = AssetName.static_poop;
@@ -42,17 +42,17 @@ public class Tree extends Thing implements java.io.Serializable
     {
         if (anim == null)
         {
-            anim = new Animator(Asset.getSpriteSheet(AssetName.sheet_16_treegrowth));
+            anim = new Animator(Asset.sheets.get(AssetName.sheet_16_treegrowth));
         }
         else
         {
-            anim.sheet = Asset.getSpriteSheet(AssetName.sheet_16_treegrowth);
+            anim.sheet = Asset.sheets.get(AssetName.sheet_16_treegrowth);
         }
         return anim;
     }
 
 
-    public void update(World m)
+    public void update(final World m)
     {
         //        if (growth < 1000) {
         //            growth ++;

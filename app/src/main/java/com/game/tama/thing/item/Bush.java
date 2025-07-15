@@ -1,10 +1,10 @@
 package com.game.tama.thing.item;
 
-import com.game.tama.core.AssetName;
 import com.game.tama.core.Animator;
-import com.game.tama.core.World;
-import com.game.android.Asset;
+import com.game.tama.core.Asset;
+import com.game.tama.core.AssetName;
 import com.game.tama.core.Sprite;
+import com.game.tama.core.World;
 import com.game.tama.thing.Thing;
 
 public class Bush extends Thing
@@ -23,11 +23,11 @@ public class Bush extends Thing
     {
         if (anim == null)
         {
-            anim = new Animator(Asset.getSpriteSheet(asset));
+            anim = new Animator(Asset.sheets.get(asset));
         }
         else
         {
-            anim.sheet = Asset.getSpriteSheet(asset);
+            anim.sheet = Asset.sheets.get(asset);
         }
         anim.animId = 1;
         anim.animDur = 500;
@@ -51,12 +51,13 @@ public class Bush extends Thing
 
     public Thing pickup()
     {
-        Thing t = new PulledBush();
+        final Thing t = new PulledBush();
         t.loc.setPos(loc.x, loc.y);
         return t;
     }
 
-    @Override public void update(World map)
+    @Override
+    public void update(final World map)
     {
         anim.update(this);
     }

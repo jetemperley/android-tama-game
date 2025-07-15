@@ -1,13 +1,11 @@
 package com.game.android;
 
-import android.content.Context;
-
 class GLSurfaceView extends android.opengl.GLSurfaceView
 {
 
     public final GLDisplay renderer;
 
-    public GLSurfaceView(final Context context)
+    public GLSurfaceView(final GameActivity context)
     {
         super(context);
 

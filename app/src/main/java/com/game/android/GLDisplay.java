@@ -6,6 +6,7 @@ import android.opengl.GLSurfaceView;
 
 import com.game.engine.DisplayAdapter;
 import com.game.engine.Transform;
+import com.game.tama.core.Asset;
 import com.game.tama.core.AssetName;
 import com.game.tama.core.Sprite;
 import com.game.tama.core.SpriteSheet;
@@ -15,10 +16,10 @@ import com.game.tama.util.Log;
 import com.game.tama.util.Vec;
 import com.game.tama.util.Vec2;
 
-import java.lang.reflect.Field;
 import java.nio.ByteBuffer;
-import java.time.LocalTime;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Stack;
 import java.util.function.Consumer;
 
@@ -30,7 +31,6 @@ public class GLDisplay implements GLSurfaceView.Renderer, DisplayAdapter
 
     Square square;
     private Shader genericShader;
-    private Shader uiShader;
     private final Vec<Float> color = new Vec<>(1f, 1f, 1f);
     private final Vec<Float> tempColor = new Vec<>(1f, 1f, 1f);
 
@@ -39,7 +39,6 @@ public class GLDisplay implements GLSurfaceView.Renderer, DisplayAdapter
     private final Matrix4 currentMatrix = new Matrix4();
     private final Stack<float[]> matrixStack = new Stack<>();
 
-    private int[] textureHandles;
     private final HashMap<Bitmap, Integer> textures = new HashMap<>();
 
     public void onSurfaceCreated(final GL10 unused, final EGLConfig config)
@@ -48,9 +47,12 @@ public class GLDisplay implements GLSurfaceView.Renderer, DisplayAdapter
         Log.log(this, "surface created");
         GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         square = new Square();
-        genericShader = new Shader(GLAssetName.generic_vertex, GLAssetName.generic_fragment);
-        uiShader = new Shader(GLAssetName.generic_vertex, GLAssetName.ui_fragment);
+        final HashMap<GLAssetName, String> raw = AndroidAsset.loadGlsl();
+        genericShader =
+            new Shader(raw.get(GLAssetName.generic_vertex), raw.get(GLAssetName.generic_fragment));
         loadAllTextures();
+
+        GameActivity.gameActivity.setupEngine();
     }
 
     public void onDrawFrame(final GL10 unused)
@@ -60,7 +62,6 @@ public class GLDisplay implements GLSurfaceView.Renderer, DisplayAdapter
         GLES20.glClearColor(0, 0, 0, 1);
         GLES20.glClearDepthf(1.0f);
         GLES20.glEnable(GLES20.GL_DEPTH_TEST);
-        Log.log(this, "draw time " + LocalTime.now());
         drawWorld.accept(this);
     }
 
@@ -84,22 +85,22 @@ public class GLDisplay implements GLSurfaceView.Renderer, DisplayAdapter
     }
 
     @Override
-    public void draw(final WorldObject t)
+    public void draw(final WorldObject worldObject)
     {
-        final Vec2<Float> pos = t.getWorldArrPos();
-        if (t.isFlat)
+        final Vec2<Float> pos = worldObject.getWorldArrPos();
+        if (worldObject.isFlat)
         {
-            drawSprite(t.sprite, pos.x, pos.y, 0);
+            drawSprite(worldObject.sprite, pos.x, pos.y, 0);
             return;
         }
-        drawSprite(t.sprite, pos.x, pos.y, -1);
+        drawSprite(worldObject.sprite, pos.x, pos.y, -1);
     }
 
     @Override
-    public void draw(final Sprite d, final float x, final float y, final float z)
+    public void draw(final Sprite sprite, final float x, final float y, final float z)
     {
 
-        drawSprite(d, x, y, z);
+        drawSprite(sprite, x, y, z);
     }
 
     @Override
@@ -203,13 +204,10 @@ public class GLDisplay implements GLSurfaceView.Renderer, DisplayAdapter
         // Set the active texture unit to texture unit 0.
         GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
 
-        final int i = textures.get(sprite.getSprite());
-        final Bitmap b =
-            textures.entrySet().stream().filter(k -> k.getValue() == 37).findFirst().get().getKey();
 
         // Bind the texture to this unit.
         GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
-        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, i);
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, sprite.getSpriteId());
 
         // Tell the texture uniform sampler to use this texture in the shader
         // by binding to texture unit 0.
@@ -231,46 +229,42 @@ public class GLDisplay implements GLSurfaceView.Renderer, DisplayAdapter
 
     private void loadAllTextures()
     {
-        textureHandles = new int[numTexturesRequired()];
+        final HashMap<AssetName, Bitmap> sprites = AndroidAsset.loadStaticSprites();
+        final HashMap<AssetName, Bitmap[][]> sheets = AndroidAsset.loadSpriteSheets();
+
+        final int numTextures = numTexturesRequired(sprites.values(), sheets.values());
+        final int[] textureHandles = new int[numTextures];
         GLES20.glGenTextures(textureHandles.length, textureHandles, 0);
 
         int currentTex = 0;
-        for (final Field f : AssetName.class.getFields())
+        for (final Map.Entry<AssetName, Bitmap> spriteAsset : sprites.entrySet())
         {
-            final AssetName name = AssetName.valueOf(f.getName());
-            if (name.name().startsWith("sheet"))
+            final int textureHandle = textureHandles[currentTex];
+            glLoadTexture(textureHandle, spriteAsset.getValue());
+            final StaticSprite sprite = new StaticSprite(textureHandles[currentTex]);
+            Asset.sprites.put(spriteAsset.getKey(), sprite);
+            currentTex++;
+        }
+        for (final Map.Entry<AssetName, Bitmap[][]> sheetAsset : sheets.entrySet())
+        {
+            final Bitmap[][] bitmaps = sheetAsset.getValue();
+            final StaticSprite[][] spriteArr = new StaticSprite[bitmaps.length][bitmaps[0].length];
+            for (int i = 0; i < bitmaps.length; i++)
             {
-                final SpriteSheet sheet = Asset.getSpriteSheet(name);
-                for (int row = 0; row < sheet.numRows(); row++)
+                for (int j = 0; j < bitmaps[0].length; j++)
                 {
-                    for (int col = 0; col < sheet.rowLength(row); col++)
-                    {
-                        final Bitmap bitmap = sheet.get(row, col);
-                        loadSingleTexture(
-                            textureHandles[currentTex],
-                            bitmap);
-                        textures.put(bitmap, textureHandles[currentTex]);
-                        currentTex++;
-                    }
+                    final int textureHandle = textureHandles[currentTex];
+                    glLoadTexture(textureHandle, bitmaps[i][j]);
+                    spriteArr[i][j] = new StaticSprite(textureHandle);
+                    currentTex++;
                 }
             }
-            else
-            {
-                final StaticSprite sprite = Asset.getStaticSprite(name);
-                if (sprite == null)
-                {
-                    Log.log(this, name.name());
-                }
-                loadSingleTexture(
-                    textureHandles[currentTex],
-                    sprite.getSprite());
-                textures.put(sprite.getSprite(), textureHandles[currentTex]);
-                currentTex++;
-            }
+            final SpriteSheet sheet = new SpriteSheet(spriteArr);
+            Asset.sheets.put(sheetAsset.getKey(), sheet);
         }
     }
 
-    private void loadSingleTexture(final int texHandle, final Bitmap bitmap)
+    private void glLoadTexture(final int texHandle, final Bitmap bitmap)
     {
 
         // do texture stuff
@@ -295,24 +289,18 @@ public class GLDisplay implements GLSurfaceView.Renderer, DisplayAdapter
             byteBuffer);
     }
 
-    private int numTexturesRequired()
+    private int numTexturesRequired(final Collection<Bitmap> sprites,
+                                    final Collection<Bitmap[][]> sheets)
     {
-        int count = 0;
-        for (final Field f : AssetName.class.getDeclaredFields())
+        int count = sprites.size();
+        for (final Bitmap[][] sheet : sheets)
         {
-            if (f.getName().startsWith("sheet"))
-            {
-                count += Asset.getSpriteSheet(AssetName.valueOf(f.getName()))
-                              .totalSprites();
-            }
-            else
-            {
-                count++;
-            }
+            count += sheet.length * sheet[0].length;
         }
         return count;
     }
 
+    @Override
     public void drawUi(final Sprite sprite, final float x, final float y)
     {
         push();
@@ -327,7 +315,7 @@ public class GLDisplay implements GLSurfaceView.Renderer, DisplayAdapter
     public void clearRect(final float x, final float y, final float xSize, final float ySize)
     {
         // todo implement size
-        drawUi(Asset.getStaticSprite(AssetName.static_solid), x, y);
+        drawUi(Asset.sprites.get(AssetName.static_solid), x, y);
     }
 
 }
