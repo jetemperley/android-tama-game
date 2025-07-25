@@ -90,10 +90,10 @@ public class GLDisplay implements GLSurfaceView.Renderer, DisplayAdapter
         final Vec2<Float> pos = worldObject.getWorldArrPos();
         if (worldObject.isFlat)
         {
-            drawSprite(worldObject.sprite, pos.x, pos.y, 0);
+            drawSprite(worldObject.sprite, pos.x, pos.y, GROUND_LAYER);
             return;
         }
-        drawSprite(worldObject.sprite, pos.x, pos.y, -1);
+        drawSprite(worldObject.sprite, pos.x, pos.y, ABOVE_GROUND_LAYER);
     }
 
     @Override
@@ -106,7 +106,7 @@ public class GLDisplay implements GLSurfaceView.Renderer, DisplayAdapter
     @Override
     public void drawSprite(final Sprite sprite, final float x, final float y)
     {
-        drawSprite(sprite, x, y, -99);
+        drawSprite(sprite, x, y, UI_LAYER);
     }
 
     public void drawSprite(final Sprite sprite, final float x, final float y, final float z)
@@ -188,6 +188,15 @@ public class GLDisplay implements GLSurfaceView.Renderer, DisplayAdapter
             GLES20.GL_FLOAT, false,
             square.vertexStride, square.vertexBuffer);
 
+        final int texUniform =
+            GLES20.glGetUniformLocation(shader.shaderId, "u_Texture");
+        // Bind the texture to this unit.
+        GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
+        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, sprite.getSpriteId());
+        // Tell the texture uniform sampler to use this texture in the shader
+        // by binding to texture unit 0.
+        GLES20.glUniform1i(texUniform, 0);
+
         // Set filtering
         GLES20.glTexParameteri(
             GLES20.GL_TEXTURE_2D,
@@ -198,21 +207,6 @@ public class GLDisplay implements GLSurfaceView.Renderer, DisplayAdapter
             GLES20.GL_TEXTURE_MAG_FILTER,
             GLES20.GL_NEAREST);
 
-        final int texUniform =
-            GLES20.glGetUniformLocation(shader.shaderId, "u_Texture");
-
-        // Set the active texture unit to texture unit 0.
-        GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
-
-
-        // Bind the texture to this unit.
-        GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
-        GLES20.glBindTexture(GLES20.GL_TEXTURE_2D, sprite.getSpriteId());
-
-        // Tell the texture uniform sampler to use this texture in the shader
-        // by binding to texture unit 0.
-        GLES20.glUniform1i(texUniform, 0);
-
         final int colorUniform =
             GLES20.glGetUniformLocation(shader.shaderId, "tintColor");
         GLES20.glUniform3f(colorUniform, color.r(), color.g(), color.b());
@@ -222,7 +216,7 @@ public class GLDisplay implements GLSurfaceView.Renderer, DisplayAdapter
 
         // Draw the triangle
         GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, square.vertexCount);
-
+        final int error = GLES20.glGetError();
         // Disable vertex array
         GLES20.glDisableVertexAttribArray(positionHandle);
     }

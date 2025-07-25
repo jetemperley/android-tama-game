@@ -5,14 +5,12 @@ import com.game.tama.core.Asset;
 import com.game.tama.core.AssetName;
 import com.game.tama.core.Sprite;
 import com.game.tama.core.SpriteSheet;
-import com.game.tama.core.StaticSprite;
 import com.game.tama.core.World;
 
 public class DynTile extends Tile
 {
     // considers the surrounding tiles to create a dynamic tile graphic
     private SpriteSheet sheet;
-    private StaticSprite current;
 
     private final TileType type = TileType.water;
 
@@ -39,10 +37,9 @@ public class DynTile extends Tile
 
     public void draw(final DisplayAdapter d)
     {
-        if (current != null)
-        {
-            d.drawSprite(current, loc.x, loc.y);
-        }
+
+        d.draw(loc);
+
         if (thing != null)
         {
             thing.draw(d);
@@ -81,7 +78,7 @@ public class DynTile extends Tile
         {
             index += 1 << 3;
         }
-        current = sheet.getSprite(0, index);
+        loc.sprite = sheet.getSprite(0, index);
     }
 
 }
