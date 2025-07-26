@@ -3,12 +3,13 @@ package com.game.tama.command;
 import android.util.Log;
 
 import com.game.engine.DisplayAdapter;
-import com.game.tama.thing.pet.Pet;
 import com.game.tama.core.World;
 import com.game.tama.core.WorldObject;
+import com.game.tama.thing.pet.Pet;
 import com.game.tama.util.Vec2;
 
-import java.util.*;
+import java.util.LinkedList;
+import java.util.Queue;
 
 /**
  * A self managing list commands that a pet will execute one at a time,
@@ -25,24 +26,26 @@ public class CommandQueue extends Command
 
     public CommandQueue()
     {
-        this((CommandQueue queue, World world, Pet pet) ->
-        {
-            Log.d("Command queue", "default initiliser");
-        });
+        this((final CommandQueue queue, final World world, final Pet pet) ->
+             {
+                 Log.d("Command queue", "default initiliser");
+             });
     }
 
-    public CommandQueue(PathInit initializer)
+    public CommandQueue(final PathInit initializer)
     {
         super();
         this.initializer = initializer;
         update = this::start;
         queue = new LinkedList<>();
         failAction = () ->
-        {queue.poll();};
+        {
+            queue.poll();
+        };
     }
 
     @Override
-    public void start(Pet pet, World world)
+    public void start(final Pet pet, final World world)
     {
         Log.d(this.getClass().getCanonicalName(), "starting queue");
         super.start(pet, world);
@@ -50,15 +53,15 @@ public class CommandQueue extends Command
     }
 
     @Override
-    public void doing(Pet pet, World world)
+    public void doing(final Pet pet, final World world)
     {
-        Command current = queue.peek();
+        final Command current = queue.peek();
         if (current == null)
         {
             state = CommandState.complete;
             return;
         }
-        current.update.accept(pet, world);
+        current.update.update(pet, world);
         switch (current.state)
         {
             case complete:
@@ -75,7 +78,7 @@ public class CommandQueue extends Command
         }
     }
 
-    public void failAllOnFail(boolean failAll)
+    public void failAllOnFail(final boolean failAll)
     {
         if (failAll)
         {
@@ -98,22 +101,22 @@ public class CommandQueue extends Command
         return queue.size();
     }
 
-    public void add(Command command)
+    public void add(final Command command)
     {
         queue.add(command);
     }
 
     @Override
-    public void draw(DisplayAdapter d)
+    public void draw(final DisplayAdapter d)
     {
         if (actor == null || ultimateTarget == null)
         {
             return;
         }
-        Vec2<Float> start = actor.loc.getWorldArrPos();
+        final Vec2<Float> start = actor.loc.getWorldArrPos();
         start.x += 1;
         start.y += 1;
-        Vec2<Float> end = ultimateTarget.getWorldArrPos();
+        final Vec2<Float> end = ultimateTarget.getWorldArrPos();
         end.x += 1;
         end.y += 1;
         d.drawLine(
@@ -126,14 +129,14 @@ public class CommandQueue extends Command
     @Override
     public boolean isReplaceable()
     {
-        Command current = queue.peek();
+        final Command current = queue.peek();
         return current == null || current.isReplaceable();
     }
 
     @Override
     public void hardCancel()
     {
-        Command command = queue.peek();
+        final Command command = queue.peek();
         command.hardCancel();
         super.hardCancel();
     }

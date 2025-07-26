@@ -58,7 +58,7 @@ public class GameActivity extends Activity
     protected void onCreate(final Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        if (gameActivity != null)
+        if (gameActivity != null && gameActivity != this)
         {
             throw new IllegalStateException();
         }
@@ -150,6 +150,7 @@ public class GameActivity extends Activity
         {
             Log.log(this, "could not join gameloop");
         }
+        gameActivity = null;
         saveGame();
     }
 

@@ -22,7 +22,7 @@ public class CommandWait extends Command
     {
         super.start(pet, world);
         Log.d(getClass().getCanonicalName(), "pet waiting $waitTimeMs");
-        update.accept(pet, world);
+        update.update(pet, world);
     }
 
     @Override

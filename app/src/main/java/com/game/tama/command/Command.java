@@ -3,22 +3,22 @@ package com.game.tama.command;
 import android.util.Log;
 
 import com.game.engine.DisplayAdapter;
+import com.game.tama.command.lambda.CommandUpdatable;
 import com.game.tama.core.World;
 import com.game.tama.thing.pet.Pet;
 
 import java.io.Serializable;
-import java.util.function.BiConsumer;
 
 public abstract class Command implements Serializable
 {
-    public static final BiConsumer<Pet, World> noop = (p, w) -> {};
+    public static final CommandUpdatable noop = (p, w) -> {};
 
-    public BiConsumer<Pet, World> update = this::start;
+    public CommandUpdatable update = this::start;
     public CommandState state = CommandState.ready;
 
     protected Pet actor = null;
 
-    protected void start(Pet pet, World world)
+    protected void start(final Pet pet, final World world)
     {
         actor = pet;
         state = CommandState.doing;
@@ -39,7 +39,7 @@ public abstract class Command implements Serializable
         Log.d(getClass().getCanonicalName(), "canceled");
     }
 
-    public void draw(DisplayAdapter display){}
+    public void draw(final DisplayAdapter display) {}
 
     protected void fail()
     {

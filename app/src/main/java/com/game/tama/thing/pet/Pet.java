@@ -104,7 +104,7 @@ public class Pet extends Thing
                 this,
                 "Pet doubled up on an update. Does this matter?");
         }
-        currentCommand.update.accept(this, world);
+        currentCommand.update.update(this, world);
         anim.update(this);
         state.update(this, world);
         time = Time.time();

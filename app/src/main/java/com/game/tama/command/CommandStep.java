@@ -38,7 +38,7 @@ public class CommandStep extends Command
         pet.setMovementPose(Pet.Movement.walk);
         world.removeThing(pet);
         world.add(pet, pet.loc.x + dir.x, pet.loc.y + dir.y);
-        update.accept(pet, world);
+        update.update(pet, world);
     }
 
     @Override

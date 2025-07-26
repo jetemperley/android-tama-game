@@ -10,7 +10,8 @@ import com.game.tama.core.World;
 public class DynTile extends Tile
 {
     // considers the surrounding tiles to create a dynamic tile graphic
-    private SpriteSheet sheet;
+
+    transient private SpriteSheet sheet;
 
     private final TileType type = TileType.water;
 

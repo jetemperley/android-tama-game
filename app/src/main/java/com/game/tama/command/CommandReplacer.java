@@ -46,7 +46,7 @@ public class CommandReplacer extends Command
             return;
         }
 
-        currentCommand.update.accept(pet, world);
+        currentCommand.update.update(pet, world);
 
     }
 
