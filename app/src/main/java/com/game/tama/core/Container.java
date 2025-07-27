@@ -66,7 +66,7 @@ public class Container extends Thing implements Serializable
         {
             world.pickupThing(t.loc.x, t.loc.y);
             // t.loc.setPos((int)f[0], (int)f[1]);
-            GameManager.getHeld().setHeld(t, startX, startY);
+            GameManager.getHeldBehaviour().setHeld(t, startX, startY);
         }
     }
 
@@ -78,13 +78,13 @@ public class Container extends Thing implements Serializable
      */
     public void dragEnd(final float x, final float y)
     {
-        final Thing held = GameManager.getHeld().held;
+        final Thing held = GameManager.getHeldBehaviour().held;
         if (world.addOrClosest(held, (int) (x - loc.x), (int) (y - loc.y)))
         {
-            GameManager.getHeld().held = null;
+            GameManager.getHeldBehaviour().held = null;
             return;
         }
-        GameManager.getHeld().dropHeld(x, y);
+        GameManager.getHeldBehaviour().dropHeld(x, y);
     }
 
     /**

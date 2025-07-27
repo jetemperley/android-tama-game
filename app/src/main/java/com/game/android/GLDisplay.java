@@ -90,31 +90,26 @@ public class GLDisplay implements GLSurfaceView.Renderer, DisplayAdapter
         final Vec2<Float> pos = worldObject.getWorldArrPos();
         if (worldObject.isFlat)
         {
-            drawSprite(worldObject.sprite, pos.x, pos.y, GROUND_LAYER);
+            draw(worldObject.sprite, pos.x, pos.y, GROUND_LAYER);
             return;
         }
-        drawSprite(worldObject.sprite, pos.x, pos.y, ABOVE_GROUND_LAYER);
+        draw(worldObject.sprite, pos.x, pos.y, ABOVE_GROUND_LAYER);
     }
 
     @Override
     public void draw(final Sprite sprite, final float x, final float y, final float z)
     {
 
-        drawSprite(sprite, x, y, z);
+        push();
+        currentMatrix.preTranslate(x, y, z);
+        draw(genericShader, square, sprite);
+        pop();
     }
 
     @Override
     public void drawSprite(final Sprite sprite, final float x, final float y)
     {
-        drawSprite(sprite, x, y, UI_LAYER);
-    }
-
-    public void drawSprite(final Sprite sprite, final float x, final float y, final float z)
-    {
-        push();
-        currentMatrix.preTranslate(x, y, z);
-        draw(genericShader, square, sprite);
-        pop();
+        draw(sprite, x, y, UI_LAYER);
     }
 
     @Override

@@ -7,7 +7,7 @@ public class PetFactory
     public static Pet cellPet()
     {
         final Pet pet = new Pet();
-        pet.setAsset(AssetName.sheet_16_walker);
+        pet.setAsset(AssetName.sheet_16_cell_pet);
         return pet;
     }
 }

@@ -88,7 +88,6 @@ public class PetGardenBehaviour extends Behaviour implements Input
             Log.log(this, "thing in set held was null");
             return;
         }
-        Log.log(this, thing.getClass().getCanonicalName() + " set as held");
         thing = world.pickupThing(thing.loc.x, thing.loc.y);
         GameManager.INST.heldBehaviour.setHeld(thing, ax, ay);
     }

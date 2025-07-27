@@ -61,7 +61,7 @@ public class GameManager extends Behaviour
         pauseMenu.setEnabled(true);
     }
 
-    public static HeldThingBehaviour getHeld()
+    public static HeldThingBehaviour getHeldBehaviour()
     {
         return INST.heldBehaviour;
     }

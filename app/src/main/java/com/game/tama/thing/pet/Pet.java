@@ -97,7 +97,7 @@ public class Pet extends Thing
     @Override
     public void update(final World world)
     {
-        Log.log(this, "Pet update time " + Time.time());
+        //        Log.log(this, "Pet update time " + Time.time());
         if (time == Time.time())
         {
             Log.error(

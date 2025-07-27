@@ -8,7 +8,10 @@ public interface DisplayAdapter
     float GROUND_LAYER = 0;
     float ABOVE_GROUND_LAYER = -1;
     float BELOW_GROUND_LAYER = 1;
-    float UI_LAYER = -99;
+    float FLYING_LAYER = -5;
+    float UI_LAYER = -10;
+    float ABOVE_UI_LAYER = -20;
+
 
     /**
      * Display the object based on its world position

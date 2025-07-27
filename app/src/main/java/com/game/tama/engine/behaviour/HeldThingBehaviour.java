@@ -14,8 +14,8 @@ import com.game.tama.util.Vec2;
 public class HeldThingBehaviour extends Behaviour implements Input
 {
     public Thing held = null;
-    public Vec2<Float> heldPos = new Vec2<>(0f, 0f);
-    public Vec2<Float> heldOffset = new Vec2<>(0f, 0f);
+    private final Vec2<Float> heldPos = new Vec2<>(0f, 0f);
+    private final Vec2<Float> heldOffset = new Vec2<>(0f, 0f);
 
     public HeldThingBehaviour(final Node parent)
     {
@@ -27,22 +27,20 @@ public class HeldThingBehaviour extends Behaviour implements Input
     {
         if (held != null)
         {
-            d.drawSprite(held.loc.sprite);
+            d.draw(held.loc.sprite, -heldOffset.x, -heldOffset.y, DisplayAdapter.ABOVE_UI_LAYER);
         }
     }
 
     /**
      * @param thing The thing to hold.
-     * @param x     array position of tap
-     * @param y     array position of tap
+     * @param x     world position of tap
+     * @param y     world position of tap
      */
     public void setHeld(final Thing thing, final float x, final float y)
     {
         held = thing;
-        heldPos.set(x, y);
-        //        Vec2<Float> pos = held.loc.getWorldArrPos();
-        //        heldOffset.x = x - pos.x;
-        //        heldOffset.y = y - pos.y;
+        heldOffset.set(x % 1, y % 1);
+        drag(null, new Vec2<>(x, y));
     }
 
     @Override
@@ -61,12 +59,14 @@ public class HeldThingBehaviour extends Behaviour implements Input
         local.preScale(scale, scale, 1);
     }
 
+    @Override
     public void dragEnd(final float x, final float y)
     {
         final Transform targetMat = GameManager.INST.getContainingNode(
             x, y).getWorldTransform().invert();
         final float[] f = targetMat.mapVector(x, y, 0);
-        dropHeld(f[0], f[1]);
+        dropHeld(f[0] - heldOffset.x + 0.5f, f[1] - heldOffset.y + 0.5f);
+        Log.log(this, String.format("x: %s, y: %s, dropX: %s, dropY: %s", x, y, f[0], f[1]));
     }
 
     void dropHeld()
@@ -82,7 +82,6 @@ public class HeldThingBehaviour extends Behaviour implements Input
      */
     public void dropHeld(final float x, final float y)
     {
-        Log.log(this, "dropping");
         GameManager.getGame().world.addOrClosest(held, (int) x, (int) y);
         held = null;
     }
