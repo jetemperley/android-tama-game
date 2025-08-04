@@ -1,13 +1,13 @@
 package com.game.tama.command;
 
+import com.game.engine.KeyFrameAnim;
 import com.game.engine.Time;
-import com.game.tama.anim.KeyFrameAnim;
-import com.game.tama.anim.KeyFrameAssets;
 import com.game.tama.core.Direction;
-import com.game.tama.core.World;
-import com.game.tama.thing.Thing;
-import com.game.tama.thing.component.Health;
-import com.game.tama.thing.pet.Pet;
+import com.game.tama.core.KeyFrameAssets;
+import com.game.tama.core.thing.Thing;
+import com.game.tama.core.thing.component.Health;
+import com.game.tama.core.thing.pet.Pet;
+import com.game.tama.core.world.World;
 import com.game.tama.util.Vec2;
 
 public class CommandAttack extends Command

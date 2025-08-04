@@ -1,5 +1,6 @@
 package com.game.tama.core;
 
+import com.game.tama.core.world.WorldObject;
 import com.game.tama.util.Vec2;
 
 /**
@@ -13,18 +14,18 @@ public enum Direction
 
     public final int x, y;
 
-    Direction(int x, int y)
+    Direction(final int x, final int y)
     {
         this.x = x;
         this.y = y;
     }
 
-    public static Direction from(Vec2<Integer> v)
+    public static Direction from(final Vec2<Integer> v)
     {
         return from(v.x, v.y);
     }
 
-    public static Direction from(int x, int y)
+    public static Direction from(final int x, final int y)
     {
         if (x == 1 && y == 0)
         {
@@ -46,7 +47,7 @@ public enum Direction
             "Direction {" + x + " " + y + "} not a valid direction.");
     }
 
-    public static Direction from(WorldObject from, WorldObject to)
+    public static Direction from(final WorldObject from, final WorldObject to)
     {
         return from(to.x - from.x, to.y - from.y);
     }

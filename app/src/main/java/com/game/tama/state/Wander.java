@@ -4,8 +4,8 @@ import com.game.engine.Time;
 import com.game.tama.command.CommandStep;
 import com.game.tama.command.CommandWait;
 import com.game.tama.core.Direction;
-import com.game.tama.core.World;
-import com.game.tama.thing.pet.Pet;
+import com.game.tama.core.thing.pet.Pet;
+import com.game.tama.core.world.World;
 import com.game.tama.util.Rand;
 
 import java.util.List;

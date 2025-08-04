@@ -3,8 +3,9 @@ package com.game.tama.core;
 import android.util.Log;
 
 import com.game.engine.Time;
-import com.game.tama.thing.item.Poop;
-import com.game.tama.thing.pet.Pet;
+import com.game.tama.core.thing.item.Poop;
+import com.game.tama.core.thing.pet.Pet;
+import com.game.tama.core.world.World;
 import com.game.tama.util.Path;
 import com.game.tama.util.Vec2;
 

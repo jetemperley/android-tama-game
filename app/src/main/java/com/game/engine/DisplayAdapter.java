@@ -1,7 +1,7 @@
 package com.game.engine;
 
 import com.game.tama.core.Sprite;
-import com.game.tama.core.WorldObject;
+import com.game.tama.core.world.WorldObject;
 
 public interface DisplayAdapter
 {

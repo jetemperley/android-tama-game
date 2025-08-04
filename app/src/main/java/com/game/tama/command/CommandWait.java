@@ -3,8 +3,8 @@ package com.game.tama.command;
 import android.util.Log;
 
 import com.game.engine.Time;
-import com.game.tama.core.World;
-import com.game.tama.thing.pet.Pet;
+import com.game.tama.core.thing.pet.Pet;
+import com.game.tama.core.world.World;
 
 public class CommandWait extends Command
 {

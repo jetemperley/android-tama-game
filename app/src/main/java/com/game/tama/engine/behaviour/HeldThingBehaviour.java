@@ -7,7 +7,7 @@ import com.game.engine.Transform;
 import com.game.engine.gesture.Input;
 import com.game.engine.gesture.gestureEvent.GestureEvent;
 import com.game.engine.gesture.gestureEvent.Scale;
-import com.game.tama.thing.Thing;
+import com.game.tama.core.thing.Thing;
 import com.game.tama.util.Log;
 import com.game.tama.util.Vec2;
 

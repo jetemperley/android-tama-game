@@ -1,9 +1,9 @@
 package com.game.tama.command;
 
 import com.game.engine.Time;
-import com.game.tama.core.World;
-import com.game.tama.thing.Thing;
-import com.game.tama.thing.pet.Pet;
+import com.game.tama.core.thing.Thing;
+import com.game.tama.core.thing.pet.Pet;
+import com.game.tama.core.world.World;
 
 public class CommandEat extends Command
 {

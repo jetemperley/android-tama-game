@@ -3,7 +3,7 @@ package com.game.android;
 import com.game.engine.DisplayAdapter;
 import com.game.engine.Transform;
 import com.game.tama.core.Sprite;
-import com.game.tama.core.WorldObject;
+import com.game.tama.core.world.WorldObject;
 
 import java.util.Comparator;
 import java.util.PriorityQueue;

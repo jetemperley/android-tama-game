@@ -2,20 +2,20 @@ package com.game.tama.core;
 
 import java.util.Random;
 
-class Noise
+public class Noise
 {
 
-    private Random r1;
-    private Random r2;
-    private Random r3;
-    private Random rs;
-    private int seed;
-    private float norm;
-    private int size;
+    private final Random r1;
+    private final Random r2;
+    private final Random r3;
+    private final Random rs;
+    private final int seed;
+    private final float norm;
+    private final int size;
 
     // sigma is the normalization constant 0 for raw, 1 for smooth
     // size is the width of the average square edge
-    public Noise(int seedIn, int sizeIn, float sigma)
+    public Noise(final int seedIn, final int sizeIn, final float sigma)
     {
         norm = sigma;
         size = sizeIn;
@@ -26,14 +26,14 @@ class Noise
         rs = new Random(seed);
     }
 
-    public Noise(int seedIn)
+    public Noise(final int seedIn)
     {
         this(seedIn, 3, 0.175f);
     }
 
     // produces a psuedorandom value specific to x, y, and seed
     // but independent from x or y alone
-    float getCoord(int x, int y)
+    public float getCoord(int x, int y)
     {
 
         rs.setSeed(seed);
@@ -43,7 +43,7 @@ class Noise
         y = r2.nextInt();
 
         // reconsider this line
-        int z = ((x * y) % rs.nextInt());
+        final int z = ((x * y) % rs.nextInt());
         // System.out.print(z + " ");
 
         r3.setSeed(z);
@@ -53,10 +53,10 @@ class Noise
     // uses the average of the 9 rand coords around x, y
     // and re maps from a normal distribution to a
     // *roughly* normal distribution 0-1
-    float getNoise(int x, int y)
+    public float getNoise(final int x, final int y)
     {
         float f = 0;
-        int lim = size / 2;
+        final int lim = size / 2;
         for (int i = -lim; i <= lim; i++)
         {
             for (int j = -lim; j <= lim; j++)
@@ -75,7 +75,7 @@ class Noise
     // pdf = probability density function
 
     // return cdf(z) = standard Gaussian cdf using Taylor approximation
-    public static double cdf(double z)
+    public static double cdf(final double z)
     {
         if (z < -8.0)
         {
@@ -95,18 +95,18 @@ class Noise
     }
 
     // return cdf(z, mu, sigma) = Gaussian cdf with mean mu and stddev sigma
-    public static double cdf(double z, double mu, double sigma)
+    public static double cdf(final double z, final double mu, final double sigma)
     {
         return cdf((z - mu) / sigma);
     }
 
-    public static double pdf(double x)
+    public static double pdf(final double x)
     {
         return Math.exp(-x * x / 2) / Math.sqrt(2 * Math.PI);
     }
 
     // return pdf(x, mu, signma) = Gaussian pdf with mean mu and stddev sigma
-    public static double pdf(double x, double mu, double sigma)
+    public static double pdf(final double x, final double mu, final double sigma)
     {
         return pdf((x - mu) / sigma) / sigma;
     }

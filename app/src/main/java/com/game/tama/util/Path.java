@@ -1,7 +1,7 @@
 package com.game.tama.util;
 
-import com.game.tama.core.World;
-import com.game.tama.thing.pet.Pet;
+import com.game.tama.core.thing.pet.Pet;
+import com.game.tama.core.world.World;
 
 import java.util.Comparator;
 import java.util.PriorityQueue;
@@ -18,7 +18,7 @@ public class Path
      * @param aimDist The distance from the target to aim for. Eg 1 means the pathing will stop when
      *                a path to any space 1 square away is found
      */
-    public Path(int aimDist)
+    public Path(final int aimDist)
     {
 
         step = Pet.stepsVec;
@@ -27,6 +27,7 @@ public class Path
 
     /**
      * find path from position (ax, ay) to (bx, by) in the specified world
+     *
      * @param world
      * @param ax
      * @param ay
@@ -34,7 +35,7 @@ public class Path
      * @param by
      * @return
      */
-    public Vec2<Integer>[] findPath(World world, Pet pet, int ax, int ay, int bx, int by)
+    public Vec2<Integer>[] findPath(final World world, final Pet pet, final int ax, final int ay, final int bx, final int by)
     {
 
         this.m = world;
@@ -61,10 +62,10 @@ public class Path
                 break;
             }
 
-            for (Vec2<Integer> v : step)
+            for (final Vec2<Integer> v : step)
             {
                 if (pet.canMoveOnto(world.getTile(tx + v.x, ty + v.y)) &&
-                        visited[tx + v.x][ty + v.y] == null)
+                    visited[tx + v.x][ty + v.y] == null)
                 {
                     n = new Node(tx + v.x,
                                  ty + v.y,
@@ -81,7 +82,7 @@ public class Path
             return null;
         }
 
-        Vec2<Integer>[] path = new Vec2[visited[curr.x][curr.y].dist];
+        final Vec2<Integer>[] path = new Vec2[visited[curr.x][curr.y].dist];
         n = visited[curr.x][curr.y];
 
         for (int i = path.length - 1; i > -1; i--)
@@ -92,10 +93,10 @@ public class Path
             tx = n.x;
             ty = n.y;
 
-            for (Vec2<Integer> v : step)
+            for (final Vec2<Integer> v : step)
             {
                 if (A.inRange(visited, tx + v.x, ty + v.y) && visited[tx + v.x][ty + v.y] != null &&
-                        visited[tx + v.x][ty + v.y].dist < n.dist)
+                    visited[tx + v.x][ty + v.y].dist < n.dist)
                 {
                     n = visited[tx + v.x][ty + v.y];
                     break;
@@ -120,7 +121,7 @@ class Node
         dest = 0;
     }
 
-    Node(int X, int Y, int DIST, int DEST)
+    Node(final int X, final int Y, final int DIST, final int DEST)
     {
         x = X;
         y = Y;
@@ -131,7 +132,7 @@ class Node
 
 class VComp implements Comparator<Node>
 {
-    public int compare(Node a, Node b)
+    public int compare(final Node a, final Node b)
     {
         return (a.dist + a.dest) - (b.dist + b.dest);
     }

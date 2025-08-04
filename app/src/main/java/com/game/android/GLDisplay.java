@@ -11,7 +11,7 @@ import com.game.tama.core.AssetName;
 import com.game.tama.core.Sprite;
 import com.game.tama.core.SpriteSheet;
 import com.game.tama.core.StaticSprite;
-import com.game.tama.core.WorldObject;
+import com.game.tama.core.world.WorldObject;
 import com.game.tama.util.Log;
 import com.game.tama.util.Vec;
 import com.game.tama.util.Vec2;

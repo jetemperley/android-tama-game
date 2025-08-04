@@ -1,8 +1,8 @@
 package com.game.tama.command;
 
 import com.game.engine.DisplayAdapter;
-import com.game.tama.core.World;
-import com.game.tama.thing.pet.Pet;
+import com.game.tama.core.thing.pet.Pet;
+import com.game.tama.core.world.World;
 
 public class CommandReplacer extends Command
 {

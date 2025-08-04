@@ -3,9 +3,9 @@ package com.game.tama.command;
 import android.util.Log;
 
 import com.game.engine.DisplayAdapter;
-import com.game.tama.core.World;
-import com.game.tama.core.WorldObject;
-import com.game.tama.thing.pet.Pet;
+import com.game.tama.core.thing.pet.Pet;
+import com.game.tama.core.world.World;
+import com.game.tama.core.world.WorldObject;
 import com.game.tama.util.Vec2;
 
 import java.util.LinkedList;

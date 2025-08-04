@@ -5,7 +5,7 @@ import android.graphics.Matrix;
 import com.game.engine.Node;
 import com.game.tama.core.Asset;
 import com.game.tama.core.AssetName;
-import com.game.tama.core.WorldFactory;
+import com.game.tama.core.world.WorldFactory;
 import com.game.tama.ui.DialogueTextBoxLeaf;
 import com.game.tama.ui.SquareCellButtonLeaf;
 import com.game.tama.ui.TextLeaf;

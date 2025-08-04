@@ -1,8 +1,11 @@
 package com.tama.test;
 
-import com.game.tama.anim.KeyFrame;
-import com.game.tama.anim.KeyFrameAnim;
-import com.game.tama.anim.KeyFrameAssets;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+
+import com.game.engine.KeyFrame;
+import com.game.engine.KeyFrameAnim;
+import com.game.tama.core.KeyFrameAssets;
 import com.game.tama.ui.DialogueTextBoxLeaf;
 import com.game.tama.util.Vec2;
 
@@ -11,8 +14,6 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.junit.Assert.*;
 
 /**
  * Example local unit test, which will execute on the development machine
@@ -25,17 +26,17 @@ public class ExampleUnitTest
     @Test
     public void attackAnimTest()
     {
-        KeyFrameAnim attack = KeyFrameAssets.get(KeyFrameAssets.Name.AttackUni);
+        final KeyFrameAnim attack = KeyFrameAssets.get(KeyFrameAssets.Name.AttackUni);
     }
 
     @Test
     public void animTest1()
     {
-        List<KeyFrame> frames = new ArrayList<>();
+        final List<KeyFrame> frames = new ArrayList<>();
         frames.add(new KeyFrame(0, new Vec2<>(0f, 0f)));
         frames.add(new KeyFrame(1, new Vec2<>(1f, 1f)));
 
-        KeyFrameAnim anim = new KeyFrameAnim(frames);
+        final KeyFrameAnim anim = new KeyFrameAnim(frames);
         assertEquals(new Vec2<>(0f, 0f), anim.getPosition(0));
         assertEquals(new Vec2<>(1f, 1f), anim.getPosition(1));
         assertEquals(new Vec2<>(0.5f, 0.5f), anim.getPosition(0.5f));
@@ -44,12 +45,12 @@ public class ExampleUnitTest
     @Test
     public void animTest2()
     {
-        List<KeyFrame> frames = new ArrayList<>();
+        final List<KeyFrame> frames = new ArrayList<>();
         frames.add(new KeyFrame(0, new Vec2<>(0f, 0f)));
         frames.add(new KeyFrame(0.5f, new Vec2<>(1f, 1f)));
         frames.add(new KeyFrame(1f, new Vec2<>(0f, 0f)));
 
-        KeyFrameAnim anim = new KeyFrameAnim(frames);
+        final KeyFrameAnim anim = new KeyFrameAnim(frames);
         assertEquals(new Vec2<>(0f, 0f), anim.getPosition(0f));
         assertEquals(new Vec2<>(1f, 1f), anim.getPosition(0.5f));
         assertEquals(new Vec2<>(0f, 0f), anim.getPosition(1f));
@@ -66,9 +67,9 @@ public class ExampleUnitTest
     @Test
     public void dialogueLines()
     {
-        String text =
+        final String text =
             "This is some text that should be split into smaller lines";
-        List<String> actual = DialogueTextBoxLeaf.splitIntoLines(text, 10);
+        final List<String> actual = DialogueTextBoxLeaf.splitIntoLines(text, 10);
         Assert.assertEquals(7, actual.size());
         Assert.assertEquals("This is", actual.get(0));
         Assert.assertEquals("some text", actual.get(1));
@@ -82,9 +83,9 @@ public class ExampleUnitTest
     @Test
     public void dialogueLines1()
     {
-        String text =
+        final String text =
             "123456789";
-        List<String> actual = DialogueTextBoxLeaf.splitIntoLines(text, 6);
+        final List<String> actual = DialogueTextBoxLeaf.splitIntoLines(text, 6);
         Assert.assertEquals(2, actual.size());
         Assert.assertEquals("12345-", actual.get(0));
         Assert.assertEquals("6789", actual.get(1));

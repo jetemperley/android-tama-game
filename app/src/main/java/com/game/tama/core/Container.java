@@ -6,8 +6,10 @@ import com.game.engine.gesture.gestureEvent.DragEnd;
 import com.game.engine.gesture.gestureEvent.DragStart;
 import com.game.engine.gesture.gestureEvent.GestureEvent;
 import com.game.engine.gesture.gestureEvent.LongPress;
+import com.game.tama.core.thing.Thing;
+import com.game.tama.core.world.World;
+import com.game.tama.core.world.WorldFactory;
 import com.game.tama.engine.behaviour.GameManager;
-import com.game.tama.thing.Thing;
 import com.game.tama.util.Bounds;
 import com.game.tama.util.Vec2;
 

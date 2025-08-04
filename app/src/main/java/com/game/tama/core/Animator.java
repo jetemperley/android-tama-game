@@ -1,7 +1,7 @@
 package com.game.tama.core;
 
 import com.game.engine.Time;
-import com.game.tama.thing.Thing;
+import com.game.tama.core.thing.Thing;
 
 public class Animator implements Sprite, java.io.Serializable
 {

@@ -4,8 +4,8 @@ import com.game.engine.Behaviour;
 import com.game.engine.Node;
 import com.game.engine.gesture.EventPrioritySubscriber;
 import com.game.engine.gesture.GestureEventSource;
-import com.game.tama.core.World;
-import com.game.tama.core.WorldFactory;
+import com.game.tama.core.world.World;
+import com.game.tama.core.world.WorldFactory;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;

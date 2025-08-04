@@ -4,8 +4,8 @@ import android.util.Log;
 
 import com.game.engine.DisplayAdapter;
 import com.game.tama.command.lambda.CommandUpdatable;
-import com.game.tama.core.World;
-import com.game.tama.thing.pet.Pet;
+import com.game.tama.core.thing.pet.Pet;
+import com.game.tama.core.world.World;
 
 import java.io.Serializable;
 
