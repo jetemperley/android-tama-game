@@ -10,8 +10,6 @@ import com.game.tama.core.Sprite;
 import com.game.tama.core.world.WorldObject;
 import com.game.tama.util.Log;
 
-import kotlin.NotImplementedError;
-
 public class AndroidDisplay implements DisplayAdapter
 {
     Matrix idMatrix;
@@ -31,6 +29,7 @@ public class AndroidDisplay implements DisplayAdapter
         idMatrix.reset();
     }
 
+    @Override
     public void draw(final WorldObject worldObject)
     {
         if (worldObject.sprite == null)
@@ -55,13 +54,13 @@ public class AndroidDisplay implements DisplayAdapter
     @Override
     public void drawSprite(final Sprite sprite, final float x, final float y)
     {
-        throw new NotImplementedError();
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public void drawSprite(final Sprite sprite)
     {
-        throw new NotImplementedError();
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -76,6 +75,7 @@ public class AndroidDisplay implements DisplayAdapter
         canvas.drawRect(x, y, x + width, y + height, GameActivity.black);
     }
 
+    @Override
     public void setTransform(final Transform mat)
     {
         currentMatrix.setValues(mat.getValues());
@@ -85,7 +85,7 @@ public class AndroidDisplay implements DisplayAdapter
     @Override
     public Transform getTransform()
     {
-        throw new NotImplementedError("Method not implemented.");
+        throw new UnsupportedOperationException("Method not implemented.");
     }
 
     @Override

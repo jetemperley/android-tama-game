@@ -10,8 +10,6 @@ import com.game.tama.core.thing.component.Component;
 import com.game.tama.core.world.World;
 import com.game.tama.core.world.WorldObject;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -20,7 +18,6 @@ import java.util.stream.Collectors;
 public abstract class Thing implements java.io.Serializable, Loadable
 {
     protected AssetName asset = AssetName.static_poop;
-    @NotNull
     public final WorldObject loc;
     public final List<Thing> children;
     private final List<Component> components;

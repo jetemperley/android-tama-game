@@ -1,8 +1,10 @@
 package com.game.engine.gesture.gestureEvent;
 
-import com.game.engine.gesture.Input;
 import com.game.engine.Transform;
+import com.game.engine.gesture.InputEventMethod;
+import com.game.engine.gesture.InputObjectMethod;
 import com.game.tama.util.Vec2;
+import com.game.tama.util.Vec4;
 
 public class Scale extends GestureEvent
 {
@@ -20,15 +22,21 @@ public class Scale extends GestureEvent
     }
 
     @Override
-    public void callEvent(Input handler)
+    public void callEventMethod(final InputEventMethod handler)
     {
         handler.scale(prev1, prev2, next1, next2);
     }
 
-    public void set(Vec2<Float> prev1,
-                    Vec2<Float> prev2,
-                    Vec2<Float> next1,
-                    Vec2<Float> next2)
+    @Override
+    public void callObjectMethod(final InputObjectMethod handler)
+    {
+        handler.scale(this);
+    }
+
+    public void set(final Vec2<Float> prev1,
+                    final Vec2<Float> prev2,
+                    final Vec2<Float> next1,
+                    final Vec2<Float> next2)
     {
         this.prev1.set(prev1);
         this.prev2.set(prev2);
@@ -37,8 +45,9 @@ public class Scale extends GestureEvent
     }
 
     @Override
-    public GestureEvent transform(Transform transform) {
-        Scale copy = (Scale) super.transform(transform);
+    public GestureEvent transform(final Transform transform)
+    {
+        final Scale copy = (Scale) super.transform(transform);
         transform(transform, copy.prev1);
         transform(transform, copy.prev2);
         transform(transform, copy.next1);
@@ -46,17 +55,24 @@ public class Scale extends GestureEvent
         return copy;
     }
 
-    private static void transform(Transform transform, Vec2<Float> vec) {
-        float[] temp = transform.mapVector(vec.x, vec.y, 0);
-        vec.x = temp[0];
-        vec.y = temp[1];
+    private static void transform(final Transform transform, final Vec2<Float> vec)
+    {
+        final Vec4<Float> temp = transform.mapVector(vec.x, vec.y, 0);
+        vec.x = temp.x;
+        vec.y = temp.y;
     }
 
     @Override
     public GestureEvent copy()
     {
-        Scale copy = (Scale) super.copy();
+        final Scale copy = (Scale) super.copy();
         copy.set(prev1, prev2, next1, next2);
         return copy;
+    }
+
+    @Override
+    public EventType getType()
+    {
+        return EventType.SCALE;
     }
 }

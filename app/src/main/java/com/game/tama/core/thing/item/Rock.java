@@ -13,6 +13,7 @@ class Rock extends Thing
         load();
     }
 
+    @Override
     public String getDescription()
     {
         return super.getDescription() + "Just a rock.";

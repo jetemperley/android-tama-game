@@ -38,6 +38,7 @@ public class Tree extends Thing implements java.io.Serializable
 
     }
 
+    @Override
     public Sprite getAsset()
     {
         if (anim == null)
@@ -52,6 +53,7 @@ public class Tree extends Thing implements java.io.Serializable
     }
 
 
+    @Override
     public void update(final World m)
     {
         //        if (growth < 1000) {
@@ -65,21 +67,25 @@ public class Tree extends Thing implements java.io.Serializable
         anim.update(this);
     }
 
+    @Override
     public void poke()
     {
         anim.play();
     }
 
+    @Override
     public Type type()
     {
         return Type.tree;
     }
 
+    @Override
     public String getDescription()
     {
         return super.getDescription() + "Its a tree, level " + lvl + ".";
     }
 
+    @Override
     public Thing pickup()
     {
         return this;

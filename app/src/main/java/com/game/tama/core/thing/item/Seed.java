@@ -48,6 +48,7 @@ class Seed extends Thing
         return this;
     }
 
+    @Override
     public String getDescription()
     {
         return super.getDescription() + "A seed, plant it and it will grow.";

@@ -1,6 +1,7 @@
 package com.game.engine;
 
 import com.game.tama.util.Vec2;
+import com.game.tama.util.Vec4;
 
 public abstract class Transform
 {
@@ -12,7 +13,7 @@ public abstract class Transform
         {
             return transformClass.newInstance();
         }
-        catch (InstantiationException | IllegalAccessException e)
+        catch (final InstantiationException | IllegalAccessException e)
         {
             throw new RuntimeException(e);
         }
@@ -20,6 +21,7 @@ public abstract class Transform
 
     /**
      * this = this * args
+     *
      * @param args
      * @return itself
      */
@@ -27,6 +29,7 @@ public abstract class Transform
 
     /**
      * this = args * this
+     *
      * @param args
      * @return itself
      */
@@ -44,6 +47,7 @@ public abstract class Transform
 
     /**
      * This = T(x, y, z) * this. I.e. translate in world coords
+     *
      * @param x
      * @param y
      * @param z
@@ -53,6 +57,7 @@ public abstract class Transform
 
     /**
      * this = this * S(x, y, z)
+     *
      * @param x
      * @param y
      * @param z
@@ -62,6 +67,7 @@ public abstract class Transform
 
     /**
      * this = S(x, y, z) * this
+     *
      * @param x
      * @param y
      * @param z
@@ -71,6 +77,7 @@ public abstract class Transform
 
     /**
      * Sets this matrix's values to the same as the passed matrix
+     *
      * @param from
      * @return itself
      */
@@ -78,6 +85,7 @@ public abstract class Transform
 
     /**
      * Sets this matrix's values to the same as the passed values
+     *
      * @param from
      * @return itself
      */
@@ -85,18 +93,21 @@ public abstract class Transform
 
     /**
      * Get a deep copy of the underlying values
+     *
      * @return
      */
     public abstract float[] getValues();
 
     /**
      * Get a copy of the values into the destination
+     *
      * @param dest
      */
     public abstract void getValues(float[] dest);
 
     /**
      * Set this transform to the identity transform
+     *
      * @return itself
      */
     public abstract Transform reset();
@@ -104,6 +115,7 @@ public abstract class Transform
     /**
      * Invert this transform and store the reslut in dest. Does not mutate
      * this transform.
+     *
      * @param dest
      * @return transform argument
      */
@@ -116,6 +128,7 @@ public abstract class Transform
 
     /**
      * Multiply this transform (out = T * P) with the point P = x, y, x, 0
+     *
      * @param x
      * @param y
      * @param z
@@ -125,12 +138,8 @@ public abstract class Transform
 
     /**
      * Multiply this transform (out = T * V) with the vector V = x, y, x, 1
-     * @param x
-     * @param y
-     * @param z
-     * @return
      */
-    public abstract float[] mapVector(float x, float y, float z);
+    public abstract Vec4<Float> mapVector(float x, float y, float z);
 
     public abstract Vec2<Float> getScale();
 
@@ -140,18 +149,21 @@ public abstract class Transform
 
     /**
      * Sets the scale of this transform, leave other details unchanged.
+     *
      * @return
      */
     public abstract Transform setScale(float x, float y);
 
     /**
      * Sets the translate of this transform, leave other details unchanged.
+     *
      * @return
      */
     public abstract Transform setTranslate(float x, float y);
 
     /**
      * Calculates the inverse of this matrix and returns it in a new transform
+     *
      * @return new transform
      */
     public abstract Transform inverse();

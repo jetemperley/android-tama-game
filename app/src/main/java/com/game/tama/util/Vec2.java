@@ -4,36 +4,36 @@ public class Vec2<T extends Number> implements java.io.Serializable
 {
     public T x, y;
 
-    public Vec2(T x, T y)
+    public Vec2(final T x, final T y)
     {
         this.x = x;
         this.y = y;
     }
 
-    public Vec2(Vec2<T> other)
+    public Vec2(final Vec2<T> other)
     {
         this.x = other.x;
         this.y = other.y;
     }
 
-    public Vec2<T> set(T x, T y)
+    public Vec2<T> set(final T x, final T y)
     {
         this.x = x;
         this.y = y;
         return this;
     }
 
-    public Vec2<T> set(Vec2<T> a)
+    public Vec2<T> set(final Vec2<T> a)
     {
         x = a.x;
         y = a.y;
         return this;
     }
 
-    public static float distSq(Vec2<Float> a, Vec2<Float> b)
+    public static float distSq(final Vec2<Float> a, final Vec2<Float> b)
     {
-        float x = a.x - b.x;
-        float y = a.y - b.y;
+        final float x = a.x - b.x;
+        final float y = a.y - b.y;
 
         return Math.abs(x * x + y * y);
     }
@@ -41,15 +41,15 @@ public class Vec2<T extends Number> implements java.io.Serializable
     @Override
     public String toString()
     {
-        return "x=" + x + ", y=" + y;
+        return String.format("{%s, %s}", x, y);
     }
 
     @Override
-    public boolean equals(Object o)
+    public boolean equals(final Object o)
     {
         if (o instanceof Vec2)
         {
-            Vec2<?> other = (Vec2)o;
+            final Vec2<?> other = (Vec2) o;
             return other.x.equals(x) && other.y.equals(y);
         }
         return false;

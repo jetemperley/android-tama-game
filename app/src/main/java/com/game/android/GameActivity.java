@@ -122,7 +122,6 @@ public class GameActivity extends Activity
 
         //        display.getRectSize(out);
 
-
     }
 
     public void updateAndDraw()
@@ -230,8 +229,9 @@ public class GameActivity extends Activity
         gestureTransform.preScale(2f / screenSize.width(), -2f / screenSize.height(), 1);
         final GestureEventAdaptor gestureEventAdaptor = new GestureEventAdaptor(gestureTransform);
         gesture.gestureTarget = gestureEventAdaptor;
+        gestureEventAdaptor.setTarget(rootNode);
 
-        gameManager = new GameManager(rootNode, gestureEventAdaptor);
+        gameManager = new GameManager(rootNode);
 
         loadGame();
         gLView.renderer.drawWorld = rootNode::engine_draw;

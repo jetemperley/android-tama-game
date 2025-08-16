@@ -34,6 +34,7 @@ public class Bush extends Thing
         return anim;
     }
 
+    @Override
     public void poke()
     {
         anim.play();
@@ -44,11 +45,13 @@ public class Bush extends Thing
         return true;
     }
 
+    @Override
     public String getDescription()
     {
         return "A little bush.";
     }
 
+    @Override
     public Thing pickup()
     {
         final Thing t = new PulledBush();

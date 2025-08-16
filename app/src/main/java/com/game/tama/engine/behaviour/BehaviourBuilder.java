@@ -6,6 +6,7 @@ import com.game.engine.Node;
 import com.game.tama.core.Asset;
 import com.game.tama.core.AssetName;
 import com.game.tama.core.world.WorldFactory;
+import com.game.tama.engine.behaviour.garden.PetGardenBehaviour;
 import com.game.tama.ui.DialogueTextBoxLeaf;
 import com.game.tama.ui.SquareCellButtonLeaf;
 import com.game.tama.ui.TextLeaf;

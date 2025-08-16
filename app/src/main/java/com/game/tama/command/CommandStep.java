@@ -1,7 +1,5 @@
 package com.game.tama.command;
 
-import android.util.Log;
-
 import com.game.engine.KeyFrameAnim;
 import com.game.engine.Time;
 import com.game.tama.core.Direction;
@@ -9,6 +7,7 @@ import com.game.tama.core.KeyFrameAssets;
 import com.game.tama.core.thing.pet.Pet;
 import com.game.tama.core.thing.tile.Tile;
 import com.game.tama.core.world.World;
+import com.game.tama.util.Log;
 import com.game.tama.util.Vec2;
 
 public class CommandStep extends Command
@@ -27,7 +26,7 @@ public class CommandStep extends Command
     public void start(final Pet pet, final World world)
     {
         super.start(pet, world);
-        Log.d(getClass().getCanonicalName(), "stepping " + dir.x + " " + dir.y);
+        Log.log(this, "stepping " + dir.x + " " + dir.y);
         pet.setDir(dir);
         final Tile tile = world.getTile(pet.loc.x + dir.x, pet.loc.y + dir.y);
         if (!pet.canMoveOnto(tile))

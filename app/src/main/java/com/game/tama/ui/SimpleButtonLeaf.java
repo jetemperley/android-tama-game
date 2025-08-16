@@ -23,12 +23,12 @@ public class SimpleButtonLeaf extends UIComposite
      * @param sprite
      * @param action
      */
-    public SimpleButtonLeaf(float xPos,
-                            float yPos,
-                            float width,
-                            float height,
-                            Sprite sprite,
-                            Runnable action)
+    public SimpleButtonLeaf(final float xPos,
+                            final float yPos,
+                            final float width,
+                            final float height,
+                            final Sprite sprite,
+                            final Runnable action)
     {
         this.pos = new Vec2<>(xPos, yPos);
         this.size = new Vec2<>(width, height);
@@ -37,7 +37,7 @@ public class SimpleButtonLeaf extends UIComposite
     }
 
     @Override
-    public void draw(DisplayAdapter display)
+    public void draw(final DisplayAdapter display)
     {
         display.drawSprite(sprite, pos.x, pos.y);
     }
@@ -48,7 +48,7 @@ public class SimpleButtonLeaf extends UIComposite
     }
 
     @Override
-    public boolean handleEvent(GestureEvent e)
+    public boolean handleEvent(final GestureEvent e)
     {
         if (e instanceof Down && isInside(e.x, e.y))
         {
@@ -58,7 +58,8 @@ public class SimpleButtonLeaf extends UIComposite
         return false;
     }
 
-    public boolean isInside(float x, float y)
+    @Override
+    public boolean isInside(final float x, final float y)
     {
         return Bounds.isInside(x, y, pos.x, pos.y, size.x, size.y);
     }

@@ -1,14 +1,13 @@
 package com.game.engine;
 
 import com.game.engine.gesture.gestureEvent.GestureEvent;
-import com.game.engine.gesture.GestureEventHandler;
 
-public abstract class Behaviour implements Updateable, Drawable, GestureEventHandler
+public abstract class Behaviour implements Updateable, Drawable
 {
     final public Node node;
     private boolean enabled = true;
 
-    public Behaviour(Node parent)
+    public Behaviour(final Node parent)
     {
         if (parent == null)
         {
@@ -24,17 +23,17 @@ public abstract class Behaviour implements Updateable, Drawable, GestureEventHan
 
     }
 
-    public final <T extends Behaviour> T getBehaviour(Class<T> clazz)
+    public final <T extends Behaviour> T getBehaviour(final Class<T> clazz)
     {
         return node.getBehaviour(clazz);
     }
 
-    public final void removeBehaviour(Behaviour b)
+    public final void removeBehaviour(final Behaviour b)
     {
         node.removeBehaviour(b);
     }
 
-    void engine_draw(DisplayAdapter display)
+    final void engine_draw(final DisplayAdapter display)
     {
         if (enabled)
         {
@@ -43,12 +42,12 @@ public abstract class Behaviour implements Updateable, Drawable, GestureEventHan
     }
 
     @Override
-    public void draw(DisplayAdapter display)
+    public void draw(final DisplayAdapter display)
     {
 
     }
 
-    public void engine_update()
+    final void engine_update()
     {
         if (enabled)
         {
@@ -62,21 +61,7 @@ public abstract class Behaviour implements Updateable, Drawable, GestureEventHan
 
     }
 
-    public boolean handleEvent(GestureEvent event)
-    {
-        if (isEnabled())
-        {
-            return handle(event);
-        }
-        return false;
-    }
-
-    public boolean handle(GestureEvent event)
-    {
-        return false;
-    }
-
-    public void setEnabled(boolean enabled)
+    public void setEnabled(final boolean enabled)
     {
         this.enabled = enabled;
     }
@@ -86,12 +71,39 @@ public abstract class Behaviour implements Updateable, Drawable, GestureEventHan
         return enabled && node.isEnabled();
     }
 
-    /**
-     * Easy access for Node.getWorldTransform
-     * @param out
-     */
-    public Transform getWorldTransform(Transform out)
+    final void engine_input(final GestureEvent event)
     {
-        return node.getWorldTransform(out);
+        if (!enabled)
+        {
+            return;
+        }
+
+        handleInput(event);
+    }
+
+    public void handleInput(final GestureEvent event)
+    {
+
+    }
+
+    /**
+     * Processes the event and returns true if the event is consumed
+     */
+    final boolean engine_ui_input(final GestureEvent event)
+    {
+        if (!enabled)
+        {
+            return false;
+        }
+        return handleUiInput(event);
+
+    }
+
+    /**
+     * Processes the event and returns true if the event is consumed
+     */
+    public boolean handleUiInput(final GestureEvent event)
+    {
+        return false;
     }
 }

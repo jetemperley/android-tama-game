@@ -1,4 +1,4 @@
-package com.game.tama.engine.behaviour;
+package com.game.tama.engine.behaviour.garden;
 
 import android.graphics.Matrix;
 
@@ -6,7 +6,6 @@ import com.game.engine.Behaviour;
 import com.game.engine.DisplayAdapter;
 import com.game.engine.Node;
 import com.game.engine.Transform;
-import com.game.engine.gesture.Input;
 import com.game.engine.gesture.gestureEvent.GestureEvent;
 import com.game.tama.command.CommandFactory;
 import com.game.tama.command.CommandQueue;
@@ -15,11 +14,16 @@ import com.game.tama.core.AssetName;
 import com.game.tama.core.thing.Thing;
 import com.game.tama.core.thing.pet.Pet;
 import com.game.tama.core.world.World;
+import com.game.tama.engine.behaviour.BehaviourBuilder;
+import com.game.tama.engine.behaviour.GameManager;
+import com.game.tama.engine.behaviour.MenuBehaviour;
+import com.game.tama.engine.behaviour.ThingControlsBehaviour;
 import com.game.tama.ui.ContainerManager;
 import com.game.tama.util.Log;
 import com.game.tama.util.Vec2;
+import com.game.tama.util.Vec4;
 
-public class PetGardenBehaviour extends Behaviour implements Input
+public class PetGardenBehaviour extends Behaviour
 {
     public MenuBehaviour thingMenu;
 
@@ -33,11 +37,14 @@ public class PetGardenBehaviour extends Behaviour implements Input
 
     private final ThingControlsBehaviour controlsBehaviour;
 
+    GardenInputStateManger stateManger;
+
     public PetGardenBehaviour(final Node parent)
     {
         super(parent);
         BehaviourBuilder.testConfiguration(this);
         controlsBehaviour = new ThingControlsBehaviour(parent);
+        stateManger = new GardenInputStateManger(this);
     }
 
     @Override
@@ -52,6 +59,7 @@ public class PetGardenBehaviour extends Behaviour implements Input
         world.update();
     }
 
+    @Override
     public void draw(final DisplayAdapter display)
     {
         world.draw(display);
@@ -76,25 +84,19 @@ public class PetGardenBehaviour extends Behaviour implements Input
     }
 
     /**
-     * @param ax array tap
-     * @param ay array tap
+     * @param thing thing thing which we are picking up
+     * @param ax    array tap
+     * @param ay    array tap
      */
-    public void setHeld(final float ax, final float ay)
+    public void setHeld(final Thing thing, final float ax, final float ay)
     {
-        Log.log(this, "checking in " + ax + " " + ay);
-        Thing thing = world.checkCollision(ax, ay);
-        if (thing == null)
-        {
-            Log.log(this, "thing in set held was null");
-            return;
-        }
-        thing = world.pickupThing(thing.loc.x, thing.loc.y);
-        GameManager.INST.heldBehaviour.setHeld(thing, ax, ay);
+        final Thing taken = world.pickupThing(thing.loc.x, thing.loc.y);
+        GameManager.INST.heldBehaviour.setHeld(taken, ax, ay);
     }
 
     public float[] transferFromContainer(final Thing t, final Matrix containerMat)
     {
-        // TODO fix this
+        // TODO fix this method
         final float[] f = t.loc.getWorldBitPosAsArray();
         Log.log(
             this,
@@ -106,7 +108,6 @@ public class PetGardenBehaviour extends Behaviour implements Input
 
         final Matrix inv = new Matrix();
         tempMat.reset();
-        // getTempWorldTransform().invert();
         inv.mapPoints(f);
         Log.log(
             this,
@@ -123,32 +124,9 @@ public class PetGardenBehaviour extends Behaviour implements Input
         selected = world.getThing(x, y);
     }
 
-    public void pickup(final float x, final float y)
-    {
-        //        if (heldThing.held != null)
-        //        {
-        //            heldThing.setPos(x, y);
-        //            return;
-        //        }
-        //        Thing t = world.checkCollision(x, y);
-        //        if (t != null)
-        //        {
-        //            heldThing.held = world.pickupThing(t.loc.x, t.loc.y);
-        //            heldThing.setPos(x, y);
-        //            Vec2<Float> pos = heldThing.held.loc.getWorldArrPos();
-        //            heldThing.setHeldOffset(x - pos.x, y - pos.y);
-        //        }
-    }
-
     public Thing getThing(final float x, final float y)
     {
         return world.checkCollision(x, y);
-    }
-
-    public void select(final float x, final float y)
-    {
-        final Thing t = getThing(x, y);
-        select(t);
     }
 
     public void select(final Thing t)
@@ -197,12 +175,11 @@ public class PetGardenBehaviour extends Behaviour implements Input
      */
     public void doubleSelect(final float ax, final float ay)
     {
-        if (!(selected instanceof Pet))
+        if (!(selected instanceof final Pet pet))
         {
             return;
         }
 
-        final Pet pet = (Pet) selected;
         final Thing thing = world.checkCollision(ax, ay);
         if (thing == pet)
         {
@@ -220,10 +197,8 @@ public class PetGardenBehaviour extends Behaviour implements Input
         pet.setActionTarget(thing);
     }
 
-    @Override
-    public void singleTapConfirmed(final float x, final float y)
+    public void select(final float x, final float y)
     {
-
         final Thing t = getThing(x, y);
         if (selected == null || t == selected ||
             controlsBehaviour.getSelectedControl() == null)
@@ -240,23 +215,10 @@ public class PetGardenBehaviour extends Behaviour implements Input
         }
     }
 
-    @Override
-    public void singleDown(final float x, final float y)
-    {
-
-    }
-
-    @Override
-    public void longPressConfirmed(final float x, final float y)
-    {
-        use(x, y);
-    }
-
-    @Override
-    public void scale(final Vec2<Float> p1,
-                      final Vec2<Float> p2,
-                      final Vec2<Float> n1,
-                      final Vec2<Float> n2)
+    public void scaleView(final Vec2<Float> p1,
+                          final Vec2<Float> p2,
+                          final Vec2<Float> n1,
+                          final Vec2<Float> n2)
     {
         // find the centres of the touch pairs
         final Vec2<Float> pmid = new Vec2((p1.x + p2.x) / 2, (p1.y + p2.y) / 2);
@@ -279,50 +241,63 @@ public class PetGardenBehaviour extends Behaviour implements Input
 
         final Transform target = node.localTransform;
 
-        final float[] nmidt = target.mapVector(nmid.x, nmid.y, 0);
-        final float[] pmidt = target.mapVector(pmid.x, pmid.y, 0);
+        final Vec4<Float> nmidt = target.mapVector(nmid.x, nmid.y, 0);
+        final Vec4<Float> pmidt = target.mapVector(pmid.x, pmid.y, 0);
 
         final Transform transform = target.copy().reset();
-        transform.postTranslate(-nmidt[0], -nmidt[1], 0);
+        transform.postTranslate(-nmidt.x, -nmidt.y, 0);
         transform.postScale(scale, scale, 1);
-        transform.postTranslate(nmidt[0], nmidt[1], 0);
-        transform.postTranslate(nmidt[0] - pmidt[0], nmidt[1] - pmidt[1], 0);
+        transform.postTranslate(nmidt.x, nmidt.y, 0);
+        transform.postTranslate(nmidt.x - pmidt.x, nmidt.y - pmidt.y, 0);
 
         node.localTransform.postMult(transform);
     }
 
-    @Override
-    public void dragStart(final float x, final float y)
+    /**
+     * Attempts to pick up the thing at world location x, y.
+     */
+    public boolean attemptPickup(final float x, final float y)
     {
         final Thing touched = world.checkCollision(x, y);
         if (selected != null && selected == touched)
         {
-            setHeld(x, y);
+            setHeld(touched, x, y);
+            return true;
         }
+        return false;
     }
 
-    @Override
-    public void drag(final Vec2<Float> prev, final Vec2<Float> next)
+    public void panWorld(final Vec2<Float> prev, final Vec2<Float> next)
     {
         node.localTransform.preTranslate(next.x - prev.x, next.y - prev.y, 0);
     }
 
     @Override
-    public boolean handleEvent(final GestureEvent e)
+    public void handleInput(final GestureEvent event)
     {
         final GestureEvent localEvent =
-            e.transform(getWorldTransform(tempMat).invert());
+            event.transform(node.getWorldTransform().invert());
         if (containerManager.handleEvent(localEvent))
         {
-            return true;
+            return;
         }
-        localEvent.callEvent(this);
-        return true;
+        stateManger.handleEvent(localEvent);
     }
 
     public void deselectThing()
     {
         selected = null;
         controlsBehaviour.removeControls();
+    }
+
+    public Thing getSelected()
+    {
+        return selected;
+    }
+
+    /** Checks if the touch x, y (world coords) is touching the currently selected thing */
+    public boolean isTouchingSelectedThing(final float x, final float y)
+    {
+        return selected != null && getThing(x, y) == selected;
     }
 }

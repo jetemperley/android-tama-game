@@ -1,11 +1,14 @@
 package com.game.engine;
 
-import com.game.android.Matrix4;
+import com.game.engine.gesture.GestureEventHandler;
+import com.game.engine.gesture.gestureEvent.GestureEvent;
+import com.game.tama.util.Vec2;
+import com.game.tama.util.Vec4;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Node
+public class Node implements GestureEventHandler
 {
     public final Class<? extends Transform> transformClass;
     protected Node parent = null;
@@ -16,7 +19,7 @@ public class Node
     public Transform localTransform;
     public Transform worldTransform;
 
-    public Node(Class<? extends Transform> klass)
+    public Node(final Class<? extends Transform> klass)
     {
         transformClass = klass;
         try
@@ -24,15 +27,13 @@ public class Node
             worldTransform = klass.newInstance();
             localTransform = klass.newInstance();
         }
-        catch (Exception e)
+        catch (final Exception e)
         {
-            throw new RuntimeException(
-                "Transforms need a default constructor",
-                e);
+            throw new RuntimeException("Transforms need a default constructor", e);
         }
     }
 
-    public Node(Node parent)
+    public Node(final Node parent)
     {
         this(parent.transformClass);
         setParent(parent);
@@ -40,11 +41,11 @@ public class Node
 
     public final void engine_start()
     {
-        for (Behaviour b : behaviours)
+        for (final Behaviour b : behaviours)
         {
             b.start();
         }
-        for (Node n : children)
+        for (final Node n : children)
         {
             n.engine_start();
         }
@@ -59,18 +60,18 @@ public class Node
 
         getWorldTransform(worldTransform);
 
-        for (Behaviour b : behaviours)
+        for (final Behaviour b : behaviours)
         {
             b.engine_update();
         }
 
-        for (Node node : children)
+        for (final Node node : children)
         {
             node.engine_update();
         }
     }
 
-    public final void engine_draw(DisplayAdapter display)
+    public final void engine_draw(final DisplayAdapter display)
     {
         if (!enabled)
         {
@@ -79,18 +80,61 @@ public class Node
 
         display.push();
         display.preConcat(localTransform);
-        for (Behaviour b : behaviours)
+        for (final Behaviour b : behaviours)
         {
             b.engine_draw(display);
         }
-        for (Node node : children)
+        for (final Node node : children)
         {
             node.engine_draw(display);
         }
         display.pop();
     }
 
-    public void setParent(Node newParent)
+    public final void engine_input(final GestureEvent event)
+    {
+        if (!enabled)
+        {
+            return;
+        }
+        for (final Behaviour behaviour : behaviours)
+        {
+            behaviour.engine_input(event);
+        }
+        for (final Node node : children)
+        {
+            node.engine_input(event);
+        }
+    }
+
+    public final boolean engine_ui_input(final GestureEvent event)
+    {
+        if (!enabled)
+        {
+            return false;
+        }
+
+        for (final Behaviour behaviour : behaviours)
+        {
+
+            if (behaviour.engine_ui_input(event))
+            {
+                return true;
+            }
+
+        }
+        for (final Node node : children)
+        {
+
+            if (node.engine_ui_input(event))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void setParent(final Node newParent)
     {
         clearCurrentParent();
         if (newParent == null)
@@ -121,7 +165,7 @@ public class Node
      * @param out
      * @return out
      */
-    public Transform getWorldTransform(Transform out)
+    public Transform getWorldTransform(final Transform out)
     {
         if (parent == null)
         {
@@ -134,22 +178,21 @@ public class Node
     }
 
     /**
-     * Gets the world transform and returns it in a new transform.
-     * @return the world transform in a new transform
+     * Calculates the world transform and returns it in a locally reused transform.
      */
     public Transform getWorldTransform()
     {
-        return getWorldTransform(Transform.create());
+        return getWorldTransform(worldTransform);
     }
 
-    public void removeBehaviour(Behaviour b)
+    public void removeBehaviour(final Behaviour b)
     {
         behaviours.remove(b);
     }
 
-    public <B extends Behaviour> B getBehaviour(Class<B> clazz)
+    public <B extends Behaviour> B getBehaviour(final Class<B> clazz)
     {
-        for (Behaviour b : behaviours)
+        for (final Behaviour b : behaviours)
         {
             if (b.getClass() == clazz)
             {
@@ -159,12 +202,12 @@ public class Node
         return null;
     }
 
-    void addBehaviour(Behaviour b)
+    void addBehaviour(final Behaviour b)
     {
         behaviours.add(b);
     }
 
-    public void setEnabled(boolean enabled)
+    public void setEnabled(final boolean enabled)
     {
         this.enabled = enabled;
     }
@@ -180,7 +223,7 @@ public class Node
         {
             return transformClass.newInstance();
         }
-        catch (IllegalAccessException | InstantiationException e)
+        catch (final IllegalAccessException | InstantiationException e)
         {
             throw new RuntimeException("Could not instantiate transform.");
         }
@@ -188,7 +231,8 @@ public class Node
 
     public Node getRoot()
     {
-        if (parent == null) {
+        if (parent == null)
+        {
             return this;
         }
         return parent.getRoot();
@@ -197,5 +241,26 @@ public class Node
     public Node getParent()
     {
         return parent;
+    }
+
+    /**
+     * Converts the point x, y, which should be in screen space, to local space relateive to node.
+     */
+    public static Vec2<Float> toLocalSpace(final Node node, final float x, final float y)
+    {
+        final Vec4<Float> f =
+            node.getWorldTransform(node.worldTransform).invert().mapVector(x, y, 0);
+        return new Vec2<>(f.x, f.y);
+    }
+
+    @Override
+    public boolean handleEvent(final GestureEvent event)
+    {
+        if (engine_ui_input(event))
+        {
+            return true;
+        }
+        engine_input(event);
+        return false;
     }
 }

@@ -2,7 +2,7 @@ package com.game.engine.gesture;
 
 import com.game.tama.util.Vec2;
 
-public interface Input
+public interface InputEventMethod
 {
 
     default void singleTapConfirmed(final float x, final float y) {}
@@ -40,4 +40,8 @@ public interface Input
     default void drag(final Vec2<Float> prev, final Vec2<Float> next) {}
 
     default void dragEnd(final float x, final float y) {}
+
+    default void scaleRelease(final Vec2<Float> point1,
+                              final Vec2<Float> point2)
+    {}
 }

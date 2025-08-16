@@ -20,6 +20,7 @@ public class Poop extends Thing
         return true;
     }
 
+    @Override
     public String getDescription()
     {
         return super.getDescription() + "Ew, a poo. And this is a " +

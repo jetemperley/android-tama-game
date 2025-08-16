@@ -13,8 +13,8 @@ import com.game.tama.core.SpriteSheet;
 import com.game.tama.core.StaticSprite;
 import com.game.tama.core.world.WorldObject;
 import com.game.tama.util.Log;
-import com.game.tama.util.Vec;
 import com.game.tama.util.Vec2;
+import com.game.tama.util.Vec4;
 
 import java.nio.ByteBuffer;
 import java.util.Collection;
@@ -31,8 +31,8 @@ public class GLDisplay implements GLSurfaceView.Renderer, DisplayAdapter
 
     Square square;
     private Shader genericShader;
-    private final Vec<Float> color = new Vec<>(1f, 1f, 1f);
-    private final Vec<Float> tempColor = new Vec<>(1f, 1f, 1f);
+    private final Vec4<Float> color = new Vec4<>(1f, 1f, 1f, 1f);
+    private final Vec4<Float> tempColor = new Vec4<>(1f, 1f, 1f, 1f);
 
     public Consumer<DisplayAdapter> drawWorld = null;
 
@@ -41,6 +41,7 @@ public class GLDisplay implements GLSurfaceView.Renderer, DisplayAdapter
 
     private final HashMap<Bitmap, Integer> textures = new HashMap<>();
 
+    @Override
     public void onSurfaceCreated(final GL10 unused, final EGLConfig config)
     {
         // Set the background frame color
@@ -55,6 +56,7 @@ public class GLDisplay implements GLSurfaceView.Renderer, DisplayAdapter
         GameActivity.gameActivity.setupEngine();
     }
 
+    @Override
     public void onDrawFrame(final GL10 unused)
     {
         // Redraw background color
@@ -65,6 +67,7 @@ public class GLDisplay implements GLSurfaceView.Renderer, DisplayAdapter
         drawWorld.accept(this);
     }
 
+    @Override
     public void onSurfaceChanged(final GL10 unused, final int width, final int height)
     {
         GLES20.glViewport(0, 0, width, height);
@@ -204,7 +207,7 @@ public class GLDisplay implements GLSurfaceView.Renderer, DisplayAdapter
 
         final int colorUniform =
             GLES20.glGetUniformLocation(shader.shaderId, "tintColor");
-        GLES20.glUniform3f(colorUniform, color.r(), color.g(), color.b());
+        GLES20.glUniform3f(colorUniform, color.x, color.y, color.z);
 
         GLES20.glEnable(GLES20.GL_BLEND);
         GLES20.glBlendFunc(GLES20.GL_SRC_ALPHA, GLES20.GL_ONE_MINUS_SRC_ALPHA);
@@ -216,7 +219,7 @@ public class GLDisplay implements GLSurfaceView.Renderer, DisplayAdapter
         GLES20.glDisableVertexAttribArray(positionHandle);
     }
 
-    private void loadAllTextures()
+    private static void loadAllTextures()
     {
         final HashMap<AssetName, Bitmap> sprites = AndroidAsset.loadStaticSprites();
         final HashMap<AssetName, Bitmap[][]> sheets = AndroidAsset.loadSpriteSheets();
@@ -253,7 +256,7 @@ public class GLDisplay implements GLSurfaceView.Renderer, DisplayAdapter
         }
     }
 
-    private void glLoadTexture(final int texHandle, final Bitmap bitmap)
+    private static void glLoadTexture(final int texHandle, final Bitmap bitmap)
     {
 
         // do texture stuff
@@ -278,8 +281,8 @@ public class GLDisplay implements GLSurfaceView.Renderer, DisplayAdapter
             byteBuffer);
     }
 
-    private int numTexturesRequired(final Collection<Bitmap> sprites,
-                                    final Collection<Bitmap[][]> sheets)
+    private static int numTexturesRequired(final Collection<Bitmap> sprites,
+                                           final Collection<Bitmap[][]> sheets)
     {
         int count = sprites.size();
         for (final Bitmap[][] sheet : sheets)

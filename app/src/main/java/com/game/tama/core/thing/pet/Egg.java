@@ -30,6 +30,7 @@ class Egg extends Thing
 
     }
 
+    @Override
     public Sprite getAsset()
     {
 
@@ -46,6 +47,7 @@ class Egg extends Thing
         return anim;
     }
 
+    @Override
     public void update(final World map)
     {
         anim.update(this);
@@ -62,6 +64,7 @@ class Egg extends Thing
         }
     }
 
+    @Override
     public String getDescription()
     {
         return super.getDescription() + "An egg, age " + age + ".";

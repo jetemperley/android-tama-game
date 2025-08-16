@@ -17,6 +17,7 @@ class Wood extends Thing
         return true;
     }
 
+    @Override
     public String getDescription()
     {
         return "A chunk of wood.";

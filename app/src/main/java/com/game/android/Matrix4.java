@@ -4,6 +4,7 @@ import android.opengl.Matrix;
 
 import com.game.engine.Transform;
 import com.game.tama.util.Vec2;
+import com.game.tama.util.Vec4;
 
 public class Matrix4 extends Transform
 {
@@ -20,15 +21,13 @@ public class Matrix4 extends Transform
      *
      * @param args
      */
-    public Transform postMult(Transform... args)
+    @Override
+    public Transform postMult(final Transform... args)
     {
         for (int i = args.length - 1; i >= 0; i--)
         {
-            Transform mat = args[i];
-            Matrix.multiplyMM(
-                tempValues, 0,
-                mat.getValues(), 0,
-                values, 0);
+            final Transform mat = args[i];
+            Matrix.multiplyMM(tempValues, 0, mat.getValues(), 0, values, 0);
             swapTempValues();
         }
         return this;
@@ -39,14 +38,12 @@ public class Matrix4 extends Transform
      *
      * @param args
      */
-    public Transform preMult(Transform... args)
+    @Override
+    public Transform preMult(final Transform... args)
     {
-        for (Transform mat : args)
+        for (final Transform mat : args)
         {
-            Matrix.multiplyMM(
-                tempValues, 0,
-                values, 0,
-                mat.getValues(), 0);
+            Matrix.multiplyMM(tempValues, 0, values, 0, mat.getValues(), 0);
             swapTempValues();
         }
         return this;
@@ -54,7 +51,7 @@ public class Matrix4 extends Transform
 
     private void swapTempValues()
     {
-        float[] temp = values;
+        final float[] temp = values;
         values = tempValues;
         tempValues = temp;
     }
@@ -66,7 +63,7 @@ public class Matrix4 extends Transform
     }
 
     @Override
-    public void getValues(float[] dest)
+    public void getValues(final float[] dest)
     {
         copy(values, dest);
     }
@@ -79,7 +76,7 @@ public class Matrix4 extends Transform
     }
 
     @Override
-    public Transform invert(Transform dest)
+    public Transform invert(final Transform dest)
     {
         Matrix.invertM(dest.getValues(), 0, values, 0);
         return dest;
@@ -91,7 +88,7 @@ public class Matrix4 extends Transform
      * @param from
      */
     @Override
-    public Transform setValues(float[] from)
+    public Transform setValues(final float[] from)
     {
         copy(from, values);
         return this;
@@ -103,13 +100,13 @@ public class Matrix4 extends Transform
      * @param from
      */
     @Override
-    public Transform setValues(Transform from)
+    public Transform setValues(final Transform from)
     {
         copy(from.getValues(), values);
         return this;
     }
 
-    private void copy(float[] source, float[] dest)
+    private void copy(final float[] source, final float[] dest)
     {
         System.arraycopy(source, 0, dest, 0, values.length);
     }
@@ -121,9 +118,10 @@ public class Matrix4 extends Transform
      * @param y
      * @param z
      */
-    public Transform preTranslate(float x, float y, float z)
+    @Override
+    public Transform preTranslate(final float x, final float y, final float z)
     {
-        float[] translate = new float[16];
+        final float[] translate = new float[16];
         Matrix.setIdentityM(translate, 0);
         Matrix.translateM(translate, 0, x, y, z);
         Matrix.multiplyMM(tempValues, 0, values, 0, translate, 0);
@@ -138,9 +136,10 @@ public class Matrix4 extends Transform
      * @param y
      * @param z
      */
-    public Transform postTranslate(float x, float y, float z)
+    @Override
+    public Transform postTranslate(final float x, final float y, final float z)
     {
-        float[] translate = new float[16];
+        final float[] translate = new float[16];
         Matrix.setIdentityM(translate, 0);
         Matrix.translateM(translate, 0, x, y, z);
         Matrix.multiplyMM(tempValues, 0, translate, 0, values, 0);
@@ -155,10 +154,11 @@ public class Matrix4 extends Transform
      * @param y
      * @param z
      */
-    public Transform preScale(float x, float y, float z)
+    @Override
+    public Transform preScale(final float x, final float y, final float z)
     {
         // Matrix.scaleM(values, 0, x, y, z);
-        float[] scale = new float[16];
+        final float[] scale = new float[16];
         Matrix.setIdentityM(scale, 0);
         Matrix.scaleM(scale, 0, x, y, z);
         Matrix.multiplyMM(tempValues, 0, values, 0, scale, 0);
@@ -173,9 +173,10 @@ public class Matrix4 extends Transform
      * @param y
      * @param z
      */
-    public Transform postScale(float x, float y, float z)
+    @Override
+    public Transform postScale(final float x, final float y, final float z)
     {
-        float[] scale = new float[16];
+        final float[] scale = new float[16];
         Matrix.setIdentityM(scale, 0);
         Matrix.scaleM(scale, 0, x, y, z);
         Matrix.multiplyMM(tempValues, 0, scale, 0, values, 0);
@@ -184,39 +185,19 @@ public class Matrix4 extends Transform
     }
 
     @Override
-    public float[] mapPoint(float x, float y, float z)
+    public float[] mapPoint(final float x, final float y, final float z)
     {
-        float[] result = new float[4];
-        Matrix.multiplyMV(
-            result,
-            0,
-            this.values,
-            0,
-            new float[]{
-                x,
-                y,
-                z,
-                0},
-            0);
+        final float[] result = new float[4];
+        Matrix.multiplyMV(result, 0, this.values, 0, new float[]{x, y, z, 0}, 0);
         return result;
     }
 
     @Override
-    public float[] mapVector(float x, float y, float z)
+    public Vec4<Float> mapVector(final float x, final float y, final float z)
     {
-        float[] result = new float[4];
-        Matrix.multiplyMV(
-            result,
-            0,
-            this.values,
-            0,
-            new float[]{
-                x,
-                y,
-                z,
-                1},
-            0);
-        return result;
+        final float[] result = new float[4];
+        Matrix.multiplyMV(result, 0, this.values, 0, new float[]{x, y, z, 1}, 0);
+        return new Vec4<>(result[0], result[1], result[2], result[3]);
     }
 
     @Override
@@ -246,7 +227,7 @@ public class Matrix4 extends Transform
     }
 
     @Override
-    public Transform setScale(float x, float y)
+    public Transform setScale(final float x, final float y)
     {
         values[0] = x;
         values[5] = y;
@@ -254,7 +235,7 @@ public class Matrix4 extends Transform
     }
 
     @Override
-    public Transform setTranslate(float x, float y)
+    public Transform setTranslate(final float x, final float y)
     {
         values[3] = x;
         values[7] = y;

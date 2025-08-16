@@ -2,10 +2,9 @@ package com.game.tama.engine.behaviour;
 
 import com.game.engine.Behaviour;
 import com.game.engine.Node;
-import com.game.engine.gesture.EventPrioritySubscriber;
-import com.game.engine.gesture.GestureEventSource;
 import com.game.tama.core.world.World;
 import com.game.tama.core.world.WorldFactory;
+import com.game.tama.engine.behaviour.garden.PetGardenBehaviour;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -20,16 +19,12 @@ public class GameManager extends Behaviour
     public MenuBehaviour pauseMenu;
     public MenuBehaviour hudMenu;
 
-    private final GestureEventSource mainInput;
-    private final EventPrioritySubscriber prioritySubscriber;
     private final Node mainGameNode;
 
-
-    public GameManager(final Node parent, final GestureEventSource input)
+    public GameManager(final Node parent)
     {
         super(parent);
         INST = this;
-        mainInput = input;
         mainGameNode = new Node(parent);
 
         gameBehaviour = new PetGardenBehaviour(new Node(mainGameNode));
@@ -38,13 +33,6 @@ public class GameManager extends Behaviour
         // translate the game down below the hud button
         // gameBehaviour.node.localTransform.preTranslate(0, 1, 0);
         pauseMenu = BehaviourBuilder.buildPauseMenu(new Node(parent));
-
-        prioritySubscriber = new EventPrioritySubscriber();
-        prioritySubscriber.subscribe(heldBehaviour, 0);
-        prioritySubscriber.subscribe(pauseMenu, 1);
-        prioritySubscriber.subscribe(hudMenu, 1);
-        prioritySubscriber.subscribe(gameBehaviour, 2);
-        mainInput.setTarget(prioritySubscriber);
 
         play();
     }

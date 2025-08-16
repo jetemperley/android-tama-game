@@ -1,14 +1,21 @@
 package com.game.engine.gesture.gestureEvent;
 
-import com.game.engine.gesture.Input;
+import com.game.engine.Node;
 import com.game.engine.Transform;
+import com.game.engine.gesture.InputEventMethod;
+import com.game.engine.gesture.InputObjectMethod;
+import com.game.tama.util.Vec4;
 
 public abstract class GestureEvent
 {
 
     public float x, y;
 
-    public abstract void callEvent(Input handler);
+    protected GestureEvent parent = null;
+
+    public abstract void callEventMethod(InputEventMethod handler);
+
+    public abstract void callObjectMethod(InputObjectMethod handler);
 
     /**
      * Sets the x and y values for the base class
@@ -16,7 +23,7 @@ public abstract class GestureEvent
      * @param x
      * @param y
      */
-    public void setTouch(float x, float y)
+    public void setTouch(final float x, final float y)
     {
         this.x = x;
         this.y = y;
@@ -30,13 +37,19 @@ public abstract class GestureEvent
      * @param transform
      * @return the transformed event
      */
-    public GestureEvent transform(Transform transform)
+    public GestureEvent transform(final Transform transform)
     {
-        GestureEvent copy = (GestureEvent) this.copy();
-        float[] f = transform.mapVector(x, y, 0);
-        copy.x = f[0];
-        copy.y = f[1];
+        final GestureEvent copy = this.copy();
+        final Vec4<Float> f = transform.mapVector(x, y, 0);
+        copy.x = f.x;
+        copy.y = f.y;
+        copy.parent = this;
         return copy;
+    }
+
+    public <T extends GestureEvent> T transformToLocal(final Node node)
+    {
+        return (T) this.transform(node.getWorldTransform().invert());
     }
 
     /**
@@ -47,18 +60,26 @@ public abstract class GestureEvent
      */
     public GestureEvent copy()
     {
-        GestureEvent event;
+        final GestureEvent event;
         try
         {
             event = this.getClass().newInstance();
         }
-        catch (InstantiationException | IllegalAccessException e)
+        catch (final InstantiationException | IllegalAccessException e)
         {
             throw new RuntimeException(e);
         }
         event.x = this.x;
         event.y = this.y;
+        event.parent = this.parent;
         return event;
     }
+
+    public <T extends GestureEvent> T getParent(final Class<T> clazz)
+    {
+        return (T) parent;
+    }
+
+    abstract public EventType getType();
 }
 

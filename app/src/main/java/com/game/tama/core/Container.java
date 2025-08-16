@@ -5,7 +5,7 @@ import com.game.engine.gesture.gestureEvent.Down;
 import com.game.engine.gesture.gestureEvent.DragEnd;
 import com.game.engine.gesture.gestureEvent.DragStart;
 import com.game.engine.gesture.gestureEvent.GestureEvent;
-import com.game.engine.gesture.gestureEvent.LongPress;
+import com.game.engine.gesture.gestureEvent.LongPressConfirmed;
 import com.game.tama.core.thing.Thing;
 import com.game.tama.core.world.World;
 import com.game.tama.core.world.WorldFactory;
@@ -123,7 +123,7 @@ public class Container extends Thing implements Serializable
             dragStart(e.x, e.y);
             return true;
         }
-        return clazz == Down.class || clazz == LongPress.class;
+        return clazz == Down.class || clazz == LongPressConfirmed.class;
     }
 
     private void readObject(final java.io.ObjectInputStream in)

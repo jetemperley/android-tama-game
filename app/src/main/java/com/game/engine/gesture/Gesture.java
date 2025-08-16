@@ -9,15 +9,15 @@ import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 
-public class Gesture implements Input
+public class Gesture implements InputEventMethod
 {
-    private HashMap<Class<? extends GState>, GState> states;
+    private final HashMap<Class<? extends GState>, GState> states;
     private Class<? extends GState> stateKey = null;
 
-    private int singleTapConfirmDelay = 200;
-    private int dragConfirmSensitivity = 10;
+    private final int singleTapConfirmDelay = 200;
+    private final int dragConfirmSensitivity = 10;
 
-    public Input gestureTarget;
+    public InputEventMethod gestureTarget;
 
     public float topOffset = 0;
 
@@ -39,7 +39,7 @@ public class Gesture implements Input
         states.get(stateKey).update();
     }
 
-    public boolean onTouchEvent(MotionEvent e)
+    public boolean onTouchEvent(final MotionEvent e)
     {
         stateKey = states.get(stateKey).onMotion(e);
         return true;
@@ -48,10 +48,12 @@ public class Gesture implements Input
     /**
      * Triggers after the users finger is removed from the screen and
      * the finger has not moved
+     *
      * @param x
      * @param y
      */
-    public void singleTapConfirmed(float x, float y)
+    @Override
+    public void singleTapConfirmed(final float x, final float y)
     {
         Log.log(this, "single tap confirm");
         gestureTarget.singleTapConfirmed(x, y - topOffset);
@@ -59,10 +61,12 @@ public class Gesture implements Input
 
     /**
      * Triggers when a finger is first touched to the screen
+     *
      * @param x
      * @param y
      */
-    public void singleDown(float x, float y)
+    @Override
+    public void singleDown(final float x, final float y)
     {
         Log.log(this, "single down");
         gestureTarget.singleDown(x, y - topOffset);
@@ -71,10 +75,12 @@ public class Gesture implements Input
     /**
      * Triggers after the long press duration has elapsed and the finger has
      * not moved
+     *
      * @param x
      * @param y
      */
-    public void longPressConfirmed(float x, float y)
+    @Override
+    public void longPressConfirmed(final float x, final float y)
     {
         Log.log(this, "long press confirm");
         gestureTarget.longPressConfirmed(x, y - topOffset);
@@ -83,10 +89,12 @@ public class Gesture implements Input
     /**
      * Triggers after 2 taps have been confirmed (singleTapConfirmed)
      * within a specified period
+     *
      * @param x
      * @param y
      */
-    public void doubleTapConfirmed(float x, float y)
+    @Override
+    public void doubleTapConfirmed(final float x, final float y)
     {
         Log.log(this, "double tap confirm");
         gestureTarget.doubleTapConfirmed(x, y - topOffset);
@@ -95,19 +103,22 @@ public class Gesture implements Input
     /**
      * Triggers on when the finger is released from the screen after
      * doubleTapConfirmed() (i think, double check that)
+     *
      * @param x
      * @param y
      */
-    public void doubleTapRelease(float x, float y)
+    @Override
+    public void doubleTapRelease(final float x, final float y)
     {
         Log.log(this, "double tap release");
         gestureTarget.doubleTapRelease(x, y - topOffset);
     }
 
-    public void doubleTapDragStart(float startX,
-                                   float startY,
-                                   float currentX,
-                                   float currentY)
+    @Override
+    public void doubleTapDragStart(final float startX,
+                                   final float startY,
+                                   final float currentX,
+                                   final float currentY)
     {
         Log.log(this, "drag start");
         gestureTarget.doubleTapDragStart(
@@ -117,10 +128,11 @@ public class Gesture implements Input
             currentY - topOffset);
     }
 
-    public void doubleTapDrag(float prevX,
-                              float prevY,
-                              float nextX,
-                              float nextY)
+    @Override
+    public void doubleTapDrag(final float prevX,
+                              final float prevY,
+                              final float nextX,
+                              final float nextY)
     {
         Log.log(this, "double drag confirm");
         gestureTarget.doubleTapDrag(
@@ -130,16 +142,18 @@ public class Gesture implements Input
             nextY - topOffset);
     }
 
-    public void doubleTapDragEnd(float x, float y)
+    @Override
+    public void doubleTapDragEnd(final float x, final float y)
     {
         Log.log(this, "double drag end");
         gestureTarget.doubleTapDragEnd(x, y - topOffset);
     }
 
-    public void scale(Vec2<Float> p1,
-                      Vec2<Float> p2,
-                      Vec2<Float> n1,
-                      Vec2<Float> n2)
+    @Override
+    public void scale(final Vec2<Float> p1,
+                      final Vec2<Float> p2,
+                      final Vec2<Float> n1,
+                      final Vec2<Float> n2)
     {
         Log.log(this, "scale confirm");
         p1.y -= topOffset;
@@ -151,14 +165,26 @@ public class Gesture implements Input
     }
 
     @Override
-    public void dragStart(float x, float y)
+    public void scaleRelease(final Vec2<Float> point1,
+                             final Vec2<Float> point2)
+    {
+        Log.log(this, "scale release");
+        point1.y -= topOffset;
+        point2.y -= topOffset;
+
+        gestureTarget.scaleRelease(point1, point2);
+    }
+
+    @Override
+    public void dragStart(final float x, float y)
     {
         Log.log(this, "drag start");
         y -= topOffset;
         gestureTarget.dragStart(x, y);
     }
 
-    public void drag(Vec2<Float> prev, Vec2<Float> next)
+    @Override
+    public void drag(final Vec2<Float> prev, final Vec2<Float> next)
     {
         prev.y -= topOffset;
         next.y -= topOffset;
@@ -166,7 +192,7 @@ public class Gesture implements Input
     }
 
     @Override
-    public void dragEnd(float x, float y)
+    public void dragEnd(final float x, float y)
     {
         Log.log(this, "drag end");
         y -= topOffset;
@@ -188,12 +214,14 @@ public class Gesture implements Input
     private class Wait extends GState
     {
 
-        void start(MotionEvent e)
+        @Override
+        void start(final MotionEvent e)
         {
             //reset everything?
         }
 
-        Class onMotion(MotionEvent e)
+        @Override
+        Class onMotion(final MotionEvent e)
         {
             switch (e.getAction())
             {
@@ -205,10 +233,10 @@ public class Gesture implements Input
                     return Down.class;
 
                 case MotionEvent.ACTION_MOVE:
-                    ((Drag)states.get(Drag.class)).start(e.getX(), e.getY());
+                    ((Drag) states.get(Drag.class)).start(e.getX(), e.getY());
                     return Drag.class;
             }
-            Log.log(this, "Unexpected starting motion event was: " + e.getAction());
+            Log.error(this, "Unexpected starting motion event was: " + e.getAction());
             return Wait.class;
         }
     }
@@ -224,12 +252,14 @@ public class Gesture implements Input
             initialPos = new Vec2(0, 0);
         }
 
-        void start(MotionEvent e)
+        @Override
+        void start(final MotionEvent e)
         {
             downTime = LocalTime.now();
             initialPos.set(e.getX(), e.getY());
         }
 
+        @Override
         void update()
         {
             if (ChronoUnit.MILLIS.between(downTime, LocalTime.now()) >
@@ -240,7 +270,8 @@ public class Gesture implements Input
             }
         }
 
-        Class onMotion(MotionEvent e)
+        @Override
+        Class onMotion(final MotionEvent e)
         {
 
             switch (e.getAction())
@@ -285,13 +316,15 @@ public class Gesture implements Input
             loc = new Vec2(0, 0);
         }
 
-        void start(MotionEvent e)
+        @Override
+        void start(final MotionEvent e)
         {
 
             upTime = LocalTime.now();
             loc.set(e.getX(), e.getY());
         }
 
+        @Override
         void update()
         {
             if (ChronoUnit.MILLIS.between(upTime, LocalTime.now()) >
@@ -302,7 +335,8 @@ public class Gesture implements Input
             }
         }
 
-        Class onMotion(MotionEvent e)
+        @Override
+        Class onMotion(final MotionEvent e)
         {
 
             switch (e.getAction())
@@ -332,13 +366,15 @@ public class Gesture implements Input
             loc = new Vec2(0, 0);
         }
 
-        void start(MotionEvent e)
+        @Override
+        void start(final MotionEvent e)
         {
             downTime = LocalTime.now();
             loc.set(e.getX(), e.getY());
         }
 
-        Class onMotion(MotionEvent e)
+        @Override
+        Class onMotion(final MotionEvent e)
         {
 
             switch (e.getAction())
@@ -370,26 +406,27 @@ public class Gesture implements Input
             next = new Vec2(0, 0);
         }
 
-        void start(float x, float y)
+        void start(final float x, final float y)
         {
             initialPos.set(x, y);
             next(x, y);
             dragStart(x, y);
         }
 
-        void next(float x, float y)
+        void next(final float x, final float y)
         {
             prev.set(next);
             next.set(x, y);
         }
 
         @Override
-        void start(MotionEvent e)
+        void start(final MotionEvent e)
         {
             next(e.getX(), e.getY());
         }
 
-        Class onMotion(MotionEvent e)
+        @Override
+        Class onMotion(final MotionEvent e)
         {
 
             switch (e.getAction())
@@ -426,13 +463,14 @@ public class Gesture implements Input
             next2 = new Vec2(0, 0);
         }
 
-        void start(MotionEvent e)
+        @Override
+        void start(final MotionEvent e)
         {
             if (point2ID == -1)
             {
                 point2ID = e.getPointerId(1);
             }
-            int idx = e.findPointerIndex(point2ID);
+            final int idx = e.findPointerIndex(point2ID);
             if (idx != -1)
             {
                 prev1.set(next1);
@@ -442,12 +480,11 @@ public class Gesture implements Input
             }
         }
 
-        Class onMotion(MotionEvent e)
+        @Override
+        Class onMotion(final MotionEvent e)
         {
-
             switch (e.getAction())
             {
-
                 case MotionEvent.ACTION_MOVE:
 
                     start(e);
@@ -460,6 +497,8 @@ public class Gesture implements Input
 
                 case MotionEvent.ACTION_UP:
                     point2ID = -1;
+                    // todo release both fingers at the same time
+                    scaleRelease(next1, next2);
                     return Wait.class;
 
                 case MotionEvent.ACTION_POINTER_2_UP:

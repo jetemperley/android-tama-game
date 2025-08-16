@@ -7,6 +7,7 @@ import com.game.tama.core.AssetName;
 import com.game.tama.core.thing.Thing;
 import com.game.tama.core.thing.ThingControl;
 import com.game.tama.core.world.World;
+import com.game.tama.engine.behaviour.garden.PetGardenBehaviour;
 import com.game.tama.ui.SquareCellButtonLeaf;
 import com.game.tama.ui.UIComposite;
 import com.game.tama.ui.UINode;
