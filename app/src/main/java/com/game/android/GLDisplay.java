@@ -5,12 +5,12 @@ import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 
 import com.game.engine.DisplayAdapter;
+import com.game.engine.Sprite;
+import com.game.engine.SpriteSheet;
+import com.game.engine.StaticSprite;
 import com.game.engine.Transform;
 import com.game.tama.core.Asset;
 import com.game.tama.core.AssetName;
-import com.game.tama.core.Sprite;
-import com.game.tama.core.SpriteSheet;
-import com.game.tama.core.StaticSprite;
 import com.game.tama.core.world.WorldObject;
 import com.game.tama.util.Log;
 import com.game.tama.util.Vec2;

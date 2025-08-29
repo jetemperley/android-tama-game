@@ -38,7 +38,7 @@ public class CommandAttack extends Command
             return;
         }
         targetDirection = Direction.from(pet.loc, target.loc);
-        pet.setDir(targetDirection);
+        pet.look(targetDirection);
         doing(pet, world);
     }
 

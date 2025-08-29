@@ -1,9 +1,9 @@
 package com.game.tama.core.thing.item;
 
+import com.game.engine.Sprite;
 import com.game.tama.core.Animator;
 import com.game.tama.core.Asset;
 import com.game.tama.core.AssetName;
-import com.game.tama.core.Sprite;
 import com.game.tama.core.thing.Thing;
 import com.game.tama.core.world.World;
 

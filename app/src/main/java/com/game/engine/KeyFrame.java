@@ -1,17 +1,15 @@
 package com.game.engine;
 
-import com.game.tama.util.Vec2;
-
 import java.io.Serializable;
 
-public class KeyFrame implements Serializable
+public class KeyFrame<T> implements Serializable
 {
     final float time;
-    final Vec2<Float> pos;
+    final T frame;
 
-    public KeyFrame(final float time, final Vec2<Float> pos)
+    public KeyFrame(final float time, final T frame)
     {
         this.time = time;
-        this.pos = pos;
+        this.frame = frame;
     }
 }

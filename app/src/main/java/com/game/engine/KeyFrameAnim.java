@@ -8,7 +8,8 @@ import java.util.List;
 
 public class KeyFrameAnim implements Serializable
 {
-    private List<KeyFrame> keyFrames = new ArrayList<>();
+    private final List<KeyFrame<Vec2<Float>>> posKeyFrames = new ArrayList<>();
+    private final List<KeyFrame<Integer>> animKeyFrames = new ArrayList<>();
 
     /**
      * Optimization params, keep track of most recent (lower) frame and check
@@ -16,43 +17,48 @@ public class KeyFrameAnim implements Serializable
      */
     private final int recentFrame = 0;
 
-    public KeyFrameAnim(final List<KeyFrame> keyFrameList)
+    public KeyFrameAnim(final List<KeyFrame<Vec2<Float>>> posKeyFrameList,
+                        final List<KeyFrame<Integer>> animKeyFrameList)
+    {
+        if (posKeyFrameList != null)
+        {
+            posKeyFrames.addAll(posKeyFrameList);
+        }
+        formatPosKeyFrames();
+        if (animKeyFrameList != null)
+        {
+            animKeyFrames.addAll(animKeyFrameList);
+        }
+    }
+
+    private void formatPosKeyFrames()
     {
 
-        for (final KeyFrame frame : keyFrameList)
+        // add a starting time key frame if one does not exist
+        if (posKeyFrames.isEmpty() || posKeyFrames.get(0).time != 0)
         {
-            keyFrames.add(frame);
+            posKeyFrames.add(0, new KeyFrame(0, new Vec2(0f, 0f)));
         }
 
-        if (keyFrames.size() == 0)
+        // add an ending time key frame if one does not exist
+        if (posKeyFrames.get(posKeyFrames.size() - 1).time != 1)
         {
-            throw new RuntimeException(
-                "An animation was specified with no frames.");
+            posKeyFrames.add(new KeyFrame(1, new Vec2(0f, 0f)));
         }
 
-        if (keyFrames.get(0).time != 0)
+        // check the key frames are in order, exception otherwise
+        for (int i = 0; i < posKeyFrames.size() - 1; i++)
         {
-            keyFrames.add(0, new KeyFrame(0, new Vec2<Float>(0f, 0f)));
-        }
-
-        if (keyFrames.get(keyFrames.size() - 1).time != 1)
-        {
-            keyFrames.add(new KeyFrame(1, new Vec2<Float>(0f, 0f)));
-        }
-
-        for (int i = 0; i < keyFrames.size() - 1; i++)
-        {
-            if (keyFrames.get(i).time >= keyFrames.get(i + 1).time)
+            if (posKeyFrames.get(i).time >= posKeyFrames.get(i + 1).time)
             {
                 throw new RuntimeException(
-                    "Keyframes (size=" + keyFrames.size() + ") were in the wrong order: frame " + i
+                    "Keyframes (size=" + posKeyFrames.size() + ") were in the wrong order: frame "
+                        + i
                         + " time=" +
-                        keyFrames.get(i).time + ", frame " + (i + 1) + " time=" +
-                        keyFrames.get(i + 1).time + ".");
+                        posKeyFrames.get(i).time + ", frame " + (i + 1) + " time=" +
+                        posKeyFrames.get(i + 1).time + ".");
             }
         }
-
-        this.keyFrames = keyFrames;
     }
 
     public Vec2<Float> getPosition(final float time)
@@ -64,27 +70,26 @@ public class KeyFrameAnim implements Serializable
         }
 
         int i = 0;
-        while (keyFrames.get(i).time < time)
+        while (posKeyFrames.get(i).time < time)
         {i++;}
 
-        final KeyFrame upperFrame = keyFrames.get(i);
+        final KeyFrame<Vec2<Float>> upperFrame = posKeyFrames.get(i);
         if (upperFrame.time == time)
         {
-            return upperFrame.pos;
+            return upperFrame.frame;
         }
 
-        final KeyFrame lowerFrame = keyFrames.get(i - 1);
+        final KeyFrame<Vec2<Float>> lowerFrame = posKeyFrames.get(i - 1);
         // Log.log(this, "Time: " + time + ", lower=" + lowerFrame.time);
 
         final float frameTime = (time - lowerFrame.time) /
             (upperFrame.time - lowerFrame.time);
 
-
-        final float xDiff = (upperFrame.pos.x - lowerFrame.pos.x) * frameTime;
-        final float yDiff = (upperFrame.pos.y - lowerFrame.pos.y) * frameTime;
+        final float xDiff = (upperFrame.frame.x - lowerFrame.frame.x) * frameTime;
+        final float yDiff = (upperFrame.frame.y - lowerFrame.frame.y) * frameTime;
 
         return new Vec2<Float>(
-            lowerFrame.pos.x + xDiff,
-            lowerFrame.pos.y + yDiff);
+            lowerFrame.frame.x + xDiff,
+            lowerFrame.frame.y + yDiff);
     }
 }

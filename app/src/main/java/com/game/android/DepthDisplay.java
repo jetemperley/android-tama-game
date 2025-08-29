@@ -1,8 +1,8 @@
 package com.game.android;
 
 import com.game.engine.DisplayAdapter;
+import com.game.engine.Sprite;
 import com.game.engine.Transform;
-import com.game.tama.core.Sprite;
 import com.game.tama.core.world.WorldObject;
 
 import java.util.Comparator;
@@ -20,6 +20,7 @@ public class DepthDisplay implements DisplayAdapter
         draws = new PriorityQueue<>(200, new DepthComp());
     }
 
+    @Override
     public void draw(final WorldObject worldObject)
     {
         draws.add(worldObject);
@@ -76,6 +77,7 @@ public class DepthDisplay implements DisplayAdapter
 
     class DepthComp implements Comparator<WorldObject>
     {
+        @Override
         public int compare(final WorldObject a, final WorldObject b)
         {
             if (b.isFlat && a.isFlat)

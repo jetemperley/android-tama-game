@@ -5,8 +5,8 @@ import android.graphics.Matrix;
 import android.graphics.Rect;
 
 import com.game.engine.DisplayAdapter;
+import com.game.engine.Sprite;
 import com.game.engine.Transform;
-import com.game.tama.core.Sprite;
 import com.game.tama.core.world.WorldObject;
 import com.game.tama.util.Log;
 

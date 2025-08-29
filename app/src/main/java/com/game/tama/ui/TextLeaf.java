@@ -1,11 +1,11 @@
 package com.game.tama.ui;
 
 import com.game.engine.DisplayAdapter;
+import com.game.engine.Sprite;
+import com.game.engine.SpriteSheet;
 import com.game.engine.gesture.gestureEvent.GestureEvent;
 import com.game.tama.core.Asset;
 import com.game.tama.core.AssetName;
-import com.game.tama.core.Sprite;
-import com.game.tama.core.SpriteSheet;
 
 public class TextLeaf extends UIComposite
 {

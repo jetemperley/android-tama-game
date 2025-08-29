@@ -1,10 +1,10 @@
 package com.game.tama.core.thing.tile;
 
 import com.game.engine.DisplayAdapter;
+import com.game.engine.Sprite;
+import com.game.engine.SpriteSheet;
 import com.game.tama.core.Asset;
 import com.game.tama.core.AssetName;
-import com.game.tama.core.Sprite;
-import com.game.tama.core.SpriteSheet;
 import com.game.tama.core.world.World;
 
 public class DynTile extends Tile
@@ -21,6 +21,7 @@ public class DynTile extends Tile
         load();
     }
 
+    @Override
     Sprite getAssets()
     {
         if (sheet == null)
@@ -36,6 +37,7 @@ public class DynTile extends Tile
         return type;
     }
 
+    @Override
     public void draw(final DisplayAdapter d)
     {
 

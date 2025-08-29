@@ -1,5 +1,7 @@
 package com.game.tama.core;
 
+import com.game.engine.Sprite;
+import com.game.engine.SpriteSheet;
 import com.game.engine.Time;
 import com.game.tama.core.thing.Thing;
 
@@ -49,7 +51,6 @@ public class Animator implements Sprite, java.io.Serializable
             }
         }
     }
-
 
     public void repeat(final boolean repeat)
     {

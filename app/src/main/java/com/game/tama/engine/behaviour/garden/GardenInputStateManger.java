@@ -26,12 +26,17 @@ public class GardenInputStateManger implements GestureEventHandler
     @Override
     public boolean handleEvent(final GestureEvent event)
     {
-        final Class<? extends InputState> nextState = currentState.handleEvent(event);
-        currentState = beans.get(nextState);
-        if (currentState == null)
+        final Class<? extends InputState> nextStateClass = currentState.handleEvent(event);
+        final InputState nextState = beans.get(nextStateClass);
+        if (nextState == null)
         {
-            throw new IllegalStateException("Could not get state for " + nextState);
+            throw new IllegalStateException("Could not get state for " + nextStateClass);
         }
+        if (nextState != currentState)
+        {
+            handleEvent(event);
+        }
+
         return true;
     }
 

@@ -1,9 +1,9 @@
 package com.game.tama.core.thing.tile;
 
 import com.game.engine.DisplayAdapter;
+import com.game.engine.Sprite;
 import com.game.tama.core.Asset;
 import com.game.tama.core.AssetName;
-import com.game.tama.core.Sprite;
 import com.game.tama.core.world.WorldObject;
 
 class LongGrass extends Tile
@@ -26,6 +26,7 @@ class LongGrass extends Tile
         sprite3.isFlat = false;
     }
 
+    @Override
     Sprite getAssets()
     {
         final Sprite d = Asset.sprites.get(AssetName.static_longgrass);
@@ -37,6 +38,7 @@ class LongGrass extends Tile
         return d;
     }
 
+    @Override
     public void setPos(final int x, final int y)
     {
         loc.setPos(x, y);

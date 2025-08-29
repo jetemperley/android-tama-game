@@ -1,9 +1,9 @@
 package com.game.tama.ui;
 
 import com.game.engine.DisplayAdapter;
+import com.game.engine.Sprite;
 import com.game.tama.core.Asset;
 import com.game.tama.core.AssetName;
-import com.game.tama.core.Sprite;
 
 public class CircleCellButtonLeaf extends SimpleButtonLeaf
 {

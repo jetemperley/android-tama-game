@@ -1,9 +1,9 @@
 package com.game.tama.ui;
 
 import com.game.engine.DisplayAdapter;
+import com.game.engine.Sprite;
 import com.game.engine.gesture.gestureEvent.Down;
 import com.game.engine.gesture.gestureEvent.GestureEvent;
-import com.game.tama.core.Sprite;
 import com.game.tama.util.Bounds;
 import com.game.tama.util.Vec2;
 

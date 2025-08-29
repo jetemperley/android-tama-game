@@ -200,8 +200,7 @@ public class PetGardenBehaviour extends Behaviour
     public void select(final float x, final float y)
     {
         final Thing t = getThing(x, y);
-        if (selected == null || t == selected ||
-            controlsBehaviour.getSelectedControl() == null)
+        if (controlsBehaviour.getSelectedControl() == null)
         {
             select(t);
         }
@@ -299,5 +298,13 @@ public class PetGardenBehaviour extends Behaviour
     public boolean isTouchingSelectedThing(final float x, final float y)
     {
         return selected != null && getThing(x, y) == selected;
+    }
+
+    public void petSelectedThing()
+    {
+        if (selected != null)
+        {
+            selected.stroke();
+        }
     }
 }

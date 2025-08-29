@@ -27,7 +27,7 @@ public class CommandStep extends Command
     {
         super.start(pet, world);
         Log.log(this, "stepping " + dir.x + " " + dir.y);
-        pet.setDir(dir);
+        pet.look(dir);
         final Tile tile = world.getTile(pet.loc.x + dir.x, pet.loc.y + dir.y);
         if (!pet.canMoveOnto(tile))
         {

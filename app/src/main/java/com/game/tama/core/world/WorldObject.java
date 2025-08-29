@@ -1,6 +1,6 @@
 package com.game.tama.core.world;
 
-import com.game.tama.core.Sprite;
+import com.game.engine.Sprite;
 import com.game.tama.util.Vec2;
 
 public class WorldObject implements java.io.Serializable
@@ -27,7 +27,6 @@ public class WorldObject implements java.io.Serializable
         xoff = 0;
         yoff = 0;
     }
-
 
     public void setPos(final int x, final int y)
     {

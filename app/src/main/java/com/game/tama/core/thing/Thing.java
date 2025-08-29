@@ -1,10 +1,10 @@
 package com.game.tama.core.thing;
 
 import com.game.engine.DisplayAdapter;
+import com.game.engine.Sprite;
 import com.game.tama.core.Asset;
 import com.game.tama.core.AssetName;
 import com.game.tama.core.Loadable;
-import com.game.tama.core.Sprite;
 import com.game.tama.core.Type;
 import com.game.tama.core.thing.component.Component;
 import com.game.tama.core.world.World;
@@ -156,6 +156,11 @@ public abstract class Thing implements java.io.Serializable, Loadable
     public void removeControl(final ThingControl.Name controlName)
     {
         controls.remove(controlName);
+    }
+
+    public void stroke()
+    {
+        this.poke();
     }
 }
 

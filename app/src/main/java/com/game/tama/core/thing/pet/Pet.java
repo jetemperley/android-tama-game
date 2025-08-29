@@ -1,16 +1,17 @@
 package com.game.tama.core.thing.pet;
 
+import com.game.engine.Sprite;
 import com.game.engine.Time;
 import com.game.tama.command.Command;
 import com.game.tama.command.CommandAttack;
 import com.game.tama.command.CommandEat;
+import com.game.tama.command.CommandEmote;
 import com.game.tama.command.CommandFactory;
 import com.game.tama.command.CommandReplacer;
 import com.game.tama.core.Animator;
 import com.game.tama.core.Asset;
 import com.game.tama.core.AssetName;
 import com.game.tama.core.Direction;
-import com.game.tama.core.Sprite;
 import com.game.tama.core.Type;
 import com.game.tama.core.thing.Thing;
 import com.game.tama.core.thing.ThingControl;
@@ -122,7 +123,7 @@ public class Pet extends Thing
         return Type.pet;
     }
 
-    public void setDir(final Direction dir)
+    public void look(final Direction dir)
     {
         // TODO move the pose and direction calc stuff into those enums
         if (anim == null)
@@ -209,6 +210,13 @@ public class Pet extends Thing
     {
         this.asset = asset;
         load();
+    }
+
+    @Override
+    public void stroke()
+    {
+        // todo
+        currentCommand.replace(new CommandEmote());
     }
 }
 

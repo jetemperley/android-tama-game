@@ -41,6 +41,7 @@ public class HeldThingBehaviour extends Behaviour
         drag(new Vec2<>(x, y));
     }
 
+    /** drags the held thing relative to screen coordinates */
     public void drag(final Vec2<Float> next)
     {
 
@@ -57,6 +58,7 @@ public class HeldThingBehaviour extends Behaviour
         local.preScale(scale, scale, 1);
     }
 
+    /** drops the held thing relative to screen coordinates */
     public void dragEnd(final float x, final float y)
     {
         final Transform targetMat = GameManager.INST.getContainingNode(
@@ -66,6 +68,7 @@ public class HeldThingBehaviour extends Behaviour
         Log.log(this, String.format("x: %s, y: %s, dropX: %s, dropY: %s", x, y, f.x, f.y));
     }
 
+    /* WIP drops the held thing at its current coordinates */
     public void dropHeld()
     {
         dropHeld(heldPos.x, heldPos.y);

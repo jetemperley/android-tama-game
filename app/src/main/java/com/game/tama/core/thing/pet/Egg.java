@@ -1,10 +1,10 @@
 package com.game.tama.core.thing.pet;
 
+import com.game.engine.Sprite;
 import com.game.engine.Time;
 import com.game.tama.core.Animator;
 import com.game.tama.core.Asset;
 import com.game.tama.core.AssetName;
-import com.game.tama.core.Sprite;
 import com.game.tama.core.thing.Thing;
 import com.game.tama.core.world.World;
 import com.game.tama.util.Rand;

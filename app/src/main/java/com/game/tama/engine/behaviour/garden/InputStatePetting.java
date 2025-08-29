@@ -2,7 +2,7 @@ package com.game.tama.engine.behaviour.garden;
 
 import com.game.engine.gesture.gestureEvent.Drag;
 import com.game.engine.gesture.gestureEvent.DragEnd;
-import com.game.tama.util.Log;
+import com.game.engine.gesture.gestureEvent.DragStart;
 
 public class InputStatePetting extends InputState
 {
@@ -14,11 +14,19 @@ public class InputStatePetting extends InputState
     }
 
     @Override
+    public Class<? extends InputState> dragStart(final DragStart start)
+    {
+        
+        return getClass();
+    }
+
+    @Override
     public Class<? extends InputState> drag(final Drag drag)
     {
         if (gardenBehaviour.isTouchingSelectedThing(drag.next.x, drag.next.y))
         {
-            Log.log(this, "petting");
+            gardenBehaviour.petSelectedThing();
+            return getClass();
         }
 
         if (!gardenBehaviour.isTouchingSelectedThing(drag.next.x, drag.next.y)
@@ -27,7 +35,7 @@ public class InputStatePetting extends InputState
             return InputStatePanning.class;
         }
 
-        if (gardenBehaviour.attemptPickup(drag.next.x, drag.next.y))
+        if (gardenBehaviour.attemptPickup(drag.prev.x, drag.prev.y))
         {
             return InputStateHolding.class;
         }

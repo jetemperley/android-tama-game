@@ -31,14 +31,28 @@ public class KeyFrameAssets
     private static void init()
     {
         assets = new HashMap<>();
-        final List<KeyFrame> frames = new ArrayList<>();
+        assets.put(Name.AttackUni, createAttack());
+        assets.put(Name.MoveUni, createMove());
+    }
 
+    private static KeyFrameAnim createAttack()
+    {
+        final List<KeyFrame<Vec2<Float>>> frames = new ArrayList<>();
         frames.add(new KeyFrame(0.3f, new Vec2<>(50f, 50f)));
-        assets.put(Name.AttackUni, new KeyFrameAnim(frames));
+        return new KeyFrameAnim(frames, null);
+    }
 
-        frames.clear();
+    private static KeyFrameAnim createMove()
+    {
+        final List<KeyFrame<Vec2<Float>>> frames = new ArrayList<>();
         frames.add(new KeyFrame(0, new Vec2<>(100f, 100f)));
         frames.add(new KeyFrame(1, new Vec2<>(0f, 0f)));
-        assets.put(Name.MoveUni, new KeyFrameAnim(frames));
+        return new KeyFrameAnim(frames, null);
+    }
+
+    private static KeyFrameAnim createEmote()
+    {
+        final List<KeyFrame<Vec2<Float>>> frames = new ArrayList<>();
+        return new KeyFrameAnim(null, null);
     }
 }

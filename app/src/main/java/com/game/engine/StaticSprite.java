@@ -1,4 +1,4 @@
-package com.game.tama.core;
+package com.game.engine;
 
 public class StaticSprite implements Sprite
 {
@@ -10,11 +10,13 @@ public class StaticSprite implements Sprite
         this.imgId = imgId;
     }
 
+    @Override
     public int getSpriteId()
     {
         return imgId;
     }
 
+    @Override
     public int getUISpriteId()
     {
         return imgId;

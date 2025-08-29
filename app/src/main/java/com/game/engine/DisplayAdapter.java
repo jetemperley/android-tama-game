@@ -1,6 +1,5 @@
 package com.game.engine;
 
-import com.game.tama.core.Sprite;
 import com.game.tama.core.world.WorldObject;
 
 public interface DisplayAdapter
@@ -11,7 +10,6 @@ public interface DisplayAdapter
     float FLYING_LAYER = -5;
     float UI_LAYER = -10;
     float ABOVE_UI_LAYER = -20;
-
 
     /**
      * Display the object based on its world position
