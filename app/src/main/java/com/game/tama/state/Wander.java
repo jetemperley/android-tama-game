@@ -20,7 +20,7 @@ public class Wander extends StateController
         if (!pet.currentCommand.hasCommand())
         {
             final float rand = (float) Math.random();
-            final float chance = chancePerSecond * Time.deltaTimeS();
+            final float chance = chancePerSecond * Time.deltaTime();
             if (rand < chance)
             {
                 final List<Direction>

@@ -34,8 +34,12 @@ public class Vec2<T extends Number> implements java.io.Serializable
     {
         final float x = a.x - b.x;
         final float y = a.y - b.y;
+        return x * x + y * y;
+    }
 
-        return Math.abs(x * x + y * y);
+    public static float dist(final Vec2<Float> a, final Vec2<Float> b)
+    {
+        return (float) Math.sqrt(distSq(a, b));
     }
 
     @Override

@@ -51,11 +51,11 @@ class Egg extends Thing
     public void update(final World map)
     {
         anim.update(this);
-        if (!anim.play && Rand.RandInt(0, 100) < 20 * Time.deltaTimeS())
+        if (!anim.play && Rand.RandInt(0, 100) < 20 * Time.deltaTime())
         {
             anim.play();
         }
-        age += Time.deltaTimeS();
+        age += Time.deltaTime();
         if (age > hatchAge)
         {
             // hatch

@@ -46,7 +46,7 @@ public class CommandAttack extends Command
     public void doing(final Pet pet, final World world)
     {
 
-        time += Time.deltaTimeS();
+        time += Time.deltaTime();
         if (time >= attackTime)
         {
             // TODO do damage or something

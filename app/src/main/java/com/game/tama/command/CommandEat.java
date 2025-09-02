@@ -27,7 +27,7 @@ public class CommandEat extends Command
     @Override
     protected void doing(final Pet pet, final World world)
     {
-        currentTime += Time.deltaTimeS();
+        currentTime += Time.deltaTime();
 
         if (currentTime > totalTime)
         {

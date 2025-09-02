@@ -56,4 +56,10 @@ public class Drag extends GestureEvent
     {
         return EventType.DRAG;
     }
+
+    /** The distance of this drag event */
+    public float getDistance()
+    {
+        return Vec2.dist(prev, next);
+    }
 }

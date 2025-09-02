@@ -17,16 +17,19 @@ public class Time
         Time.time += Time.deltaTimeMs;
     }
 
+    /** Time in ms */
     public static long deltaTimeMs()
     {
         return deltaTimeMs;
     }
 
-    public static float deltaTimeS()
+    /** Time in seconds */
+    public static float deltaTime()
     {
         return deltaTimeS;
     }
 
+    /** Total running time in ms */
     public static long time()
     {
         return time;
