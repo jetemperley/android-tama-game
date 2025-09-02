@@ -34,95 +34,10 @@ public class GardenInputStateManger implements GestureEventHandler
         }
         if (nextState != currentState)
         {
-            handleEvent(event);
+            currentState.end(event);
+            nextState.start(event);
         }
-
+        currentState = nextState;
         return true;
     }
-
-    //    @Override
-    //    public void singleTapConfirmed(final float x, final float y)
-    //    {
-    //        currentState = beans.get(currentState.singleTapConfirmed(x, y));
-    //    }
-    //
-    //    @Override
-    //    public void singleDown(final float x, final float y)
-    //    {
-    //        currentState = beans.get(currentState.singleDown(x, y));
-    //    }
-    //
-    //    @Override
-    //    public void longPressConfirmed(final float x, final float y)
-    //    {
-    //        currentState = beans.get(currentState.longPressConfirmed(x, y));
-    //    }
-    //
-    //    @Override
-    //    public void doubleTapConfirmed(final float x, final float y)
-    //    {
-    //        currentState = beans.get(currentState.doubleTapConfirmed(x, y));
-    //    }
-    //
-    //    @Override
-    //    public void doubleTapRelease(final float x, final float y)
-    //    {
-    //        currentState = beans.get(currentState.doubleTapRelease(x, y));
-    //    }
-    //
-    //    @Override
-    //    public void doubleTapDragStart(final float startX,
-    //                                   final float startY,
-    //                                   final float currentX,
-    //                                   final float currentY)
-    //    {
-    //        currentState =
-    //            beans.get(currentState.doubleTapDragStart(startX, startY, currentX, currentY));
-    //    }
-    //
-    //    @Override
-    //    public void doubleTapDrag(final float prevX,
-    //                              final float prevY,
-    //                              final float nextX,
-    //                              final float nextY)
-    //    {
-    //        currentState =
-    //            beans.get(currentState.doubleTapDrag(prevX, prevY, nextX, nextY));
-    //    }
-    //
-    //    @Override
-    //    public void doubleTapDragEnd(final float x, final float y)
-    //    {
-    //        currentState = beans.get(currentState.doubleTapDragEnd(x, y));
-    //
-    //    }
-    //
-    //    @Override
-    //    public void scale(final Vec2<Float> p1,
-    //                      final Vec2<Float> p2,
-    //                      final Vec2<Float> n1,
-    //                      final Vec2<Float> n2)
-    //    {
-    //        currentState = beans.get(currentState.scale(p1, p2, n1, n2));
-    //
-    //    }
-    //
-    //    @Override
-    //    public void dragStart(final float x, final float y)
-    //    {
-    //        currentState = beans.get(currentState.dragStart(x, y));
-    //
-    //    }
-    //
-    //    @Override
-    //    public void drag(final Vec2<Float> prev, final Vec2<Float> next)
-    //    {
-    //        currentState = beans.get(currentState.drag(prev, next));
-    //    }
-    //
-    //    @Override
-    //    public void dragEnd(final float x, final float y)
-    //    {
-    //        currentState = beans.get(currentState.dragEnd(x, y));
-    //    }
 }

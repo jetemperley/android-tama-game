@@ -82,7 +82,7 @@ public abstract class InputState
 
     public Class<? extends InputState> doubleTapDragEnd(final DoubleTapDragEnd end)
     {
-        return this.getClass();
+        return null;
     }
 
     public Class<? extends InputState> scale(final Scale scale)
@@ -105,4 +105,7 @@ public abstract class InputState
         return this.getClass();
     }
 
+    public void start(final GestureEvent event) {}
+
+    public void end(final GestureEvent event) {}
 }
