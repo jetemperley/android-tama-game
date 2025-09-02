@@ -86,7 +86,7 @@ public class Pet extends Thing
         {
             anim = new Animator(Asset.sheets.get(asset));
             anim.play();
-            anim.repeat(true);
+            anim.repeat = true;
         }
         else
         {
@@ -106,7 +106,7 @@ public class Pet extends Thing
                 "Pet doubled up on an update. Does this matter?");
         }
         currentCommand.update.update(this, world);
-        anim.update(this);
+        anim.update();
         state.update(this, world);
         time = Time.time();
     }
@@ -215,7 +215,10 @@ public class Pet extends Thing
     @Override
     public void stroke()
     {
-        // todo
+        if (currentCommand.isCommand(CommandEmote.class))
+        {
+            return;
+        }
         currentCommand.replace(new CommandEmote());
     }
 }

@@ -63,7 +63,7 @@ public class Tree extends Thing implements java.io.Serializable
         //            growth = 0;
         //        }
         // Log.d("Tree", "" + growth);
-        anim.update(this);
+        anim.update();
     }
 
     @Override

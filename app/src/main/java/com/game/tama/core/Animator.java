@@ -3,14 +3,15 @@ package com.game.tama.core;
 import com.game.engine.Sprite;
 import com.game.engine.SpriteSheet;
 import com.game.engine.Time;
-import com.game.tama.core.thing.Thing;
 
 public class Animator implements Sprite, java.io.Serializable
 {
 
     public transient SpriteSheet sheet;
     public boolean play = false, repeat = false;
+    /** the animation row index */
     public int animId = 0;
+
     private int animTime = 0;
     public int animDur = 1000;
 
@@ -36,14 +37,15 @@ public class Animator implements Sprite, java.io.Serializable
         play = true;
     }
 
-    public void update(final Thing t)
+    public void update()
     {
         if (play)
         {
             animTime += (int) Time.deltaTimeMs();
-            if (isDone() && !repeat)
+            if (isDone())
             {
-                cancelAnim();
+                // todo bug here
+                cancel();
             }
             else
             {
@@ -52,26 +54,27 @@ public class Animator implements Sprite, java.io.Serializable
         }
     }
 
-    public void repeat(final boolean repeat)
+    private boolean isDone()
     {
-        this.repeat = repeat;
+        return animTime >= animDur && !repeat;
     }
 
-    boolean isDone()
-    {
-        return animTime >= animDur;
-    }
-
-    void cancelAnim()
+    private void cancel()
     {
         animTime = 0;
         play = false;
     }
 
+    /** plays the animation from the beginning */
+    public void restart()
+    {
+        cancel();
+        play();
+    }
+
     int getSlide(final int time, final int duration, final int row)
     {
-        final long l = Time.time();
-        // todo this can land exactly on the col length
+        // TODO this can land exactly on the col length
         final int perSlide = duration / sheet.rowLength(row);
         final int frame = time / perSlide;
         final int b = sheet.get(row, frame);

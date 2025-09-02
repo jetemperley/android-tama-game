@@ -38,7 +38,7 @@ class Egg extends Thing
         {
             anim = new Animator(Asset.sheets.get(asset));
             anim.play();
-            anim.repeat(true);
+            anim.repeat = true;
         }
         else
         {
@@ -50,7 +50,7 @@ class Egg extends Thing
     @Override
     public void update(final World map)
     {
-        anim.update(this);
+        anim.update();
         if (!anim.play && Rand.RandInt(0, 100) < 20 * Time.deltaTime())
         {
             anim.play();

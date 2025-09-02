@@ -62,6 +62,6 @@ public class Bush extends Thing
     @Override
     public void update(final World map)
     {
-        anim.update(this);
+        anim.update();
     }
 }

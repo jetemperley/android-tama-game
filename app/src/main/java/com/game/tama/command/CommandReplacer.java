@@ -92,4 +92,16 @@ public class CommandReplacer extends Command
         return currentCommand != null && replaceWith != null;
     }
 
+    public boolean isCommand(final Class<? extends Command> type)
+    {
+        if (currentCommand == null ^ type == null)
+        {
+            return false;
+        }
+        if (currentCommand == null)
+        {
+            return true;
+        }
+        return currentCommand.getClass().equals(type);
+    }
 }
